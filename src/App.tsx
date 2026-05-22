@@ -10,7 +10,7 @@ import { TermsOfService } from './pages/TermsOfService';
 
 export default function App() {
   return (
-    <BrowserRouter basename="/nexusmedia">
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
