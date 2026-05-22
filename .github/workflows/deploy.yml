@@ -25,7 +25,10 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          # try the fast, clean install first; if it fails due to optional native bindings,
+          # fall back to removing lockfile and installing without optional deps
+          npm ci || (rm -rf node_modules package-lock.json && npm install --no-optional)
 
       - name: Build
         env:
