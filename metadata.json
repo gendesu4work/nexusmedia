@@ -1,0 +1,8 @@
+{
+  "name": "Nexus Media",
+  "description": "Affordable, professional websites for local businesses in the Philippines, powered by modern technology.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
