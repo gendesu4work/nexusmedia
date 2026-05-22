@@ -22,13 +22,25 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '24'
 
-      - name: Install dependencies (no optional native deps)
+      - name: Install dependencies (robust)
         run: |
-          # Remove existing lockfile and node_modules to avoid optional native bindings
-          rm -rf node_modules package-lock.json
-          npm install --no-optional
+          set -e
+          # retry npm ci a few times to avoid transient network errors
+          retry=0
+          until [ $retry -ge 3 ]
+          do
+            npm ci && break
+            retry=$((retry+1))
+            echo "npm ci failed, retrying ($retry/3)..."
+            sleep 5
+          done
+          # if still failing, fall back to install without optional native deps
+          if [ $retry -ge 3 ]; then
+            rm -rf node_modules package-lock.json
+            npm install --no-optional
+          fi
 
       - name: Build
         env:
