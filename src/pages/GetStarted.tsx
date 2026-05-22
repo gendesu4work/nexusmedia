@@ -28,20 +28,31 @@ export function GetStarted() {
             </p>
           </div>
 
-          <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+          <form
+            className="space-y-6"
+            action="https://api.web3forms.com/submit"
+            method="POST"
+          >
+            <input
+              type="hidden"
+              name="access_key"
+              value={import.meta.env.VITE_WEB3FORMS_KEY}
+            />
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-slate-900">Your Name</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
+                  name="name"
                   placeholder="Juan Dela Cruz"
                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
                 />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-slate-900">Business Name</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
+                  name="business"
                   placeholder="Juan's Cafe"
                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
                 />
@@ -51,16 +62,18 @@ export function GetStarted() {
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-slate-900">Email Address</label>
-                <input 
-                  type="email" 
+                <input
+                  type="email"
+                  name="email"
                   placeholder="juan@example.com"
                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
                 />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-slate-900">Phone Number</label>
-                <input 
-                  type="tel" 
+                <input
+                  type="tel"
+                  name="phone"
                   placeholder="0912 345 6789"
                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
                 />
@@ -69,7 +82,8 @@ export function GetStarted() {
 
             <div className="space-y-2">
               <label className="text-sm font-semibold text-slate-900">Interested Package</label>
-              <select 
+              <select
+                name="package"
                 defaultValue={selectedPackage}
                 className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors appearance-none"
               >
@@ -83,8 +97,9 @@ export function GetStarted() {
 
             <div className="space-y-2">
               <label className="text-sm font-semibold text-slate-900">Tell us a bit about your business (Optional)</label>
-              <textarea 
+              <textarea
                 rows={4}
+                name="message"
                 placeholder="What products or services do you offer?"
                 className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors resize-none"
               ></textarea>
