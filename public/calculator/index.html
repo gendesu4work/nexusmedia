@@ -47,8 +47,9 @@ footer img{width:18px;height:18px;vertical-align:-4px;margin-right:4px}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 </head><body><main>
 <header><div id="brand"></div><button id="th" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button></header>
-<div id="shell" style="display:none"><div class="sync" id="bar"></div><nav id="nav"></nav><div id="app"></div><div class="sync" id="undo"></div><div class="sync" id="sync"></div></div><div id="login" style="display:none"><div class="card" style="max-width:380px;margin:30px auto"><h2>Log in</h2><input id="le" type="email" placeholder="Email" autocomplete="username" style="margin-bottom:8px"><input id="lp" type="password" placeholder="Password" autocomplete="current-password" style="margin-bottom:8px" onkeydown="if(event.key==='Enter')doLogin()"><button class="btn" onclick="doLogin()">Log in</button><div class="note" id="lmsg" style="margin-top:8px"></div><div class="note" style="margin-top:6px">Access is provided by NEXUSMEDIA.</div></div>
+<div id="shell" style="display:none"><div class="sync" id="bar"></div><nav id="nav"></nav><div id="app"></div><div class="sync" id="undo"></div><div class="sync" id="sync"></div></div><div id="login" style="display:none"><div class="card" style="max-width:380px;margin:30px auto"><h2>Log in</h2><input id="le" type="email" placeholder="Email" autocomplete="username" style="margin-bottom:8px"><input id="lp" type="password" placeholder="Password" autocomplete="current-password" style="margin-bottom:8px" onkeydown="if(event.key==='Enter')doLogin()"><button class="btn" onclick="doLogin()">Log in</button><div style="text-align:center;margin-top:10px"><a href="#" onclick="$('#fg').style.display='';return false" class="note" style="color:var(--ac)">Forgot password?</a></div><div id="fg" style="display:none;margin-top:8px"><input id="fe" type="email" placeholder="Your email" autocomplete="email" style="margin-bottom:8px"><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="doForgot()">Send reset link</button></div><div class="note" id="lmsg" style="margin-top:8px"></div><div class="note" style="margin-top:6px">Access is provided by NEXUSMEDIA.</div></div>
 <div class="card" style="max-width:380px;margin:12px auto;text-align:center"><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="startGuest()">Guest mode</button><div class="note" style="margin-top:8px">No account needed. Your data stays on this device only.</div></div></div>
+<div id="reset" style="display:none"><div class="card" style="max-width:380px;margin:30px auto"><h2>Set a new password</h2><input id="rp1" type="password" placeholder="New password (8+ characters)" autocomplete="new-password" style="margin-bottom:8px"><input id="rp2" type="password" placeholder="Repeat new password" autocomplete="new-password" style="margin-bottom:8px"><button class="btn" onclick="doReset()">Save new password</button><div class="note" id="rmsg" style="margin-top:8px"></div></div></div>
 <div id="promo" class="card" style="display:none;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:520px;margin:0 auto;z-index:20;box-shadow:0 8px 28px rgba(0,0,0,.28)"><div style="font-weight:700">💾 Don’t lose your data</div><div class="note" style="margin:2px 0 8px">Sign up to save it online, use it offline and on any device. ₱99, one time.</div><div class="row" style="margin:0;align-items:center"><button class="btn" onclick="openPackage()">See what you get</button><a href="#" onclick="hidePromo(true);return false" class="note" style="text-align:center;color:var(--ac)">Maybe later</a></div></div>
 <div id="pk" style="display:none"><div class="card" style="max-width:480px;margin:0 auto 16px"><div style="text-align:right"><a href="#" onclick="closePackage();return false" class="note" style="color:var(--ac)">✕ Close</a></div>
 <h2 style="font-size:20px;margin-bottom:2px">Save your data with Product Calculator Online</h2>
@@ -96,9 +97,11 @@ async function start(){regSW();renderBrand();$('#fl').src=APPLOGO;
  if(!window.supabase){showLogin('Could not load. Connect to the internet and reload the page.');return}
  if(SUPABASE_URL.startsWith('PASTE')){showLogin('This copy is not connected yet. Add your Supabase URL and key near the top of the script.');return}
  sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+ sb.auth.onAuthStateChange((ev)=>{if(ev==='PASSWORD_RECOVERY'){recovering=true;showReset()}});
+ if(/error(_code)?=/.test(location.hash)){history.replaceState(null,'',location.pathname);showLogin('That link has expired or was already used. Please ask for a new one.');return}
  if(location.search.includes('paid=1')){history.replaceState(null,'',location.pathname);showLogin('Thank you! Your payment is being confirmed. Please wait a minute, then log in with your email and password.');return}
  let ss=null;try{const r=await sb.auth.getSession();ss=r.data&&r.data.session}catch(e){}
- if(ss)return enter(ss.user);
+ if(recovering)return;if(ss)return enter(ss.user);
  const last=rj('ppt-last');if(last&&rj('ppt-'+last.id)&&!navigator.onLine)return enter(last);
  if(rj('ppt-guest'))return startGuest();
  showLogin('')}
@@ -117,6 +120,7 @@ async function enter(u){guest=false;clearTimeout(promoT);$('#promo').style.displ
  else{S=Object.assign(S,row?row.data:{});if(dirty)setD(null)}
  wj('ppt-'+uidU,S);wj('ppt-last',{id:u.id,email:u.email});
  $('#login').style.display='none';$('#shell').style.display='';$('#bar').innerHTML=esc(u.email)+' · <a href="#" onclick="doLogout();return false" style="color:var(--ac);font-weight:700">Log out</a>';render();status();trySync()}
+let recovering=false;
 let promoT=null,promoH=null,promoN=0;
 function schedulePromo(){clearTimeout(promoT);if(guest)promoT=setTimeout(showPromo,(promoN>=2?15:3)*60000)}
 function showPromo(){if(!guest)return;const a=document.activeElement;if((a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName))||$('#pk').style.display!=='none'){clearTimeout(promoT);promoT=setTimeout(showPromo,30000);return}
@@ -124,6 +128,33 @@ function showPromo(){if(!guest)return;const a=document.activeElement;if((a&&/INP
 function hidePromo(ignored){clearTimeout(promoH);$('#promo').style.display='none';if(ignored)promoN++;schedulePromo()}
 function openPackage(){hidePromo(false);$('#pk').style.display=''}
 function closePackage(){$('#pk').style.display='none'}
+async function doForgot(){const e=$('#fe').value.trim(),mm=$('#lmsg');if(!sb){mm.textContent='Not connected yet.';return}
+ if(!e){mm.textContent='Enter your email first.';return}
+ if(!navigator.onLine){mm.textContent='You need internet to do this.';return}
+ mm.textContent='Sending…';
+ try{await sb.auth.resetPasswordForEmail(e,{redirectTo:location.origin+location.pathname})}catch(x){}
+ mm.textContent='If that email has an account, we have sent a link. Check your inbox and your spam folder.'}
+function showReset(){$('#shell').style.display='none';$('#login').style.display='none';$('#reset').style.display=''}
+async function doReset(){const p=$('#rp1').value,q=$('#rp2').value,mm=$('#rmsg');
+ if(p.length<8){mm.textContent='Use at least 8 characters.';return}
+ if(p!==q){mm.textContent='The two passwords do not match.';return}
+ mm.textContent='Saving…';
+ const r=await sb.auth.updateUser({password:p});
+ if(r.error){mm.textContent=r.error.message||'Could not save. Please ask for a new link.';return}
+ recovering=false;history.replaceState(null,'',location.pathname);$('#reset').style.display='none';
+ const s=await sb.auth.getSession();if(s.data&&s.data.session)await enter(s.data.session.user);else showLogin('Password changed. Please log in.')}
+function acctCard(){if(guest||!uidU)return '';return `<div class="card"><h2>Account</h2><div class="note" style="margin:-4px 0 8px">Change your password</div><input id="cp0" type="password" placeholder="Current password" autocomplete="current-password" style="margin-bottom:8px"><input id="cp1" type="password" placeholder="New password (8+ characters)" autocomplete="new-password" style="margin-bottom:8px"><input id="cp2" type="password" placeholder="Repeat new password" autocomplete="new-password" style="margin-bottom:8px"><button class="btn" onclick="doChange()">Change password</button><div class="note" id="cmsg" style="margin-top:8px"></div></div>`}
+async function doChange(){const o=$('#cp0').value,p=$('#cp1').value,q=$('#cp2').value,mm=$('#cmsg');
+ if(!o||p.length<8){mm.textContent='Enter your current password and a new one with at least 8 characters.';return}
+ if(p!==q){mm.textContent='The two new passwords do not match.';return}
+ if(!navigator.onLine){mm.textContent='You need internet to change your password.';return}
+ mm.textContent='Saving…';
+ const w=await sb.auth.getUser(),em=w.data&&w.data.user&&w.data.user.email;
+ const c=await sb.auth.signInWithPassword({email:em,password:o});
+ if(c.error){mm.textContent='Your current password is not correct.';return}
+ const r=await sb.auth.updateUser({password:p});
+ mm.textContent=r.error?(r.error.message||'Could not change the password.'):'Your password has been changed.';
+ if(!r.error){$('#cp0').value='';$('#cp1').value='';$('#cp2').value=''}}
 function startGuest(){guest=true;uidU=null;S=Object.assign(EMPTY(),rj('ppt-guest')||{});$('#login').style.display='none';$('#shell').style.display='';$('#bar').innerHTML='Guest mode · <a href="#" onclick="openPackage();return false" style="color:var(--ac);font-weight:700">Sign up to save online</a> · <a href="#" onclick="leaveGuest();return false" style="color:var(--ac)">Log in</a>';promoN=0;schedulePromo();render();status()}
 function leaveGuest(){guest=false;clearTimeout(promoT);$('#promo').style.display='none';showLogin('')}
 async function doSignup(){const e=$('#se').value.trim(),p=$('#sp1').value,q=$('#sp2').value,sm=$('#smsg');
@@ -196,7 +227,7 @@ set(){const s=S.set;return brandCard()+`<div class="card"><h2>Monthly fixed cost
  <label class="t"><input type="checkbox" ${s.staffOn?'checked':''} onchange="S.set.staffOn=this.checked;save();render()"> I have staff</label>
  ${s.staffOn?staffUI():''}
  <div class="note" style="margin-top:6px">Turn these on or off anytime. They are deducted from every month shown.</div></div>
- ${taxSet()}${backupCard()}${palCard()}`}};
+ ${taxSet()}${backupCard()}${palCard()}${acctCard()}`}};
 function render(){applyPal();S.products.forEach(sync);renderBrand();$('#fl').src=APPLOGO;const T=[['dash','Dashboard'],['sales','Sales'],['inv','Inventory'],['prod','Products'],['exp','Expenses'],['set','Settings']];
  $('#nav').innerHTML=T.map(t=>`<button class="${tab==t[0]?'on':''}" onclick="tab='${t[0]}';render()">${t[1]}</button>`).join('');$('#app').innerHTML=V[tab]()}
 let undoS=null,undoT=null;
