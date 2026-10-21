@@ -57,13 +57,13 @@ footer img{width:18px;height:18px;vertical-align:-4px;margin-right:4px}
 </head><body><main>
 <header><div id="brand"></div><button id="th" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button></header>
 <div id="shell" style="display:none"><div class="sync" id="bar"></div><nav id="nav"></nav><div id="app"></div><div class="sync" id="undo"></div><div class="sync" id="sync"></div></div><div id="login" style="display:none"><div class="card" style="max-width:380px;margin:30px auto"><h2>Log in</h2><input id="le" type="email" placeholder="Email" autocomplete="username" style="margin-bottom:8px"><input id="lp" type="password" placeholder="Password" autocomplete="current-password" style="margin-bottom:8px" onkeydown="if(event.key==='Enter')doLogin()"><button class="btn" onclick="doLogin()">Log in</button><div style="text-align:center;margin-top:10px"><a href="#" onclick="$('#fg').style.display='';return false" class="note" style="color:var(--ac)">Forgot password?</a></div><div id="fg" style="display:none;margin-top:8px"><input id="fe" type="email" placeholder="Your email" autocomplete="email" style="margin-bottom:8px"><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="doForgot()">Send reset link</button></div><div class="note" id="lmsg" style="margin-top:8px"></div><div class="note" style="margin-top:6px">Access is provided by NEXUSMEDIA.</div></div>
-<div class="card" style="max-width:380px;margin:12px auto;text-align:center"><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="startGuest()">Guest mode</button><div class="note" style="margin-top:8px">No account needed. Your data stays on this device only.</div></div></div>
+<div class="card" style="max-width:380px;margin:12px auto;text-align:center"><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="startGuest()">Guest mode</button><div class="note" style="margin-top:8px">No account needed. Nothing is saved: refreshing or closing the page erases your data.</div></div></div>
 <div id="reset" style="display:none"><div class="card" style="max-width:380px;margin:30px auto"><h2>Set a new password</h2><input id="rp1" type="password" placeholder="New password (8+ characters)" autocomplete="new-password" style="margin-bottom:8px"><input id="rp2" type="password" placeholder="Repeat new password" autocomplete="new-password" style="margin-bottom:8px"><button class="btn" onclick="doReset()">Save new password</button><div class="note" id="rmsg" style="margin-top:8px"></div></div></div>
-<div id="promo" class="card" style="display:none;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:520px;margin:0 auto;z-index:20;box-shadow:0 8px 28px rgba(0,0,0,.28)"><div style="font-weight:700">💾 Don’t lose your data</div><div class="note" style="margin:2px 0 8px">Sign up to save it online, use it offline and on any device. ₱99, one time.</div><div class="row" style="margin:0;align-items:center"><button class="btn" onclick="openPackage()">See what you get</button><a href="#" onclick="hidePromo(true);return false" class="note" style="text-align:center;color:var(--ac)">Maybe later</a></div></div>
+<div id="promo" class="card" style="display:none;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:520px;margin:0 auto;z-index:20;box-shadow:0 8px 28px rgba(0,0,0,.28)"><div style="font-weight:700">💾 Don’t lose your data</div><div class="note" style="margin:2px 0 8px">Sign up to save it online, use it offline and on any device. Just ₱99.</div><div class="row" style="margin:0;align-items:center"><button class="btn" onclick="openPackage()">See what you get</button><a href="#" onclick="hidePromo(true);return false" class="note" style="text-align:center;color:var(--ac)">Maybe later</a></div></div>
 <div id="pk" style="display:none"><div class="card" style="max-width:480px;margin:0 auto 16px"><div style="text-align:right"><a href="#" onclick="closePackage();return false" class="note" style="color:var(--ac)">✕ Close</a></div>
 <h2 style="font-size:20px;margin-bottom:2px">Save your data with Product Calculator Online</h2>
-<div style="font-size:30px;font-weight:800;color:var(--ac)">₱99 <span class="note" style="font-size:14px;font-weight:400">one-time payment</span></div>
-<div class="note" style="margin-bottom:10px">Pay once with GCash, Maya or card.</div>
+<div style="font-size:30px;font-weight:800;color:var(--ac)">₱99 </div>
+<div class="note" style="margin-bottom:10px">Pay with GCash, Maya or card.</div>
 <div class="li"><span>💾 Your data is saved safely online</span></div>
 <div class="li"><span>📴 Works online and offline. Enter sales with no signal and they sync when you’re back online</span></div>
 <div class="li"><span>📱💻 Unlimited devices: use one login on your phone, tablet and computer</span></div>
@@ -72,7 +72,7 @@ footer img{width:18px;height:18px;vertical-align:-4px;margin-right:4px}
 <h2 style="margin-top:14px">Everything in the app</h2>
 <div class="note" style="line-height:1.8">🧾 Recipe costing for every serving<br>📈 Profit and margin for each product<br>📦 Inventory that deducts stock on every sale, with low-stock alerts<br>👥 Staff with roles, photos and salaries<br>🏠 Rent, packaging and utilities in your costs<br>🧮 Tax estimate for the Philippines<br>🖼️ Your own business name and logo<br>🌙 Light and dark mode</div>
 <h2 style="margin-top:14px">How it works</h2>
-<div class="note" style="line-height:1.8">1. Enter your email and choose a password<br>2. Pay ₱99 on PayMongo’s secure page<br>3. Wait about a minute, then log in<br>Everything you entered as a guest is copied into your account.</div>
+<div class="note" style="line-height:1.8">1. Enter your email and choose a password<br>2. Pay ₱99 on PayMongo’s secure page<br>3. Wait about a minute, then log in<br>Guest entries are erased when you leave this page, so you start with a clean account.</div>
 <div style="margin-top:12px"><input id="se" type="email" placeholder="Your email" autocomplete="email" style="margin-bottom:8px"><input id="sp1" type="password" placeholder="Choose a password (8+ characters)" autocomplete="new-password" style="margin-bottom:8px"><input id="sp2" type="password" placeholder="Repeat password" autocomplete="new-password" style="margin-bottom:8px"><button class="btn" onclick="doSignup()">Pay ₱99 and save my data</button><div class="note" id="smsg" style="margin-top:8px"></div></div>
 <div class="note" style="text-align:center;margin-top:8px"><a href="#" onclick="closePackage();leaveGuest();return false" style="color:var(--ac)">Already paid? Log in</a> · <a href="#" onclick="closePackage();return false" style="color:var(--ac)">Not now</a></div></div></div>
 <footer><img alt="" id="fl">Product Calculator · © 2026 NEXUSMEDIA™ · All rights reserved</footer>
@@ -96,14 +96,14 @@ const EMPTY=()=>({shifts:[],refunds:[],rcpt:[],rno:0,inv:[],brand:{},staff:[],pr
 const rj=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}};
 const wj=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 const setD=v=>{dirty=v;try{v?localStorage.setItem('ppt-dirty-'+uidU,v):localStorage.removeItem('ppt-dirty-'+uidU)}catch(e){}};
-function status(msg){const s=$('#sync');if(!s)return;if(guest&&!msg){s.textContent='Guest mode: your data is saved on this device only. Sign up to save it online.';return}const off=!navigator.onLine;s.textContent=msg||(dirty?(off?'📴 Offline: changes are saved on this phone and will sync when you are online.':'⏳ Waiting to sync…'):(off?'📴 Offline: you can keep working.':'☁️ Saved to your account'))}
-function save(){if(guest){wj('ppt-guest',S);status();return}if(!uidU)return;wj('ppt-'+uidU,S);setD(new Date().toISOString());status();clearTimeout(timer);timer=setTimeout(trySync,600)}
+function status(msg){const s=$('#sync');if(!s)return;if(guest&&!msg){s.textContent='Guest mode: nothing is saved. If you refresh or close the page, your data is erased. Sign up to keep it.';return}const off=!navigator.onLine;s.textContent=msg||(dirty?(off?'📴 Offline: changes are saved on this phone and will sync when you are online.':'⏳ Waiting to sync…'):(off?'📴 Offline: you can keep working.':'☁️ Saved to your account'))}
+function save(){if(guest){status();return}if(!uidU)return;wj('ppt-'+uidU,S);setD(new Date().toISOString());status();clearTimeout(timer);timer=setTimeout(trySync,600)}
 async function trySync(){if(!uidU||!dirty||syncing||!navigator.onLine)return;syncing=true;const ts=dirty;
  try{const r=await sb.from('app_data').upsert({user_id:uidU,data:S,updated_at:ts});if(!r.error&&dirty===ts)setD(null)}catch(e){}
  syncing=false;status()}
 function load(){}
 function regSW(){if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{})}
-async function start(){regSW();renderBrand();$('#fl').src=APPLOGO;
+async function start(){regSW();try{localStorage.removeItem('ppt-guest')}catch(e){}renderBrand();$('#fl').src=APPLOGO;
  if(!window.supabase){showLogin('Could not load. Connect to the internet and reload the page.');return}
  if(SUPABASE_URL.startsWith('PASTE')){showLogin('This copy is not connected yet. Add your Supabase URL and key near the top of the script.');return}
  sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
@@ -124,7 +124,7 @@ async function enter(u){guest=false;clearTimeout(promoT);$('#promo').style.displ
  let useLocal=false,src=lc;
  if(err){if(!lc){uidU=null;showLogin('Could not reach the server. Connect to the internet once to load your data.');return}useLocal=true}
  else if(row&&row.data)useLocal=!!(dirty&&lc&&new Date(dirty)>new Date(row.updated_at));
- else{src=lc||rj('ppt-guest');useLocal=!!src}
+ else useLocal=!!lc;
  if(useLocal){S=Object.assign(S,src);if(!err&&!dirty)setD(new Date().toISOString())}
  else{S=Object.assign(S,row?row.data:{});if(dirty)setD(null)}
  wj('ppt-'+uidU,S);wj('ppt-last',{id:u.id,email:u.email});
@@ -246,8 +246,8 @@ function fixedCard(){const s=S.set;return `<div class="card"><h2>Monthly fixed c
  <label class="t"><input type="checkbox" ${s.staffOn?'checked':''} onchange="S.set.staffOn=this.checked;save();render()"> I have staff</label>
  ${s.staffOn?staffUI():''}
  <div class="note" style="margin-top:6px">Turn these on or off anytime. They are deducted from every month shown.</div></div>`}
-function startGuest(){guest=true;uidU=null;S=Object.assign(EMPTY(),rj('ppt-guest')||{});$('#login').style.display='none';$('#shell').style.display='';$('#bar').innerHTML='Guest mode · <a href="#" onclick="openPackage();return false" style="color:var(--ac);font-weight:700">Sign up to save online</a> · <a href="#" onclick="leaveGuest();return false" style="color:var(--ac)">Log in</a>';promoN=0;schedulePromo();render();status()}
-function leaveGuest(){guest=false;clearTimeout(promoT);$('#promo').style.display='none';showLogin('')}
+function startGuest(){guest=true;uidU=null;S=EMPTY();$('#login').style.display='none';$('#shell').style.display='';$('#bar').innerHTML='Guest mode · <a href="#" onclick="openPackage();return false" style="color:var(--ac);font-weight:700">Sign up to save online</a> · <a href="#" onclick="leaveGuest();return false" style="color:var(--ac)">Log in</a>';promoN=0;schedulePromo();render();status()}
+function leaveGuest(){guest=false;S=EMPTY();clearTimeout(promoT);$('#promo').style.display='none';showLogin('')}
 async function doSignup(){const e=$('#se').value.trim(),p=$('#sp1').value,q=$('#sp2').value,sm=$('#smsg');
  if(!e||p.length<8){sm.textContent='Enter your email and a password of at least 8 characters.';return}
  if(p!==q){sm.textContent='The two passwords do not match.';return}
