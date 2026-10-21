@@ -53,11 +53,38 @@ footer img{width:18px;height:18px;vertical-align:-4px;margin-right:4px}
 #rcp{background:#fff;color:#111;max-width:340px;margin:0 auto 12px;padding:18px 16px;border-radius:10px;font:14px/1.45 ui-monospace,Menlo,Consolas,monospace;box-shadow:0 2px 10px rgba(0,0,0,.18)}
 #rcp hr{border:0;border-top:1px dashed #999;margin:10px 0}#rcp .r{display:flex;justify-content:space-between;gap:8px}#rcp .c{text-align:center}#rcp img{max-height:60px;max-width:200px;display:block;margin:0 auto 6px}
 @media print{body *{visibility:hidden}#rcp,#rcp *{visibility:visible}#rcp{position:absolute;left:0;top:0;width:100%;max-width:none;box-shadow:none;margin:0}}
+
+#lshow{max-width:380px;margin:12px auto 24px;background:var(--card);border:1px solid var(--ln);border-radius:16px;overflow:hidden;box-shadow:0 14px 34px -22px var(--ac)}
+#lshow .hd{padding:14px 16px 4px;display:flex;justify-content:space-between;align-items:baseline}
+#lshow .hd b{font-size:15px;color:var(--tx)}#lshow .hd span{font-size:11px;color:var(--mut);display:flex;align-items:center;gap:5px}
+#lshow .hd i{width:7px;height:7px;border-radius:50%;background:var(--ok);animation:lv 1.6s ease-in-out infinite}
+@keyframes lv{50%{opacity:.25}}
+#lshow .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 16px 0}
+#lshow .tl{background:var(--bg);border:1px solid var(--ln);border-radius:12px;padding:9px 10px}
+#lshow .tl small{display:block;font-size:10.5px;color:var(--mut)}
+#lshow .tl strong{display:block;font-size:16px;color:var(--tx);margin-top:2px;font-variant-numeric:tabular-nums;white-space:nowrap}
+#lshow .tl.pf strong{color:var(--ok)}
+#lshow .ch{padding:6px 16px 4px;position:relative}
+#lshow svg{display:block;width:100%;height:auto}
+#lshow .bar{fill:var(--ac);opacity:.28;transform-box:fill-box;transform-origin:bottom;animation:bgrow 10s cubic-bezier(.3,1.2,.5,1) infinite}
+#lshow .bar.hi{opacity:1}
+@keyframes bgrow{0%,3%{transform:scaleY(0)}18%,90%{transform:scaleY(1)}97%,100%{transform:scaleY(0)}}
+#lshow .pl{fill:none;stroke:var(--ok);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:300;stroke-dashoffset:300;animation:pdraw 10s ease-in-out infinite}
+@keyframes pdraw{0%,12%{stroke-dashoffset:300;opacity:1}45%,90%{stroke-dashoffset:0;opacity:1}97%,100%{stroke-dashoffset:0;opacity:0}}
+#lshow .pd{fill:var(--card);stroke:var(--ok);stroke-width:2.5;opacity:0;animation:pdot 10s ease-out infinite}
+@keyframes pdot{0%,40%{opacity:0}46%,90%{opacity:1}97%,100%{opacity:0}}
+#lshow .ax{font-size:9px;fill:var(--mut)}
+#lshow .ft{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ln);margin-top:4px}
+#lshow .ft div{padding:12px 8px;text-align:center;font-size:11.5px;color:var(--mut);line-height:1.3}
+#lshow .ft div+div{border-left:1px solid var(--ln)}
+#lshow .ft b{display:block;color:var(--tx);font-size:12.5px;margin-top:5px}
+#lshow .ft svg{width:22px;height:22px;margin:0 auto;stroke:var(--ac);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@media(prefers-reduced-motion:reduce){#lshow *{animation:none!important}#lshow .pl{stroke-dashoffset:0}#lshow .pd{opacity:1}}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 </head><body><main>
 <header><div id="brand"></div><button id="th" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button></header>
 <div id="shell" style="display:none"><div class="sync" id="bar"></div><nav id="nav"></nav><div id="app"></div><div class="sync" id="undo"></div><div class="sync" id="sync"></div></div><div id="login" style="display:none"><div class="card" style="max-width:380px;margin:30px auto"><h2>Log in</h2><input id="le" type="email" placeholder="Email" autocomplete="username" style="margin-bottom:8px"><input id="lp" type="password" placeholder="Password" autocomplete="current-password" style="margin-bottom:8px" onkeydown="if(event.key==='Enter')doLogin()"><button class="btn" onclick="doLogin()">Log in</button><div style="text-align:center;margin-top:10px"><a href="#" onclick="$('#fg').style.display='';return false" class="note" style="color:var(--ac)">Forgot password?</a></div><div id="fg" style="display:none;margin-top:8px"><input id="fe" type="email" placeholder="Your email" autocomplete="email" style="margin-bottom:8px"><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="doForgot()">Send reset link</button></div><div class="note" id="lmsg" style="margin-top:8px"></div><div class="note" style="margin-top:6px">Access is provided by NEXUSMEDIA.</div></div>
-<div class="card" style="max-width:380px;margin:12px auto;text-align:center"><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="startGuest()">Guest mode</button><div class="note" style="margin-top:8px">No account needed. Nothing is saved: refreshing or closing the page erases your data.</div></div></div>
+<div class="card" style="max-width:380px;margin:12px auto;text-align:center"><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="startGuest()">Guest mode</button><div class="note" style="margin-top:8px">No account needed. Nothing is saved: refreshing or closing the page erases your data.</div></div><div id="lshow" aria-hidden="true"><div class="hd"><b>Your shop at a glance</b><span><i></i>Live preview</span></div><div class="tiles"><div class="tl"><small>Sales</small><strong id="ls1">₱0</strong></div><div class="tl"><small>Cost</small><strong id="ls2">₱0</strong></div><div class="tl pf"><small>Profit</small><strong id="ls3">₱0</strong></div></div><div class="ch"><svg viewBox="0 0 280 120"><rect class="bar" x="12" y="66" width="22" height="34" rx="4" style="animation-delay:0.00s"/><text class="ax" x="23" y="114" text-anchor="middle">Mon</text><rect class="bar" x="50" y="58" width="22" height="42" rx="4" style="animation-delay:0.08s"/><text class="ax" x="61" y="114" text-anchor="middle">Tue</text><rect class="bar" x="88" y="62" width="22" height="38" rx="4" style="animation-delay:0.16s"/><text class="ax" x="99" y="114" text-anchor="middle">Wed</text><rect class="bar" x="126" y="45" width="22" height="55" rx="4" style="animation-delay:0.24s"/><text class="ax" x="137" y="114" text-anchor="middle">Thu</text><rect class="bar" x="164" y="38" width="22" height="62" rx="4" style="animation-delay:0.32s"/><text class="ax" x="175" y="114" text-anchor="middle">Fri</text><rect class="bar hi" x="202" y="22" width="22" height="78" rx="4" style="animation-delay:0.40s"/><text class="ax" x="213" y="114" text-anchor="middle">Sat</text><rect class="bar" x="240" y="30" width="22" height="70" rx="4" style="animation-delay:0.48s"/><text class="ax" x="251" y="114" text-anchor="middle">Sun</text><polyline class="pl" points="23,78 61,70 99,74 137,58 175,48 213,32 251,38"/><circle class="pd" cx="23" cy="78" r="3.2" style="animation-delay:0.00s"/><circle class="pd" cx="61" cy="70" r="3.2" style="animation-delay:0.18s"/><circle class="pd" cx="99" cy="74" r="3.2" style="animation-delay:0.36s"/><circle class="pd" cx="137" cy="58" r="3.2" style="animation-delay:0.54s"/><circle class="pd" cx="175" cy="48" r="3.2" style="animation-delay:0.72s"/><circle class="pd" cx="213" cy="32" r="3.2" style="animation-delay:0.90s"/><circle class="pd" cx="251" cy="38" r="3.2" style="animation-delay:1.08s"/></svg></div><div class="ft"><div><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h2M13 12h2M9 16h2M13 16h2"/></svg><b>Recipe costing</b>Know what 1 piece costs</div><div><svg viewBox="0 0 24 24"><path d="M3 8l9-5 9 5-9 5z"/><path d="M3 8v8l9 5 9-5V8"/></svg><b>Stock</b>Never run out</div><div><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><b>Profit</b>Per product, per day</div></div></div></div>
 <div id="reset" style="display:none"><div class="card" style="max-width:380px;margin:30px auto"><h2>Set a new password</h2><input id="rp1" type="password" placeholder="New password (8+ characters)" autocomplete="new-password" style="margin-bottom:8px"><input id="rp2" type="password" placeholder="Repeat new password" autocomplete="new-password" style="margin-bottom:8px"><button class="btn" onclick="doReset()">Save new password</button><div class="note" id="rmsg" style="margin-top:8px"></div></div></div>
 <div id="promo" class="card" style="display:none;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:520px;margin:0 auto;z-index:20;box-shadow:0 8px 28px rgba(0,0,0,.28)"><div style="font-weight:700">💾 Don’t lose your data</div><div class="note" style="margin:2px 0 8px">Sign up to save it online, use it offline and on any device. Just ₱99.</div><div class="row" style="margin:0;align-items:center"><button class="btn" onclick="openPackage()">See what you get</button><a href="#" onclick="hidePromo(true);return false" class="note" style="text-align:center;color:var(--ac)">Maybe later</a></div></div>
 <div id="pk" style="display:none"><div class="card" style="max-width:480px;margin:0 auto 16px"><div style="text-align:right"><a href="#" onclick="closePackage();return false" class="note" style="color:var(--ac)">✕ Close</a></div>
@@ -402,4 +429,12 @@ function bLogo(i){const f=i.files[0];if(f)shrink(f,160,false,d=>{if(d.length>150
 function stPhoto(id,i){const f=i.files[0];if(f)shrink(f,96,true,d=>stEdit(id,'ph',d))}
 setInterval(trySync,20000);addEventListener('online',()=>{trySync();status()});addEventListener('offline',()=>status());
 start();
+
+(function(){const f=n=>'₱'+Math.round(n).toLocaleString('en-US');const T=[[12480,7310,5170],[0,0,0]];
+const el=[1,2,3].map(i=>document.getElementById('ls'+i));if(!el[0])return;
+const rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+if(rm){el.forEach((e,i)=>e.textContent=f(T[0][i]));return}
+const L=10000;let t0=performance.now();
+function tick(now){const lg=document.getElementById('login');if(lg&&lg.offsetParent!==null){const p=((now-t0)%L)/L;const k=p<.15?0:p<.55?(p-.15)/.4:p<.92?1:0;const e=1-Math.pow(1-k,3);el.forEach((x,i)=>x.textContent=f(T[0][i]*e))}requestAnimationFrame(tick)}
+requestAnimationFrame(tick)})();
 </script></body></html>
