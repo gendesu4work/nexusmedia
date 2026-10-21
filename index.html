@@ -183,6 +183,20 @@
   .prod .price{font:700 1.4rem "Space Grotesk"}
   .prod .buy{font-size:.85rem;font-weight:600;color:var(--blue-deep);display:flex;align-items:center;gap:6px}
   .prod .buy:hover{gap:10px}
+  .prod.feat{grid-column:span 2;display:grid;grid-template-columns:1.2fr 1fr;gap:28px;align-items:center;background:linear-gradient(150deg,var(--blue-soft),#fff 60%);border-color:var(--blue)}
+  .prod.feat h4{font-size:1.6rem}
+  .prod.feat p{margin-bottom:18px}
+  .prod.feat .ticks{margin-bottom:22px;grid-template-columns:auto auto;justify-content:start}
+  .prod.feat .ticks li{white-space:nowrap;font-size:.9rem}
+  .prod.soon{border-style:dashed}
+  .flow{display:grid;gap:12px;position:relative}
+  .flow::before{content:"";position:absolute;left:21px;top:20px;bottom:20px;width:2px;background:repeating-linear-gradient(180deg,var(--blue) 0 6px,transparent 6px 12px);opacity:.6}
+  .flow-step{display:grid;grid-template-columns:44px 1fr;column-gap:12px;align-items:center;background:#fff;border:1px solid var(--blue-line);border-radius:14px;padding:12px;position:relative;transition:transform .25s}
+  .flow-step i{grid-row:span 2;width:30px;height:30px;margin-left:-2px;border-radius:50%;background:var(--blue);color:#fff;font:700 .85rem "Space Grotesk";font-style:normal;display:grid;place-items:center}
+  .flow-step b{font:600 1rem "Space Grotesk"}
+  .flow-step small{color:var(--muted);font-size:.8rem}
+  .prod.feat:hover .flow-step:nth-child(2){transform:translateX(8px)}
+  .prod.feat:hover .flow-step:nth-child(3){transform:translateX(16px)}
 
   /* CTA */
   .cta{background:var(--ink);color:#fff;border-radius:32px;padding:64px;display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center;position:relative;overflow:hidden}
@@ -220,6 +234,7 @@
     section{padding:80px 0}
     .ticks{grid-template-columns:1fr}
     .ov,.prods{grid-template-columns:1fr}
+    .prod.feat{grid-column:auto;grid-template-columns:1fr}
     .svc-tab span{display:none}
     .kpis{gap:18px}
     .kpi b{font-size:1.4rem}
@@ -378,27 +393,27 @@
       <div>
         <span class="svc-num">04 / 04</span>
         <h3>Digital Products</h3>
-        <p>Ready-made tools built from our agency work — templates, presets and guides you can download and use today.</p>
+        <p>Ready-to-use tools that run your business for you. Our first product, the Product Calculator, handles the whole daily operation of a food business: costing, inventory and sales in one place.</p>
         <ul class="ticks">
-          <li>Website templates</li><li>Social media kits</li>
-          <li>Video & LUT presets</li><li>Marketing guides</li>
-          <li>Instant download</li><li>Lifetime updates</li>
+          <li>Total costing per recipe</li><li>Inventory checker</li>
+          <li>Sales tracking</li><li>Profit per product</li>
+          <li>Works on any device</li><li>More tools coming soon</li>
         </ul>
         <div class="kpis">
-          <div class="kpi"><b>Instant</b><span>Delivery</span></div>
-          <div class="kpi"><b>12+</b><span>Products</span></div>
-          <div class="kpi"><b>∞</b><span>Updates</span></div>
+          <div class="kpi"><b>3-in-1</b><span>Cost · stock · sales</span></div>
+          <div class="kpi"><b>Food</b><span>Built for food businesses</span></div>
+          <div class="kpi"><b>24/7</b><span>Online access</span></div>
         </div>
-        <a href="#products" class="btn btn-primary" style="margin-top:26px">Browse the shop</a>
+        <a href="/calculator/" class="btn btn-primary" style="margin-top:26px">Open Product Calculator</a>
       </div>
-      <div class="viz">
-        <div class="viz-label">Best sellers</div>
+      <a href="/calculator/" class="viz" aria-label="Open Product Calculator">
+        <div class="viz-label">Product Calculator · daily operations</div>
         <div class="stack">
-          <div class="pcard"><b>Brand Starter Kit</b><small>120 Canva templates</small><br><span class="tag">$29</span></div>
-          <div class="pcard"><b>Reel Preset Pack</b><small>40 transitions + LUTs</small><br><span class="tag">$19</span></div>
-          <div class="pcard"><b>Landing Page Template</b><small>Responsive HTML/CSS</small><br><span class="tag">$39</span></div>
+          <div class="pcard"><b>Costing</b><small>Ingredients → cost per piece</small><br><span class="tag">₱ cost</span></div>
+          <div class="pcard"><b>Inventory</b><small>Stock levels at a glance</small><br><span class="tag">Stock</span></div>
+          <div class="pcard"><b>Sales & profit</b><small>Daily sales and margins</small><br><span class="tag">Profit</span></div>
         </div>
-      </div>
+      </a>
     </div>
 
     <div class="ov reveal">
@@ -447,27 +462,32 @@
   <div class="wrap">
     <div class="head reveal">
       <span class="eyebrow">Digital products</span>
-      <h2>Agency tools, ready to download.</h2>
-      <p>The same templates and presets we use for clients — packaged for you.</p>
+      <h2>Tools that run your business.</h2>
+      <p>Software we build for real business operations, starting with food businesses.</p>
     </div>
     <div class="prods reveal">
-      <div class="prod">
-        <div class="thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 13h8M8 16h5"/></svg></div>
-        <span class="type">Template</span><h4>Landing Page Template</h4>
-        <p>A responsive, conversion-focused landing page you can launch in an afternoon.</p>
-        <div class="foot"><span class="price">$39</span><a href="#contact" class="buy">Get it →</a></div>
-      </div>
-      <div class="prod">
-        <div class="thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
-        <span class="type">Social kit</span><h4>Brand Starter Kit</h4>
-        <p>120 editable Canva templates for posts, stories and highlights.</p>
-        <div class="foot"><span class="price">$29</span><a href="#contact" class="buy">Get it →</a></div>
-      </div>
-      <div class="prod">
-        <div class="thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/></svg></div>
-        <span class="type">Video preset</span><h4>Reel Preset Pack</h4>
-        <p>40 transitions, text animations and colour LUTs for Premiere & CapCut.</p>
-        <div class="foot"><span class="price">$19</span><a href="#contact" class="buy">Get it →</a></div>
+      <a href="/calculator/" class="prod feat">
+        <div class="feat-info">
+          <span class="type">Food business · Web app</span><h4>Product Calculator</h4>
+          <p>Your whole food business operation in one app. Compute the total cost of every product, check your inventory and track your sales and profit every day.</p>
+          <ul class="ticks">
+            <li>Total costing</li><li>Inventory checker</li>
+            <li>Sales checker</li><li>Profit per product</li>
+          </ul>
+          <span class="btn btn-primary">Open Product Calculator
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        </div>
+        <div class="flow" aria-hidden="true">
+          <div class="flow-step"><i>1</i><b>Costing</b><small>Ingredients → cost per piece</small></div>
+          <div class="flow-step"><i>2</i><b>Inventory</b><small>Know what's in stock</small></div>
+          <div class="flow-step"><i>3</i><b>Sales</b><small>Daily sales & profit</small></div>
+        </div>
+      </a>
+      <div class="prod soon">
+        <div class="thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg></div>
+        <span class="type">Coming soon</span><h4>More tools on the way</h4>
+        <p>The Product Calculator is just the start. More digital products for businesses are in the works.</p>
+        <div class="foot"><a href="#contact" class="buy">Tell us what you need →</a></div>
       </div>
     </div>
   </div>
