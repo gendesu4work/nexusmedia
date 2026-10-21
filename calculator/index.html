@@ -54,37 +54,112 @@ footer img{width:18px;height:18px;vertical-align:-4px;margin-right:4px}
 #rcp hr{border:0;border-top:1px dashed #999;margin:10px 0}#rcp .r{display:flex;justify-content:space-between;gap:8px}#rcp .c{text-align:center}#rcp img{max-height:60px;max-width:200px;display:block;margin:0 auto 6px}
 @media print{body *{visibility:hidden}#rcp,#rcp *{visibility:visible}#rcp{position:absolute;left:0;top:0;width:100%;max-width:none;box-shadow:none;margin:0}}
 
-#lshow{max-width:380px;margin:12px auto 24px;background:var(--card);border:1px solid var(--ln);border-radius:16px;overflow:hidden;box-shadow:0 14px 34px -22px var(--ac)}
-#lshow .hd{padding:14px 16px 4px;display:flex;justify-content:space-between;align-items:baseline}
-#lshow .hd b{font-size:15px;color:var(--tx)}#lshow .hd span{font-size:11px;color:var(--mut);display:flex;align-items:center;gap:5px}
-#lshow .hd i{width:7px;height:7px;border-radius:50%;background:var(--ok);animation:lv 1.6s ease-in-out infinite}
-@keyframes lv{50%{opacity:.25}}
-#lshow .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 16px 0}
-#lshow .tl{background:var(--bg);border:1px solid var(--ln);border-radius:12px;padding:9px 10px}
-#lshow .tl small{display:block;font-size:10.5px;color:var(--mut)}
-#lshow .tl strong{display:block;font-size:16px;color:var(--tx);margin-top:2px;font-variant-numeric:tabular-nums;white-space:nowrap}
-#lshow .tl.pf strong{color:var(--ok)}
-#lshow .ch{padding:6px 16px 4px;position:relative}
-#lshow svg{display:block;width:100%;height:auto}
-#lshow .bar{fill:var(--ac);opacity:.28;transform-box:fill-box;transform-origin:bottom;animation:bgrow 10s cubic-bezier(.3,1.2,.5,1) infinite}
-#lshow .bar.hi{opacity:1}
-@keyframes bgrow{0%,3%{transform:scaleY(0)}18%,90%{transform:scaleY(1)}97%,100%{transform:scaleY(0)}}
-#lshow .pl{fill:none;stroke:var(--ok);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:300;stroke-dashoffset:300;animation:pdraw 10s ease-in-out infinite}
-@keyframes pdraw{0%,12%{stroke-dashoffset:300;opacity:1}45%,90%{stroke-dashoffset:0;opacity:1}97%,100%{stroke-dashoffset:0;opacity:0}}
-#lshow .pd{fill:var(--card);stroke:var(--ok);stroke-width:2.5;opacity:0;animation:pdot 10s ease-out infinite}
-@keyframes pdot{0%,40%{opacity:0}46%,90%{opacity:1}97%,100%{opacity:0}}
-#lshow .ax{font-size:9px;fill:var(--mut)}
-#lshow .ft{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ln);margin-top:4px}
-#lshow .ft div{padding:12px 8px;text-align:center;font-size:11.5px;color:var(--mut);line-height:1.3}
-#lshow .ft div+div{border-left:1px solid var(--ln)}
-#lshow .ft b{display:block;color:var(--tx);font-size:12.5px;margin-top:5px}
-#lshow .ft svg{width:22px;height:22px;margin:0 auto;stroke:var(--ac);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-@media(prefers-reduced-motion:reduce){#lshow *{animation:none!important}#lshow .pl{stroke-dashoffset:0}#lshow .pd{opacity:1}}
+#login{position:fixed;inset:0;z-index:100;overflow:auto;background:var(--bg)}
+.lg{min-height:100%;display:flex;flex-direction:column;padding:0}
+.lR{display:flex;flex-direction:column;padding:18px 20px 14px;box-sizing:border-box}
+.lb{display:flex;align-items:center;gap:11px}
+.lb img{border-radius:10px;background:#fff}
+.ln1{font-weight:800;font-size:16px;color:var(--tx);line-height:1.15}.ln2{font-size:12px;color:var(--mut)}
+.tg{margin-left:auto;width:38px;height:38px;padding:0;border:1px solid var(--ln);background:var(--card);color:var(--tx);border-radius:10px;cursor:pointer;display:grid;place-items:center}
+.tg svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8}
+.lf{width:100%;max-width:380px;margin:auto;padding:28px 0}
+.lf h1{font-size:28px;font-weight:800;letter-spacing:-.4px;margin:0 0 6px;color:var(--tx)}
+.lf .sub{margin:0 0 22px;color:var(--mut);font-size:14.5px}
+.lf label{display:block;font-size:13px;font-weight:600;color:var(--tx);margin:0 0 6px}
+.lf input{width:100%;box-sizing:border-box;height:46px;padding:0 14px;border-radius:10px;font-size:15px;margin:0 0 14px}
+.lf input:focus-visible,.lf .btn:focus-visible,.tg:focus-visible,.eye:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 35%,transparent)}
+.lrow2{display:flex;justify-content:space-between;align-items:baseline}
+.lrow2 a{font-size:12.5px;color:var(--ac);text-decoration:none;font-weight:600}.lrow2 a:hover{text-decoration:underline}
+.pw{position:relative}.pw input{padding-right:46px}
+.eye{position:absolute;right:4px;top:3px;width:40px;height:40px;padding:0;border:0;background:none;cursor:pointer;display:grid;place-items:center;border-radius:8px}
+.eye svg{width:19px;height:19px;stroke:var(--mut);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.lbtn{width:100%;height:46px;font-size:15px;font-weight:700;border-radius:10px;margin-top:2px}
+.btn.ghost{background:transparent;color:var(--ac);border:1.5px solid var(--ln)}
+.btn.ghost:hover{border-color:var(--ac)}
+.fgb{margin-top:12px;padding:12px;border:1px dashed var(--ln);border-radius:12px}.fgb input{margin:8px 0}
+.lm{min-height:18px;margin-top:10px;text-align:center}
+.or{display:flex;align-items:center;gap:12px;color:var(--mut);font-size:12px;margin:6px 0 14px}
+.or:before,.or:after{content:"";flex:1;height:1px;background:var(--ln)}
+.gn2{text-align:center;margin-top:10px;line-height:1.45}
+.lfoot{font-size:12px;color:var(--mut);text-align:center}
+.lL{margin:0 16px 20px;border-radius:24px;padding:28px 20px;color:#fff;position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(0,20,40,0),rgba(0,20,40,.3)),radial-gradient(110% 80% at 0% 0%,var(--hd2),transparent 60%),var(--hd1)}
+.lL:before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.16) 1px,transparent 1.2px);background-size:22px 22px;-webkit-mask-image:linear-gradient(135deg,#000,transparent 70%);mask-image:linear-gradient(135deg,#000,transparent 70%);pointer-events:none}
+.hero{position:relative;margin-bottom:22px}
+.lL h2{color:#fff;font-size:24px;line-height:1.15;letter-spacing:-.3px;font-weight:800;margin:0 0 10px;max-width:16em}
+.lL p{margin:0;font-size:14px;line-height:1.55;opacity:.92;max-width:34em}
+.mk{position:relative;container-type:inline-size}
+.mw{background:var(--card);color:var(--tx);border-radius:16px;display:flex;overflow:hidden;box-shadow:0 30px 60px -28px rgba(0,10,30,.7);border:1px solid rgba(255,255,255,.25)}
+.ms{width:118px;padding:12px 8px;border-right:1px solid var(--ln);background:var(--bg);flex:none}
+.msi{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mut);padding:8px 9px;border-radius:8px;margin-bottom:3px;font-weight:600}
+.msi.on{background:var(--card);color:var(--ac);box-shadow:0 1px 0 var(--ln),0 0 0 1px var(--ln)}
+.i{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.mm{flex:1;min-width:0;padding:12px 14px 12px}
+.mt{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:13px}
+.live{font-size:11px;color:var(--ok);display:flex;align-items:center;gap:5px;font-weight:700}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--ok);animation:lv 1.6s ease-in-out infinite}
+@keyframes lv{50%{opacity:.3}}
+.kp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kp .tl{border:1px solid var(--ln);border-radius:10px;padding:8px 10px;background:var(--card)}
+.kp small{display:block;font-size:10.5px;color:var(--mut)}
+.kp strong{display:block;font-size:15px;margin-top:2px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.kp .pf strong{color:var(--ok)}
+.mc{margin:10px 0 8px;height:84px}.mc svg{width:100%;height:100%;display:block}
+.bar{fill:var(--ac);opacity:.25;transform-box:fill-box;transform-origin:bottom;animation:bgrow 12s cubic-bezier(.3,1.2,.5,1) infinite}.bar.hi{opacity:.95}
+@keyframes bgrow{0%,3%{transform:scaleY(0)}16%,92%{transform:scaleY(1)}98%,100%{transform:scaleY(0)}}
+.pl{fill:none;stroke:var(--ok);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:400;stroke-dashoffset:400;animation:pdraw 12s ease-in-out infinite}
+@keyframes pdraw{0%,10%{stroke-dashoffset:400;opacity:1}40%,92%{stroke-dashoffset:0;opacity:1}98%,100%{stroke-dashoffset:0;opacity:0}}
+.pd{fill:var(--card);stroke:var(--ok);stroke-width:2;vector-effect:non-scaling-stroke;opacity:0;animation:pdot 12s ease-out infinite}
+@keyframes pdot{0%,36%{opacity:0}42%,92%{opacity:1}98%,100%{opacity:0}}
+.tb{font-size:11.5px}
+.th2,.tr{display:grid;grid-template-columns:1.3fr .5fr 1.1fr;gap:8px;align-items:center;padding:5px 0}
+.th2{color:var(--mut);font-size:10.5px;border-bottom:1px solid var(--ln)}
+.tr{border-bottom:1px solid var(--ln);font-weight:600}.tr:last-child{border:0}
+.pr{text-align:right;font-variant-numeric:tabular-nums}
+.mg{display:flex;align-items:center;gap:6px}
+.mg i{display:block;height:6px;border-radius:3px;background:var(--ok);width:var(--w);transform-origin:left;animation:mgrow 12s ease-out infinite;flex:none;max-width:60%}
+.mg em{font-style:normal;color:var(--mut);font-size:10.5px}
+@keyframes mgrow{0%,24%{transform:scaleX(0)}38%,92%{transform:scaleX(1)}98%,100%{transform:scaleX(0)}}
+.toast{position:absolute;right:10px;top:-20px;display:flex;align-items:center;gap:9px;background:var(--tx);color:var(--card);padding:9px 14px 9px 10px;border-radius:12px;box-shadow:0 14px 30px -12px rgba(0,0,0,.5);opacity:0;animation:toast 12s ease-in-out infinite;font-size:12px}
+.toast b{display:block;font-size:12px}.toast small{opacity:.75;font-size:11px}
+.toast .ck{width:24px;height:24px;border-radius:50%;background:var(--ok);display:grid;place-items:center}.toast .ck svg{width:14px;height:14px;stroke:#fff}
+@keyframes toast{0%,48%{opacity:0;transform:translateY(10px)}54%,68%{opacity:1;transform:none}74%,100%{opacity:0;transform:translateY(-6px)}}
+@container (max-width:430px){.ms{display:none}.mm{padding:12px}}
+@media(min-width:900px){
+.lg{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);padding:16px;gap:0;min-height:100dvh;box-sizing:border-box}
+.lL{grid-column:1;grid-row:1;margin:0;padding:48px 44px;display:flex;flex-direction:column;justify-content:center}
+.lR{grid-column:2;grid-row:1;padding:12px 40px 8px;min-height:0}
+.lL h2{font-size:38px;line-height:1.08;letter-spacing:-.8px;margin-bottom:14px}
+.lL p{font-size:16px}
+.hero{margin-bottom:34px}
+.lf h1{font-size:30px}
+.mw{max-width:600px}
+}
+@media(prefers-reduced-motion:reduce){#login *{animation:none!important}.pl{stroke-dashoffset:0}.pd,.bar,.mg i{opacity:1}.toast{display:none}}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 </head><body><main>
 <header><div id="brand"></div><button id="th" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button></header>
-<div id="shell" style="display:none"><div class="sync" id="bar"></div><nav id="nav"></nav><div id="app"></div><div class="sync" id="undo"></div><div class="sync" id="sync"></div></div><div id="login" style="display:none"><div class="card" style="max-width:380px;margin:30px auto"><h2>Log in</h2><input id="le" type="email" placeholder="Email" autocomplete="username" style="margin-bottom:8px"><input id="lp" type="password" placeholder="Password" autocomplete="current-password" style="margin-bottom:8px" onkeydown="if(event.key==='Enter')doLogin()"><button class="btn" onclick="doLogin()">Log in</button><div style="text-align:center;margin-top:10px"><a href="#" onclick="$('#fg').style.display='';return false" class="note" style="color:var(--ac)">Forgot password?</a></div><div id="fg" style="display:none;margin-top:8px"><input id="fe" type="email" placeholder="Your email" autocomplete="email" style="margin-bottom:8px"><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="doForgot()">Send reset link</button></div><div class="note" id="lmsg" style="margin-top:8px"></div><div class="note" style="margin-top:6px">Access is provided by NEXUSMEDIA.</div></div>
-<div class="card" style="max-width:380px;margin:12px auto;text-align:center"><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="startGuest()">Guest mode</button><div class="note" style="margin-top:8px">No account needed. Nothing is saved: refreshing or closing the page erases your data.</div></div><div id="lshow" aria-hidden="true"><div class="hd"><b>Your shop at a glance</b><span><i></i>Live preview</span></div><div class="tiles"><div class="tl"><small>Sales</small><strong id="ls1">₱0</strong></div><div class="tl"><small>Cost</small><strong id="ls2">₱0</strong></div><div class="tl pf"><small>Profit</small><strong id="ls3">₱0</strong></div></div><div class="ch"><svg viewBox="0 0 280 120"><rect class="bar" x="12" y="66" width="22" height="34" rx="4" style="animation-delay:0.00s"/><text class="ax" x="23" y="114" text-anchor="middle">Mon</text><rect class="bar" x="50" y="58" width="22" height="42" rx="4" style="animation-delay:0.08s"/><text class="ax" x="61" y="114" text-anchor="middle">Tue</text><rect class="bar" x="88" y="62" width="22" height="38" rx="4" style="animation-delay:0.16s"/><text class="ax" x="99" y="114" text-anchor="middle">Wed</text><rect class="bar" x="126" y="45" width="22" height="55" rx="4" style="animation-delay:0.24s"/><text class="ax" x="137" y="114" text-anchor="middle">Thu</text><rect class="bar" x="164" y="38" width="22" height="62" rx="4" style="animation-delay:0.32s"/><text class="ax" x="175" y="114" text-anchor="middle">Fri</text><rect class="bar hi" x="202" y="22" width="22" height="78" rx="4" style="animation-delay:0.40s"/><text class="ax" x="213" y="114" text-anchor="middle">Sat</text><rect class="bar" x="240" y="30" width="22" height="70" rx="4" style="animation-delay:0.48s"/><text class="ax" x="251" y="114" text-anchor="middle">Sun</text><polyline class="pl" points="23,78 61,70 99,74 137,58 175,48 213,32 251,38"/><circle class="pd" cx="23" cy="78" r="3.2" style="animation-delay:0.00s"/><circle class="pd" cx="61" cy="70" r="3.2" style="animation-delay:0.18s"/><circle class="pd" cx="99" cy="74" r="3.2" style="animation-delay:0.36s"/><circle class="pd" cx="137" cy="58" r="3.2" style="animation-delay:0.54s"/><circle class="pd" cx="175" cy="48" r="3.2" style="animation-delay:0.72s"/><circle class="pd" cx="213" cy="32" r="3.2" style="animation-delay:0.90s"/><circle class="pd" cx="251" cy="38" r="3.2" style="animation-delay:1.08s"/></svg></div><div class="ft"><div><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h2M13 12h2M9 16h2M13 16h2"/></svg><b>Recipe costing</b>Know what 1 piece costs</div><div><svg viewBox="0 0 24 24"><path d="M3 8l9-5 9 5-9 5z"/><path d="M3 8v8l9 5 9-5V8"/></svg><b>Stock</b>Never run out</div><div><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><b>Profit</b>Per product, per day</div></div></div></div>
+<div id="shell" style="display:none"><div class="sync" id="bar"></div><nav id="nav"></nav><div id="app"></div><div class="sync" id="undo"></div><div class="sync" id="sync"></div></div><div id="login" style="display:none"><div class="lg">
+<div class="lR">
+<div class="lb"><img id="fl2" alt="" width="40" height="40"><div><div class="ln1">Product Calculator</div><div class="ln2">Cost, stock &amp; profit tracker</div></div><button class="tg" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Light / dark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor"/></svg></button></div>
+<div class="lf"><h1>Welcome back</h1><p class="sub">Log in to see your costs, sales and profit.</p>
+<label for="le">Email</label><input id="le" type="email" placeholder="you@example.com" autocomplete="username">
+<div class="lrow2"><label for="lp">Password</label><a href="#" onclick="$('#fg').style.display=$('#fg').style.display?'':'none';return false">Forgot password?</a></div>
+<div class="pw"><input id="lp" type="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"><button type="button" class="eye" aria-label="Show password" onclick="const i=$('#lp');i.type=i.type==='password'?'text':'password'"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+<button class="btn lbtn" onclick="doLogin()">Log in</button>
+<div id="fg" style="display:none" class="fgb"><div class="note">Enter your email and we will send a link to set a new password.</div><input id="fe" type="email" placeholder="Your email" autocomplete="email"><button class="btn ghost" onclick="doForgot()">Send reset link</button></div>
+<div class="note lm" id="lmsg"></div>
+<div class="or"><span>or</span></div>
+<button class="btn ghost lbtn" onclick="startGuest()">Continue as guest</button>
+<div class="note gn2">Guest mode saves nothing. Refreshing or closing the page erases your data.</div></div>
+<div class="lfoot">Access is provided by NEXUSMEDIA.</div></div>
+<div class="lL"><div class="hero"><h2>Know what every piece costs, and what it earns.</h2><p>Cost your recipes, track stock and sales, and see your profit per product. Made for Filipino food businesses.</p></div>
+<div class="mk" aria-hidden="true"><div class="mw"><aside class="ms"><div class="msi on"><svg viewBox="0 0 24 24" class="i"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</div><div class="msi"><svg viewBox="0 0 24 24" class="i"><path d="M3 8l9-5 9 5-9 5z"/><path d="M3 8v8l9 5 9-5V8"/></svg>Products</div><div class="msi"><svg viewBox="0 0 24 24" class="i"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>Sales</div><div class="msi"><svg viewBox="0 0 24 24" class="i"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Stock</div></aside>
+<div class="mm"><div class="mt"><b>Today</b><span class="live"><i></i>Live</span></div>
+<div class="kp"><div class="tl"><small>Sales</small><strong id="ls1">₱0</strong></div><div class="tl"><small>Cost</small><strong id="ls2">₱0</strong></div><div class="tl pf"><small>Profit</small><strong id="ls3">₱0</strong></div></div>
+<div class="mc"><svg viewBox="0 0 244 90" preserveAspectRatio="none"><rect class="bar" x="10" y="54" width="20" height="30" rx="4" style="animation-delay:0.00s"/><rect class="bar" x="44" y="46" width="20" height="38" rx="4" style="animation-delay:0.07s"/><rect class="bar" x="78" y="50" width="20" height="34" rx="4" style="animation-delay:0.14s"/><rect class="bar" x="112" y="34" width="20" height="50" rx="4" style="animation-delay:0.21s"/><rect class="bar" x="146" y="28" width="20" height="56" rx="4" style="animation-delay:0.28s"/><rect class="bar hi" x="180" y="12" width="20" height="72" rx="4" style="animation-delay:0.35s"/><rect class="bar" x="214" y="20" width="20" height="64" rx="4" style="animation-delay:0.42s"/><polyline class="pl" points="20,60 54,54 88,57 122,44 156,38 190,24 224,28"/></svg></div>
+<div class="tb"><div class="th2"><span>Product</span><span class="pr">Price</span><span class="mg">Margin</span></div><div class="tr"><span>Cinnamon roll</span><span class="pr">₱45</span><span class="mg"><i style="--w:52%;animation-delay:0.4s"></i><em>52%</em></span></div><div class="tr"><span>Iced latte</span><span class="pr">₱95</span><span class="mg"><i style="--w:64%;animation-delay:0.6s"></i><em>64%</em></span></div><div class="tr"><span>Ube pandesal</span><span class="pr">₱30</span><span class="mg"><i style="--w:41%;animation-delay:0.8s"></i><em>41%</em></span></div></div></div>
+<div class="toast"><span class="ck"><svg viewBox="0 0 24 24" class="i"><path d="M5 12l5 5 9-10"/></svg></span><div><b>Sale added</b><small>Cinnamon roll · ₱45</small></div></div></div></div>
+</div></div></div>
 <div id="reset" style="display:none"><div class="card" style="max-width:380px;margin:30px auto"><h2>Set a new password</h2><input id="rp1" type="password" placeholder="New password (8+ characters)" autocomplete="new-password" style="margin-bottom:8px"><input id="rp2" type="password" placeholder="Repeat new password" autocomplete="new-password" style="margin-bottom:8px"><button class="btn" onclick="doReset()">Save new password</button><div class="note" id="rmsg" style="margin-top:8px"></div></div></div>
 <div id="promo" class="card" style="display:none;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:520px;margin:0 auto;z-index:20;box-shadow:0 8px 28px rgba(0,0,0,.28)"><div style="font-weight:700">💾 Don’t lose your data</div><div class="note" style="margin:2px 0 8px">Sign up to save it online, use it offline and on any device. Just ₱99.</div><div class="row" style="margin:0;align-items:center"><button class="btn" onclick="openPackage()">See what you get</button><a href="#" onclick="hidePromo(true);return false" class="note" style="text-align:center;color:var(--ac)">Maybe later</a></div></div>
 <div id="pk" style="display:none"><div class="card" style="max-width:480px;margin:0 auto 16px"><div style="text-align:right"><a href="#" onclick="closePackage();return false" class="note" style="color:var(--ac)">✕ Close</a></div>
@@ -130,7 +205,7 @@ async function trySync(){if(!uidU||!dirty||syncing||!navigator.onLine)return;syn
  syncing=false;status()}
 function load(){}
 function regSW(){if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{})}
-async function start(){regSW();try{localStorage.removeItem('ppt-guest')}catch(e){}renderBrand();$('#fl').src=APPLOGO;
+async function start(){regSW();try{localStorage.removeItem('ppt-guest')}catch(e){}renderBrand();$('#fl').src=APPLOGO;$('#fl2').src=APPLOGO;
  if(!window.supabase){showLogin('Could not load. Connect to the internet and reload the page.');return}
  if(SUPABASE_URL.startsWith('PASTE')){showLogin('This copy is not connected yet. Add your Supabase URL and key near the top of the script.');return}
  sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
@@ -430,11 +505,11 @@ function stPhoto(id,i){const f=i.files[0];if(f)shrink(f,96,true,d=>stEdit(id,'ph
 setInterval(trySync,20000);addEventListener('online',()=>{trySync();status()});addEventListener('offline',()=>status());
 start();
 
-(function(){const f=n=>'₱'+Math.round(n).toLocaleString('en-US');const T=[[12480,7310,5170],[0,0,0]];
+
+(function(){const f=n=>'₱'+Math.round(n).toLocaleString('en-US');const T=[12480,7310,5170];
 const el=[1,2,3].map(i=>document.getElementById('ls'+i));if(!el[0])return;
-const rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
-if(rm){el.forEach((e,i)=>e.textContent=f(T[0][i]));return}
-const L=10000;let t0=performance.now();
-function tick(now){const lg=document.getElementById('login');if(lg&&lg.offsetParent!==null){const p=((now-t0)%L)/L;const k=p<.15?0:p<.55?(p-.15)/.4:p<.92?1:0;const e=1-Math.pow(1-k,3);el.forEach((x,i)=>x.textContent=f(T[0][i]*e))}requestAnimationFrame(tick)}
+if(matchMedia('(prefers-reduced-motion:reduce)').matches){el.forEach((e,i)=>e.textContent=f(T[i]));return}
+const L=12000,t0=performance.now();
+function tick(now){const lg=document.getElementById('login');if(lg&&lg.style.display!=='none'){const p=((now-t0)%L)/L;const k=p<.1?0:p<.45?(p-.1)/.35:p<.92?1:0;const e=1-Math.pow(1-k,3);el.forEach((x,i)=>x.textContent=f(T[i]*e))}requestAnimationFrame(tick)}
 requestAnimationFrame(tick)})();
 </script></body></html>
