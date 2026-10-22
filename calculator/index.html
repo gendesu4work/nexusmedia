@@ -219,6 +219,13 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 .ch .dt{stroke:var(--card);stroke-width:2;pointer-events:none}
 .empty{padding:18px 8px;text-align:center;color:var(--mut);font-size:14px;border:1px dashed var(--ln);border-radius:12px}
 }
+
+.shc{display:flex;flex-direction:column}.shc .shsp{flex:1;min-height:12px}
+.shh{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}.shh h2{margin:0}
+.shd{margin:0 0 10px;line-height:1.5}
+.shl{display:block;font-size:13px;font-weight:600;color:var(--tx);margin:0 0 6px}
+.badge{font-size:12px;font-weight:700;padding:3px 11px;border-radius:999px;border:1px solid var(--ln);color:var(--mut);background:var(--bg)}
+.badge.on{color:var(--ok);border-color:var(--ok);background:color-mix(in srgb,var(--ok) 10%,transparent)}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 </head><body><main>
 <header><div id="brand"></div><button id="th" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button></header>
@@ -416,11 +423,14 @@ function shReport(x){const d=x.diff;return `<div class="card" style="border-colo
  <button class="btn" style="margin-top:8px" onclick="shRep=null;render()">Done</button></div>`}
 function shHist(H){const C=H.filter(x=>x.closeTs).slice(0,5);return C.length?`<div style="margin-top:12px"><div class="note">Recent shifts</div>${C.map(x=>`<div class="li"><span>${fmtTs(x.closeTs)}<br><span class="note">Net ${m(x.net)} · ${shWord(x.diff)}${x.diff?' '+m(Math.abs(x.diff)):''}</span></span><button class="btn" style="width:auto;padding:5px 10px;font-size:13px" onclick="shRep='${x.id}';render()">View</button></div>`).join('')}</div>`:''}
 function shiftCard(){const sh=curShift(),H=S.shifts||[],rp=shRep&&H.find(x=>x.id===shRep&&x.closeTs),rep=rp?shReport(rp):'';
- if(!sh)return rep+`<div class="card"><h2>🕒 Shift</h2><div class="note" style="margin:-4px 0 8px">No shift is open.</div><input id="sc0" type="number" placeholder="Opening cash (₱)" inputmode="decimal" style="margin-bottom:8px"><button class="btn" onclick="openShift()">Open shift</button>${shHist(H)}</div>`;
+ const head=on=>`<div class="shh"><h2>🕒 Shift</h2><span class="badge${on?' on':''}">${on?'Open':'Closed'}</span></div>`;
+ if(!sh)return rep+`<div class="card shc">${head(0)}<div class="note shd">Open a shift when you start selling. Every sale and refund after that is counted in the shift report, so you can check the cash when you close.</div>
+ <div class="li"><span>Status</span><b>No shift open</b></div><div class="li"><span>Date</span><b>${fmtD(lday())}</b></div>
+ ${shHist(H)}<div class="shsp"></div><label class="shl" for="sc0">Opening cash (₱)</label><input id="sc0" type="number" placeholder="0.00" inputmode="decimal" style="margin-bottom:10px" onkeydown="if(event.key==='Enter')openShift()"><button class="btn" onclick="openShift()">Open shift</button></div>`;
  const t=shTot(sh.openTs);
- return rep+`<div class="card" style="border-color:var(--ok)"><h2>🕒 Shift open</h2><div class="note" style="margin:-4px 0 8px">Opened ${fmtTs(sh.openTs)} with ${m(sh.openCash)} in the drawer</div>
- <div class="li"><span>Gross sales this shift</span><b>${m(t.g)}</b></div><div class="li"><span>− Refunds</span><span class="${t.rf?'neg':''}">${m(t.rf)}</span></div><div class="li"><b>Net sales</b><b>${m(t.net)}</b></div>
- ${shClose?`<div style="margin-top:10px"><input id="sc1" type="number" placeholder="Cash counted in the drawer now (₱)" inputmode="decimal" style="margin-bottom:8px"><input id="sc2" type="number" placeholder="GCash, card or other non-cash sales (optional)" inputmode="decimal" style="margin-bottom:8px"><div class="row"><button class="btn" onclick="closeShift()">Close shift</button><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="shClose=false;render()">Cancel</button></div></div>`:`<button class="btn" style="margin-top:10px" onclick="shClose=true;render()">Close shift</button>`}</div>`}
+ return rep+`<div class="card shc" style="border-color:var(--ok)">${head(1)}<div class="note shd">Opened ${fmtTs(sh.openTs)}</div>
+ <div class="li"><span>Opening cash</span><b>${m(sh.openCash)}</b></div><div class="li"><span>Gross sales this shift</span><b>${m(t.g)}</b></div><div class="li"><span>− Refunds</span><span class="${t.rf?'neg':''}">${m(t.rf)}</span></div><div class="li"><b>Net sales</b><b>${m(t.net)}</b></div>
+ <div class="shsp"></div>${shClose?`<div style="margin-top:12px"><label class="shl" for="sc1">Cash counted in the drawer (₱)</label><input id="sc1" type="number" placeholder="0.00" inputmode="decimal" style="margin-bottom:10px"><label class="shl" for="sc2">GCash, card or other non-cash sales (optional)</label><input id="sc2" type="number" placeholder="0.00" inputmode="decimal" style="margin-bottom:10px"><div class="row"><button class="btn" onclick="closeShift()">Close shift</button><button class="btn ghost" onclick="shClose=false;render()">Cancel</button></div></div>`:`<button class="btn" style="margin-top:12px" onclick="shClose=true;render()">Close shift</button>`}</div>`}
 function refundCard(){
  if(!rfOpen)return `<div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><b>↩️ Refund</b><div class="note">Optional. A refund is taken off your gross sales.</div></div><button class="btn" style="width:auto;padding:8px 14px;flex:0 0 auto" onclick="rfOpen=true;render()">Add a refund</button></div>`;
  return `<div class="card"><h2>↩️ Add a refund</h2>${S.products.length?`<div class="row"><select id="rfp">${S.products.map(p=>`<option value="${p.id}">${esc(p.name)} (${m(p.price)})</option>`).join('')}</select><input id="rfq" type="number" min="1" value="1" inputmode="numeric" style="flex:0 0 70px"></div><input id="rfa" type="number" placeholder="Refund amount (leave blank for full price)" inputmode="decimal" style="margin-bottom:8px"><input id="rfr" placeholder="Reason (optional)" style="margin-bottom:8px"><div class="note" style="margin:-4px 0 8px">A refund cannot be deleted once it is added.</div><div class="row"><button class="btn" onclick="addRefund()">Add refund</button><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="rfOpen=false;render()">Cancel</button></div>`:'<div class="note">Add a product first (Products tab).</div>'}</div>`}
@@ -669,7 +679,7 @@ dash(){const c=calc(),pym=ymAdd(month,-1),pc=calcFor(pym),pn=mName(pym),d=daily(
  <div class="card s12"><h2>Per product</h2>${rows?`<div class="ov"><table><tr><th>Product</th><th>Sold</th><th>Sales</th><th>Cost</th><th>Profit</th><th>Margin</th></tr>${rows}</table></div>`:'<div class="note">Add products first.</div>'}</div></div>`},
 sales(){const c=calc(),n=S.sales.filter(s=>inM(s.date)).length,rc=receiptCard('only');
  return pHead('Sales','Record sales, shifts, refunds and receipts',1)+tiles([['Sale entries',String(n)],['Refunds',m(c.refunds),c.refunds?'neg':''],['Discounts given',m(c.disc)]])+`<div class="dg">`
- +col(8,salesForm())+col(4,shiftCard(),'top')
+ +col(8,salesForm())+col(4,shiftCard(),'act')
  +col(6,refundCard(),'act')+col(6,receiptCard(1),'act')
  +col(8,salesList('Sales in '+mName(month,1)),'lim')+col(4,rc||card('Recent receipts','',empty('No receipts yet.')),'lim')+`</div>`},
 inv(){const low=S.inv.filter(v=>v.qty>0&&v.low>0&&v.qty<=v.low).length,out=S.inv.filter(v=>v.qty<=0).length,val=S.inv.reduce((a,v)=>a+(v.pack>0?Math.max(0,v.qty)/v.pack*v.pc:0),0);
@@ -696,30 +706,31 @@ document.addEventListener('mousemove',e=>{const tp=$('#tip'),t=e.target.closest&
  const p=t.dataset.tip.split('|');tp.innerHTML='<b>'+esc(p[0])+'</b>'+p.slice(1).map(esc).join('<br>');tp.style.display='block';
  const r=tp.getBoundingClientRect();let x=e.clientX+14,y=e.clientY+14;if(x+r.width>innerWidth-8)x=e.clientX-r.width-14;if(y+r.height>innerHeight-8)y=e.clientY-r.height-14;tp.style.left=x+'px';tp.style.top=y+'px'});
 addEventListener('scroll',()=>{$('#tip').style.display='none'},{passive:true});document.addEventListener('mouseleave',()=>{$('#tip').style.display='none'});
-/* ===== Dashboard lock: blurs the dashboard until the owner passcode (same one as Reset sales) turns it off ===== */
+/* ===== Owner mode (Dashboard, Inventory, Products): blurs the dashboard until the owner passcode (same one as Reset sales) turns it off ===== */
 const DLI='<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.2" fill="currentColor"/></svg>';
 const dlOn=()=>!!(S.set&&S.set.dlock&&S.set.pinH);
-function dlCard(){const s=S.set,on=dlOn(),h='<h2>🔒 Dashboard lock</h2>',out='<div class="note" id="dlm" style="margin-top:8px;min-height:16px"></div>',
- info='<div class="note" style="margin:-4px 0 10px">Hide your profit and margin from staff. When the lock is on, the dashboard is blurred until the owner turns it off with the owner passcode.</div>',
+function dlCard(){const s=S.set,on=dlOn(),h='<h2>🔒 Owner mode</h2>',out='<div class="note" id="dlm" style="margin-top:8px;min-height:16px"></div>',
+ info='<div class="note" style="margin:-4px 0 10px">Hide your profit, margin, inventory and products from staff. When Owner mode is on, the Dashboard, Inventory and Products tabs are blurred until the owner turns it off with the owner passcode.</div>',
  st=`<div class="li"><span>Status</span><b class="${on?'pos':''}">${on?'On (locked)':'Off'}</b></div>`;
- if(on)return `<div class="card">${h}${info}${st}<div style="margin-top:12px">${pinIn('dl_u','Owner passcode','off',"dlOff()")}<button class="btn" onclick="dlOff()">Turn lock off</button></div><div class="note" style="margin-top:8px">Forgot the passcode? Use “Forgot passcode?” in the Reset sales card below.</div>${out}</div>`;
- if(!s.pinH)return `<div class="card">${h}${info}${st}<div class="note" style="margin:10px 0">Set a 6-digit owner passcode to turn the lock on. The same passcode is used to reset sales.</div>${pinIn('dl_a','New 6-digit passcode','new-password')}${pinIn('dl_b','Repeat passcode','new-password',"dlNew()")}<button class="btn" onclick="dlNew()">Save passcode and turn lock on</button>${out}</div>`;
- return `<div class="card">${h}${info}${st}<div style="margin-top:12px"><button class="btn" onclick="dlTurn()">Turn lock on</button></div>${out}</div>`}
-function dlTurn(){S.set.dlock=true;save();render();msg('Dashboard lock is on.')}
+ if(on)return `<div class="card">${h}${info}${st}<div style="margin-top:12px">${pinIn('dl_u','Owner passcode','off',"dlOff()")}<button class="btn" onclick="dlOff()">Turn Owner mode off</button></div><div class="note" style="margin-top:8px">Forgot the passcode? Use “Forgot passcode?” in the Reset sales card below.</div>${out}</div>`;
+ if(!s.pinH)return `<div class="card">${h}${info}${st}<div class="note" style="margin:10px 0">Set a 6-digit owner passcode to turn Owner mode on. The same passcode is used to reset sales.</div>${pinIn('dl_a','New 6-digit passcode','new-password')}${pinIn('dl_b','Repeat passcode','new-password',"dlNew()")}<button class="btn" onclick="dlNew()">Save passcode and turn Owner mode on</button>${out}</div>`;
+ return `<div class="card">${h}${info}${st}<div style="margin-top:12px"><button class="btn" onclick="dlTurn()">Turn Owner mode on</button></div>${out}</div>`}
+function dlTurn(){S.set.dlock=true;save();render();msg('Owner mode is on.')}
 async function dlNew(){const a=$('#dl_a').value,b=$('#dl_b').value,mm=$('#dlm');if(!pinOk(a,b,mm))return;
  if(!window.crypto||!crypto.subtle){mm.textContent='This browser cannot save a passcode securely.';return}
- S.set.dlock=true;await pinStore(a);render();msg('Owner passcode saved. Dashboard lock is on.')}
+ S.set.dlock=true;await pinStore(a);render();msg('Owner passcode saved. Owner mode is on.')}
 async function dlOff(){const mm=$('#dlm'),v=$('#dl_u').value;if(Date.now()<rsUntil){mm.textContent='Too many wrong tries. Wait a minute, then try again.';return}
- if(/^\d{6}$/.test(v)&&await pinHash(v,S.set.pinS)===S.set.pinH){S.set.dlock=false;rsTries=0;save();render();msg('Dashboard lock is off.');return}
+ if(/^\d{6}$/.test(v)&&await pinHash(v,S.set.pinS)===S.set.pinH){S.set.dlock=false;rsTries=0;save();render();msg('Owner mode is off.');return}
  rsTries++;if(rsTries>=5){rsUntil=Date.now()+60000;rsTries=0}$('#dl_u').value='';mm.textContent='Wrong passcode.'}
 function dlDemo(){const d=EMPTY(),ym=month,last=Math.min(28,Math.max(5,+lday().slice(8,10)||15));
  d.products=[{id:'d1',name:'Cinnamon roll',price:45,cost:20},{id:'d2',name:'Iced latte',price:95,cost:35},{id:'d3',name:'Ube pandesal',price:30,cost:12}];
  for(let i=1;i<=last;i++)d.products.forEach((p,k)=>{const q=3+((i*7+k*5)%9);d.sales.push({id:'x'+i+k,date:ym+'-'+String(i).padStart(2,'0'),pid:p.id,qty:q,ts:ym+'-'+String(i).padStart(2,'0')+'T'+String((i*3+k*5+q)%24).padStart(2,'0')+':00:00.000Z',amt:p.price*q,use:{}})});
+ d.inv=[{id:'i1',name:'All-purpose flour',u:'g',qty:8200,low:2000,pack:1000,pc:55},{id:'i2',name:'Butter',u:'g',qty:900,low:1000,pack:225,pc:95},{id:'i3',name:'Sugar',u:'g',qty:5400,low:1500,pack:1000,pc:70},{id:'i4',name:'Milk',u:'ml',qty:0,low:1000,pack:1000,pc:98}];
  d.expenses=[{id:'e1',date:ym+'-01',cat:'Supplies',desc:'',amt:2500,ts:ym+'-01T08:00:00.000Z'},{id:'e2',date:ym+'-02',cat:'Transport',desc:'',amt:900,ts:ym+'-02T08:00:00.000Z'}];return d}
-function dlWrap(orig){return function(){if(!dlOn())return orig();let h='';const real=S;try{S=dlDemo();h=orig()}catch(e){h='<div style="height:420px"></div>'}finally{S=real}
- return `<div class="lkw"><div class="lkb" inert aria-hidden="true">${h}</div><div class="lko"><div class="lkc" role="status"><div class="lki">${DLI}</div><b>Dashboard locked</b><p>The dashboard lock system is enabled. Please disable it to see the dashboard</p><button class="btn" onclick="tab='set';render();setTimeout(()=>{const e=$('#dl_u');if(e){e.scrollIntoView({block:'center'});e.focus()}},60)">Disable in Settings</button></div></div></div>`}}
-V.dash=dlWrap(V.dash);D.dash=dlWrap(D.dash);
-function render(){if(tab!=='set'){rsOpen=false;rsConf=false;rsForgot=false;rsChg=false}applyPal();S.products.forEach(sync);renderBrand();$('#fl').src=APPLOGO;const T=[['dash','Dashboard'],['sales','Sales'],['inv','Inventory'],['prod','Products'],['exp','Expenses'],['set','Settings']];
+function dlWrap(orig,what){return function(){if(!dlOn())return orig();let h='';const real=S;try{S=dlDemo();h=orig()}catch(e){h='<div style="height:420px"></div>'}finally{S=real}
+ return `<div class="lkw"><div class="lkb" inert aria-hidden="true">${h}</div><div class="lko"><div class="lkc" role="status"><div class="lki">${DLI}</div><b>Owner mode</b><p>Owner mode is enabled. Please disable it to see the ${what}.</p><button class="btn" onclick="tab='set';render();setTimeout(()=>{const e=$('#dl_u');if(e){e.scrollIntoView({block:'center'});e.focus()}},60)">Disable in Settings</button></div></div></div>`}}
+[['dash','dashboard'],['inv','inventory'],['prod','products']].forEach(a=>{V[a[0]]=dlWrap(V[a[0]],a[1]);D[a[0]]=dlWrap(D[a[0]],a[1])});
+function render(){if(tab!=='set'){rsOpen=false;rsConf=false;rsForgot=false;rsChg=false}applyPal();S.products.forEach(sync);renderBrand();$('#fl').src=APPLOGO;const T=[['dash','Dashboard'],['sales','Sales'],['inv','Inventory'],['prod','Products'],['exp','Expenses'],['set','Settings']].map(t=>dlOn()&&['dash','inv','prod'].includes(t[0])?[t[0],t[1]+' 🔒']:t);
  $('#nav').innerHTML=T.map(t=>`<button class="${tab==t[0]?'on':''}" onclick="tab='${t[0]}';render()">${t[1]}</button>`).join('');document.body.classList.add('inapp');$('#tip').style.display='none';$('#side').innerHTML=sideHTML(T);$('#app').innerHTML=(isPC()?D:V)[tab]()}
 let undoS=null,undoT=null;
 function del(k,id){if(k==='sales'||k==='rcpt')return;undoS=JSON.stringify(S);S[k]=S[k].filter(x=>x.id!==id);save();render();const u=$('#undo');u.innerHTML='Deleted. <a href="#" onclick="undo();return false" style="color:var(--ac);font-weight:700">Undo</a>';clearTimeout(undoT);undoT=setTimeout(()=>{u.textContent=''},10000)}
