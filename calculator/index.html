@@ -196,6 +196,29 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 .lkc{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:22px 22px 20px;max-width:360px;text-align:center;box-shadow:0 20px 40px -18px rgba(0,0,0,.45);position:sticky;top:90px}
 .lkc .lki{width:60px;height:60px;border-radius:50%;background:var(--bg);color:var(--ac);display:grid;place-items:center;margin:0 auto 10px;border:1px solid var(--ln)}
 .lkc b{font-size:17px;color:var(--tx)}.lkc p{margin:8px 0 14px;color:var(--mut);font-size:14px;line-height:1.5}
+
+.seg{display:flex;width:fit-content;align-self:flex-start;max-width:100%;gap:2px;padding:3px;background:var(--bg);border:1px solid var(--ln);border-radius:10px;margin:2px 0 10px}
+.seg button{border:0;background:transparent;color:var(--mut);font:inherit;font-size:13px;font-weight:600;padding:6px 14px;border-radius:8px;cursor:pointer;width:auto}
+.seg button.on{background:var(--card);color:var(--ac);box-shadow:0 0 0 1px var(--ln),0 1px 2px rgba(0,0,0,.08)}
+.seg button:focus-visible,.pt:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:12px}
+.pt{display:flex;flex-direction:column;gap:2px;text-align:left;padding:10px 12px;border:1.5px solid var(--ln);background:var(--card);color:var(--tx);border-radius:12px;font:inherit;cursor:pointer}
+.pt b{font-size:14px;line-height:1.25;word-break:break-word}.pt span{font-size:13px;color:var(--mut)}
+.pt:hover{border-color:var(--ac)}.pt.on{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 10%,var(--card));box-shadow:0 0 0 1px var(--ac)}
+.col.top{align-self:start}
+.sel{border-top:1px dashed var(--ln);padding-top:12px;margin-top:2px}
+
+@media not all and (min-width:1024px) and (hover:hover) and (pointer:fine){
+.chd{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px}.chd h2{margin:0}.chd span{font-size:12px;color:var(--mut)}
+.lg2{display:flex;gap:16px;font-size:12.5px;color:var(--mut);margin:0 0 8px;flex-wrap:wrap}.lg2 i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}.lg2 i.lnk{height:3px;width:16px;border-radius:2px;vertical-align:3px}
+.ch svg{width:100%;height:auto;display:block;overflow:visible}
+.ch text{font-size:11px;fill:var(--mut);font-variant-numeric:tabular-nums}
+.ch .gl{stroke:var(--ln);stroke-width:1}.ch .gl.z{stroke:var(--mut);opacity:.6}
+.ch .bgc{fill:var(--tx);opacity:0}
+.ch .ln{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round;pointer-events:none}
+.ch .dt{stroke:var(--card);stroke-width:2;pointer-events:none}
+.empty{padding:18px 8px;text-align:center;color:var(--mut);font-size:14px;border:1px dashed var(--ln);border-radius:12px}
+}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 </head><body><main>
 <header><div id="brand"></div><button id="th" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button></header>
@@ -368,7 +391,7 @@ async function doChange(){const o=$('#cp0').value,p=$('#cp1').value,q=$('#cp2').
  const r=await sb.auth.updateUser({password:p});
  mm.textContent=r.error?(r.error.message||'Could not change the password.'):'Your password has been changed.';
  if(!r.error){$('#cp0').value='';$('#cp1').value='';$('#cp2').value=''}}
-let rcAll=false,rOpen=false,rLines=[{pid:'',qty:1}],rShow=null,rCust='',rRec=false;
+let rcAll=false,rOpen=false,rLines=[{pid:'',qty:1}],rShow=null,rCust='',rRec=false,rDK='none',rDV='',rDno='';
 let shClose=false,shRep=null,rfOpen=false;
 function curShift(){const a=S.shifts||[];return a.length&&!a[0].closeTs?a[0]:null}
 function shTot(o,c){const end=c||new Date().toISOString();let g=0,n=0,rf=0;
@@ -405,7 +428,8 @@ function addRefund(){const p=gp($('#rfp').value),q=+$('#rfq').value;if(!p||!(q>0
  const a=$('#rfa').value===''?p.price*q:+$('#rfa').value;if(!(a>0)){msg('Enter a refund amount above zero.');return}
  S.refunds=[{id:uid(),date:lday(),ts:new Date().toISOString(),pid:p.id,qty:q,amt:a,reason:$('#rfr').value.trim()}].concat(S.refunds||[]);rfOpen=false;month=lday().slice(0,7);save();render()}
 function fmtTs(t){const d=new Date(t);if(isNaN(d))return '';return d.toLocaleDateString('en-PH',{timeZone:'Asia/Manila',year:'numeric',month:'short',day:'numeric'})+', '+d.toLocaleTimeString('en-PH',{timeZone:'Asia/Manila',hour:'numeric',minute:'2-digit',second:'2-digit'})+' PHT'}
-function recSale(pid,q,date){const p=gp(pid);if(!p)return;const s={id:uid(),date,pid,qty:q,ts:new Date().toISOString(),amt:p.price*q};s.use=useOf(p,q);Object.keys(s.use).forEach(k=>{const v=S.inv.find(x=>x.id===k);if(v)v.qty=+(v.qty-s.use[k]).toFixed(3)});S.sales.push(s)}
+function recSale(pid,q,date,d,dk,dno){const p=gp(pid);if(!p)return;d=d||0;const s={id:uid(),date,pid,qty:q,ts:new Date().toISOString(),amt:+(p.price*q-d).toFixed(2)};if(d>0){s.disc=d;s.dk=dk;if(dno)s.dno=dno}s.use=useOf(p,q);Object.keys(s.use).forEach(k=>{const v=S.inv.find(x=>x.id===k);if(v)v.qty=+(v.qty-s.use[k]).toFixed(3)});S.sales.push(s)}
+const rDisc=()=>discAmt(rDK,rDV,rTotal());
 function rTotal(){return rLines.reduce((a,l)=>{const p=gp(l.pid);return a+(p?p.price*(l.qty||0):0)},0)}
 function receiptCard(nr){
  const rc=S.rcpt||[];
@@ -421,16 +445,21 @@ function receiptCard(nr){
  <input value="${esc((S.set&&S.set.rmsg)||'Thank you!')}" placeholder="Message at the bottom" onchange="S.set.rmsg=this.value;save()" style="margin-bottom:8px">
  <label class="t"><input type="checkbox" ${rRec?'checked':''} onchange="rRec=this.checked"> Also record these as sales and take the items out of stock</label>
  <div class="note" style="margin:-4px 0 8px">Leave this off if you already recorded this sale.</div>
- <div class="li"><b>Total</b><b>${m(rTotal())}</b></div>
+ <select onchange="rDK=this.value;if(rDK==='none')rDV='';render()" style="margin-bottom:8px">${discOpts(rDK)}</select>
+ ${rDK==='pct'||rDK==='amt'?`<input type="number" min="0" value="${rDV}" placeholder="${rDK==='pct'?'Discount percent':'Discount amount (₱)'}" inputmode="decimal" onchange="rDV=this.value;render()" style="margin-bottom:8px">`:''}
+ ${rDK==='pwd'?`<input value="${esc(rDno)}" placeholder="PWD ID number (optional)" oninput="rDno=this.value" style="margin-bottom:8px">`:''}
+ ${rDisc()?`<div class="li"><span>Subtotal</span><span>${m(rTotal())}</span></div><div class="li"><span>${discName(rDK,rDV)}</span><span class="neg">−${m(rDisc())}</span></div>`:''}
+ <div class="li"><b>Total</b><b>${m(rTotal()-rDisc())}</b></div>
  <div class="row" style="margin-top:8px"><button class="btn" onclick="makeReceipt()">Create receipt</button><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="rOpen=false;render()">Cancel</button></div></div>`+(nr?'':recent)}
 function makeReceipt(){const L=rLines.filter(l=>gp(l.pid)&&l.qty>0);if(!L.length){msg('Choose at least one product.');return}
  const ph=phParts(),date=ph.year+'-'+ph.month+'-'+ph.day,time=ph.hour+':'+ph.minute+':'+ph.second;
  S.rno=(S.rno||0)+1;
  const items=L.map(l=>{const p=gp(l.pid);return{n:p.name,q:l.qty,p:p.price}});
- const r={id:uid(),no:'R-'+String(S.rno).padStart(6,'0'),date,time,cust:rCust.trim(),msg:(S.set&&S.set.rmsg)||'Thank you!',items,total:items.reduce((a,i)=>a+i.q*i.p,0)};
- if(rRec)L.forEach(l=>recSale(l.pid,l.q||l.qty,date));
- S.rcpt=[r].concat(S.rcpt||[]);rShow=r.id;rOpen=false;rCust='';save();render()}
-function rcHTML(r){const b=S.brand||{};return `<div id="rcp">${b.logo?`<img src="${b.logo}" alt="">`:''}<div class="c"><b style="font-size:16px">${esc(b.name||'Receipt')}</b></div><div class="c">${r.no}</div><div class="c">${r.date} ${r.time}</div>${r.cust?`<div class="c">Customer: ${esc(r.cust)}</div>`:''}<hr>${r.items.map(i=>`<div class="r"><span>${esc(i.n)} × ${i.q}</span><span>${m(i.q*i.p)}</span></div>`).join('')}<hr><div class="r"><b>TOTAL</b><b>${m(r.total)}</b></div><hr><div class="c">${esc(r.msg||'')}</div><div class="c" style="font-size:11px;color:#666;margin-top:6px">This is a simple receipt, not an official receipt.</div></div>`}
+ const r={id:uid(),no:'R-'+String(S.rno).padStart(6,'0'),date,time,cust:rCust.trim(),msg:(S.set&&S.set.rmsg)||'Thank you!',items,total:0};
+ const sub=items.reduce((a,i)=>a+i.q*i.p,0),disc=discAmt(rDK,rDV,sub);r.total=+(sub-disc).toFixed(2);if(disc>0){r.sub=sub;r.disc=disc;r.dk=rDK;if(rDK==='pwd'&&rDno.trim())r.dno=rDno.trim()}
+ if(rRec)L.forEach(l=>{const q=l.q||l.qty,pp=gp(l.pid);recSale(l.pid,q,date,sub?+(disc*pp.price*q/sub).toFixed(2):0,rDK,r.dno)});
+ S.rcpt=[r].concat(S.rcpt||[]);rShow=r.id;rOpen=false;rCust='';rDK='none';rDV='';rDno='';save();render()}
+function rcHTML(r){const b=S.brand||{};return `<div id="rcp">${b.logo?`<img src="${b.logo}" alt="">`:''}<div class="c"><b style="font-size:16px">${esc(b.name||'Receipt')}</b></div><div class="c">${r.no}</div><div class="c">${r.date} ${r.time}</div>${r.cust?`<div class="c">Customer: ${esc(r.cust)}</div>`:''}<hr>${r.items.map(i=>`<div class="r"><span>${esc(i.n)} × ${i.q}</span><span>${m(i.q*i.p)}</span></div>`).join('')}<hr>${r.disc?`<div class="r"><span>Subtotal</span><span>${m(r.sub)}</span></div><div class="r"><span>${r.dk==='pwd'?'PWD discount (20%)':'Discount'}</span><span>−${m(r.disc)}</span></div>${r.dno?`<div class="r"><span>PWD ID</span><span>${esc(r.dno)}</span></div>`:''}`:''}<div class="r"><b>TOTAL</b><b>${m(r.total)}</b></div><hr><div class="c">${esc(r.msg||'')}</div><div class="c" style="font-size:11px;color:#666;margin-top:6px">This is a simple receipt, not an official receipt.</div></div>`}
 function rcView(r){return rcHTML(r)+`<div class="card"><div class="row"><button class="btn" onclick="window.print()">Print / save as PDF</button><button class="btn" onclick="rcImage('${r.id}')">Save or share picture</button></div><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac);margin-top:8px" onclick="rShow=null;render()">Done</button></div>`}
 function rcDraw(x,W,r,im,fmt){const b=S.brand||{};let y=24;x.textAlign='center';x.fillStyle='#111';
  if(im){const k=Math.min(60/im.height,200/im.width,1),w=im.width*k,hh=im.height*k;x.drawImage(im,(W-w)/2,y,w,hh);y+=hh+14}
@@ -438,7 +467,7 @@ function rcDraw(x,W,r,im,fmt){const b=S.brand||{};let y=24;x.textAlign='center';
  t(b.name||'Receipt',20,true);t(r.no,14);t(r.date+' '+r.time,14);if(r.cust)t('Customer: '+r.cust,14);
  const dash=()=>{y+=2;x.fillStyle='#999';for(let i=20;i<W-20;i+=8)x.fillRect(i,y,4,1);y+=14};dash();
  r.items.forEach(i=>{x.font='14px sans-serif';x.fillStyle='#111';x.textAlign='left';let n=i.n+' × '+i.q;const a=fmt(i.q*i.p),room=W-40-x.measureText(a).width-12;while(n.length>3&&x.measureText(n).width>room)n=n.slice(0,-2);x.fillText(n,20,y);x.textAlign='right';x.fillText(a,W-20,y);y+=22});
- dash();x.font='bold 16px sans-serif';x.fillStyle='#111';x.textAlign='left';x.fillText('TOTAL',20,y);x.textAlign='right';x.fillText(fmt(r.total),W-20,y);y+=12;dash();
+ dash();if(r.disc){const row=(a,b)=>{x.font='14px sans-serif';x.fillStyle='#111';x.textAlign='left';x.fillText(a,20,y);x.textAlign='right';x.fillText(b,W-20,y);y+=22};row('Subtotal',fmt(r.sub));row(r.dk==='pwd'?'PWD discount (20%)':'Discount','−'+fmt(r.disc));if(r.dno)row('PWD ID',r.dno)}x.font='bold 16px sans-serif';x.fillStyle='#111';x.textAlign='left';x.fillText('TOTAL',20,y);x.textAlign='right';x.fillText(fmt(r.total),W-20,y);y+=12;dash();
  t(r.msg||'',14);t('This is a simple receipt, not an official receipt.',11,false,'#666');return y+10}
 function rcImage(id){const r=(S.rcpt||[]).find(x=>x.id===id);if(!r)return;const b=S.brand||{},W=380,sc=2;
  const go=im=>{const probe=document.createElement('canvas').getContext('2d'),H=Math.ceil(rcDraw(probe,W,r,im,m));
@@ -472,12 +501,12 @@ const inM=d=>d.startsWith(month);
 function calc(){
  const pm=Object.fromEntries(S.products.map(p=>[p.id,p]));const sales=S.sales.filter(s=>inM(s.date)&&pm[s.pid]);
  let rev=0,cogs=0;const per={};S.products.forEach(p=>per[p.id]={u:0,r:0,c:0});
- sales.forEach(s=>{const p=pm[s.pid];per[p.id].u+=s.qty;per[p.id].r+=s.qty*p.price;per[p.id].c+=s.qty*p.cost});
+ sales.forEach(s=>{const p=pm[s.pid];per[p.id].u+=s.qty;per[p.id].r+=s.qty*p.price-(s.disc||0);per[p.id].c+=s.qty*p.cost});
  Object.values(per).forEach(x=>{rev+=x.r;cogs+=x.c});
  const soldTotal=rev,rfs=(S.refunds||[]).filter(r=>inM(r.date)),refunds=rfs.reduce((a,r)=>a+r.amt,0);rev-=refunds;rfs.forEach(r=>{if(per[r.pid]){per[r.pid].r-=r.amt;per[r.pid].u-=r.qty}});
  const ops=S.expenses.filter(e=>inM(e.date)).reduce((a,e)=>a+e.amt,0);
  const rent=S.set.rentOn?+S.set.rent:0,staff=S.set.staffOn?S.staff.reduce((a,x)=>a+x.pay,0):0;
- const gross=rev-cogs,net=gross-ops-rent-staff;return{rev,cogs,gross,ops,rent,staff,net,per,refunds,soldTotal}}
+ const gross=rev-cogs,net=gross-ops-rent-staff;return{rev,cogs,gross,ops,rent,staff,net,per,refunds,soldTotal,disc:sales.reduce((a,s)=>a+(s.disc||0),0)}}
 function monthSel(){return `<div class="row"><input type="month" value="${month}" onchange="month=this.value||month;render()"></div>`}
 const V={
 inv(){return invAddCard()+invListCard()},
@@ -487,6 +516,7 @@ dash(){const c=calc();const rows=S.products.map(p=>{const x=c.per[p.id],g=x.r-x.
  <div class="card"><div class="k">Net profit</div><div class="v ${cls(c.net)}">${m(c.net)}</div></div>
  <div class="card"><div class="k">Gross margin</div><div class="v">${pct(c.gross,c.rev)}</div></div>
  <div class="card"><div class="k">Net margin</div><div class="v ${cls(c.net)}">${pct(c.net,c.rev)}</div></div></div>
+ ${salesTimeCard()}
  <div class="card"><h2>Where the money goes</h2>
  ${c.refunds?`<div class="li"><span>Sales</span><b>${m(c.soldTotal)}</b></div><div class="li"><span>− Refunds</span><span class="neg">${m(c.refunds)}</span></div><div class="li"><span>= Net sales</span><b>${m(c.rev)}</b></div>`:`<div class="li"><span>Revenue</span><b>${m(c.rev)}</b></div>`}
  <div class="li"><span>− Product costs</span><span>${m(c.cogs)}</span></div>
@@ -498,19 +528,38 @@ dash(){const c=calc();const rows=S.products.map(p=>{const x=c.per[p.id],g=x.r-x.
  ${taxCard(c)}<div class="card"><h2>Per product</h2>${rows?`<div class="ov"><table><tr><th>Product</th><th>Sold</th><th>Sales</th><th>Profit</th><th>Margin</th></tr>${rows}</table></div>`:'<div class="note">Add products first.</div>'}</div>`},
 sales(){return shiftCard()+salesForm()+refundCard()+receiptCard()+monthSel()+salesList()},
 exp(){return expForm()+fixedCard()+monthSel()+expList()},
-prod(){return prodForm()+prodList()},
+prod(){return prodForm()+catCard()+prodList()},
 set(){return brandCard()+`${taxSet()}${palCard()}${dlCard()}${resetCard()}${acctCard()}`}};
 function invAddCard(){return `<div class="card"><h2>Add ingredient</h2><div class="row"><input id="vn" placeholder="Ingredient name"><select id="vu" style="flex:0 0 76px"><option>g</option><option>ml</option><option>pcs</option></select></div><div class="row"><input id="vq" type="number" placeholder="On hand now" inputmode="decimal"><input id="vl" type="number" placeholder="Low-stock alert at" inputmode="decimal"></div><div class="row"><input id="vk" type="number" placeholder="Pack size (same unit)" inputmode="decimal"><input id="vc" type="number" placeholder="Price of that pack" inputmode="decimal"></div><button class="btn" onclick="addInv()">Add to inventory</button></div>`}
 function invListCard(){const L=S.inv.map(v=>{const st=v.qty<=0?['Out','neg']:(v.low>0&&v.qty<=v.low?['Low','neg']:['OK','pos']);
  const num=(l,k,val)=>`<div><div class="note">${l}</div><input type="number" value="${val}" inputmode="decimal" onchange="invEdit('${v.id}','${k}',this.value)"></div>`;
  return `<tr><td>${esc(v.name)}</td><td>${+(+v.qty).toFixed(2)} ${v.u}</td><td class="${st[1]}"><b>${st[0]}</b></td><td><button class="x" style="font-size:15px" aria-label="Edit" onclick="openV=openV==='${v.id}'?null:'${v.id}';render()">✏️</button></td><td><button class="x" onclick="del('inv','${v.id}')">×</button></td></tr>${openV===v.id?`<tr><td colspan="5" style="text-align:left"><div class="row" style="margin-bottom:6px"><input value="${esc(v.name)}" onchange="invEdit('${v.id}','name',this.value)"><select style="flex:0 0 76px" onchange="invEdit('${v.id}','u',this.value)">${['g','ml','pcs'].map(u=>`<option ${v.u===u?'selected':''}>${u}</option>`).join('')}</select></div><div class="row" style="margin-bottom:6px">${num('On hand (physical count)','qty',+(+v.qty).toFixed(3))}${num('Low-stock alert at','low',v.low||0)}</div><div class="row" style="margin-bottom:6px">${num('Pack size ('+v.u+')','pack',v.pack||0)}${num('Pack price','pc',v.pc||0)}</div><div class="row"><input id="ia" type="number" placeholder="Amount received" inputmode="decimal"><button class="btn" onclick="invAdd('${v.id}')">Add to stock</button></div></td></tr>`:''}`}).join('');
  return `<div class="card"><h2>Stock on hand</h2>${L?`<div class="ov"><table><tr><th>Ingredient</th><th>On hand</th><th>Status</th><th></th><th></th></tr>${L}</table></div>`:'<div class="note">No ingredients yet. Add the ingredients you keep in stock.</div>'}<div class="note" style="margin-top:6px">Every sale takes the ingredients out of this stock, based on each product’s recipe. If your physical count is different, tap ✏️ and correct “On hand.”</div></div>`}
-function salesForm(){const opt=S.products.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
- return `<div class="card"><h2>Record sales</h2>${S.products.length?`<div class="row"><input type="date" id="sd" value="${lday()}"></div>
- <div class="row"><select id="sp">${opt}</select><input type="number" id="sq" min="1" placeholder="Qty sold" inputmode="numeric"></div>
- <button class="btn" onclick="addSale()">Add</button>`:'<div class="note">Add a product first (Products tab).</div>'}</div>`}
+let sCat='',sPid='',sQty='',sDate='',sDK='none',sDV='',sDno='';
+const catList=()=>Array.isArray(S.set.cats)?S.set.cats:['Pastry','Drinks','Meals'];
+const pCat=p=>p.cat&&catList().includes(p.cat)?p.cat:'Uncategorized';
+function discAmt(k,v,sub){if(k==='pwd')return +(sub*.2).toFixed(2);v=+v||0;if(k==='pct')return +(sub*Math.min(Math.max(v,0),100)/100).toFixed(2);if(k==='amt')return +Math.min(Math.max(v,0),sub).toFixed(2);return 0}
+const discName=(k,v)=>k==='pwd'?'PWD discount (20%)':(k==='pct'?'Discount ('+(+v||0)+'%)':'Discount');
+const discOpts=k=>[['none','No discount'],['pwd','PWD discount (20%)'],['pct','Custom discount (%)'],['amt','Custom discount (₱)']].map(o=>`<option value="${o[0]}" ${k===o[0]?'selected':''}>${o[1]}</option>`).join('');
+function usedCats(){const o=catList().concat(['Uncategorized']);return o.map(c=>({c,L:S.products.filter(p=>pCat(p)===c)})).filter(x=>x.L.length)}
+function sPrev(){const e=$('#spv');if(!e)return;const p=gp(sPid),q=+(($('#sq')||{}).value)||0,sub=p?p.price*q:0,d=discAmt(sDK,sDV,sub);
+ e.innerHTML=`<div class="li"><span>Subtotal</span><span>${m(sub)}</span></div>${d?`<div class="li"><span>${discName(sDK,sDV)}</span><span class="neg">−${m(d)}</span></div>`:''}<div class="li"><b>Total</b><b>${m(sub-d)}</b></div>`}
+function salesForm(){
+ if(!S.products.length)return '<div class="card"><h2>Record sales</h2><div class="note">Add a product first (Products tab).</div></div>';
+ const U=usedCats(),L=sCat?(U.find(x=>x.c===sCat)||{L:[]}).L:[],p=gp(sPid);
+ const tiles=L.map(q=>`<button type="button" class="pt ${sPid===q.id?'on':''}" onclick="sPid='${q.id}';render();setTimeout(()=>{const e=$('#sq');if(e)e.focus()},30)"><b>${esc(q.name)}</b><span>${m(q.price)}</span></button>`).join('');
+ return `<div class="card"><h2>Record sales</h2>
+ <input type="date" id="sd" value="${sDate||lday()}" onchange="sDate=this.value" style="margin-bottom:8px">
+ <select id="scat" onchange="sCat=this.value;sPid='';render()" style="margin-bottom:8px"><option value="">Choose a category</option>${U.map(x=>`<option value="${esc(x.c)}" ${sCat===x.c?'selected':''}>${esc(x.c)} (${x.L.length})</option>`).join('')}</select>
+ ${sCat?`<div class="note" style="margin-bottom:6px">Tap a product</div><div class="pgrid">${tiles}</div>`:'<div class="note">Pick a category to see its products.</div>'}
+ ${p&&sCat?`<div class="sel"><div class="li" style="border:0;padding:0 0 8px"><b>${esc(p.name)}</b><span>${m(p.price)} each</span></div>
+ <input type="number" id="sq" min="1" value="${sQty}" placeholder="Qty sold" inputmode="numeric" oninput="sQty=this.value;sPrev()" onkeydown="if(event.key==='Enter')addSale()" style="margin-bottom:8px">
+ <select onchange="sDK=this.value;if(sDK==='none')sDV='';render();setTimeout(()=>{const e=$(sDK==='pct'||sDK==='amt'?'#sdv':'#sdn');if(e)e.focus()},30)" style="margin-bottom:8px">${discOpts(sDK)}</select>
+ ${sDK==='pct'||sDK==='amt'?`<input type="number" id="sdv" min="0" value="${sDV}" placeholder="${sDK==='pct'?'Discount percent':'Discount amount (₱)'}" inputmode="decimal" oninput="sDV=this.value;sPrev()" style="margin-bottom:8px">`:''}
+ ${sDK==='pwd'?`<input id="sdn" value="${esc(sDno)}" placeholder="PWD ID number (optional)" oninput="sDno=this.value" style="margin-bottom:8px">`:''}
+ <div id="spv"></div><button class="btn" style="margin-top:8px" onclick="addSale()">Add sale</button></div>`:''}</div>`}
 function salesList(h){const pm=Object.fromEntries(S.products.map(p=>[p.id,p]));
- const rows=S.sales.filter(s=>inM(s.date)).map(s=>{const p=pm[s.pid];return{date:s.date,ts:s.ts||'',h:`<div class="li"><span>${s.date} · ${p?esc(p.name):'(deleted)'} × ${s.qty}<br><span class="note">🕒 ${s.ts?'Entered '+fmtTs(s.ts):'Time not recorded'}</span></span><span>${m(s.amt!=null?s.amt:(p?p.price*s.qty:0))}</span></div>`}}).concat((S.refunds||[]).filter(x=>inM(x.date)).map(x=>{const p=pm[x.pid];return{date:x.date,ts:x.ts||'',h:`<div class="li"><span>↩️ Refund · ${x.date} · ${p?esc(p.name):'(deleted)'} × ${x.qty}${x.reason?' – '+esc(x.reason):''}<br><span class="note">🕒 Entered ${fmtTs(x.ts)}</span></span><b class="neg">−${m(x.amt)}</b></div>`}})).sort((a,b)=>b.date.localeCompare(a.date)||b.ts.localeCompare(a.ts));
+ const rows=S.sales.filter(s=>inM(s.date)).map(s=>{const p=pm[s.pid];return{date:s.date,ts:s.ts||'',h:`<div class="li"><span>${s.date} · ${p?esc(p.name):'(deleted)'} × ${s.qty}<br><span class="note">🕒 ${s.ts?'Entered '+fmtTs(s.ts):'Time not recorded'}</span>${s.disc?`<br><span class="note">${s.dk==='pwd'?'PWD discount':'Discount'} −${m(s.disc)}${s.dno?' · ID '+esc(s.dno):''}</span>`:''}</span><span>${m(s.amt!=null?s.amt:(p?p.price*s.qty:0))}</span></div>`}}).concat((S.refunds||[]).filter(x=>inM(x.date)).map(x=>{const p=pm[x.pid];return{date:x.date,ts:x.ts||'',h:`<div class="li"><span>↩️ Refund · ${x.date} · ${p?esc(p.name):'(deleted)'} × ${x.qty}${x.reason?' – '+esc(x.reason):''}<br><span class="note">🕒 Entered ${fmtTs(x.ts)}</span></span><b class="neg">−${m(x.amt)}</b></div>`}})).sort((a,b)=>b.date.localeCompare(a.date)||b.ts.localeCompare(a.ts));
  const list=rows.map(x=>x.h).join('');
  return `<div class="card">${h?'<h2>'+h+'</h2>':''}${list||'<div class="note">No sales this month.</div>'}</div>`}
 function expForm(){return `<div class="card"><h2>Add expense</h2><div class="row"><input type="date" id="ed" value="${lday()}"><input type="number" id="ea" placeholder="Amount" inputmode="decimal"></div>
@@ -519,10 +568,10 @@ function expForm(){return `<div class="card"><h2>Add expense</h2><div class="row
  <div class="note" style="margin-top:6px">Ingredients are counted through each product’s cost, so don’t add them here (it would count twice).</div></div>`}
 function expList(h){const list=S.expenses.filter(e=>inM(e.date)).sort((a,b)=>b.date.localeCompare(a.date)||(b.ts||'').localeCompare(a.ts||'')).map(e=>`<div class="li"><span>${e.date} · ${esc(e.cat)}${e.desc?' – '+esc(e.desc):''}<br><span class="note">🕒 ${e.ts?'Entered '+fmtTs(e.ts):'Time not recorded'}</span></span><span>${m(e.amt)}<button class="x" onclick="del('expenses','${e.id}')">×</button></span></div>`).join('');
  return `<div class="card">${h?'<h2>'+h+'</h2>':''}${list||'<div class="note">No expenses this month.</div>'}</div>`}
-function prodForm(){return `<div class="card"><h2>Add product</h2><input id="pn" placeholder="Name (e.g. Ube cupcake)" style="margin-bottom:8px">
+function prodForm(){return `<div class="card"><h2>Add product</h2><input id="pn" placeholder="Name (e.g. Ube cupcake)" style="margin-bottom:8px"><select id="pcat" style="margin-bottom:8px"><option value="">No category</option>${catList().map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')}</select>
  <div class="row"><input type="number" id="pp" placeholder="Selling price" inputmode="decimal"><input type="number" id="pc" placeholder="Cost to make 1 (leave blank, use Recipe)" inputmode="decimal"></div>
  <button class="btn" onclick="addProd()">Add</button><div class="note" style="margin-top:6px">After adding, tap the orange Recipe button on the product to enter its ingredients.</div></div>`}
-function prodList(h){const list=S.products.map(p=>`<div class="li" style="flex-wrap:wrap"><span>${esc(p.name)}<br><span class="note">Price ${m(p.price)} · Cost ${m(p.cost)} · Margin ${pct(p.price-p.cost,p.price)}</span></span><span style="display:flex;align-items:center;gap:6px"><button class="btn" style="width:auto;padding:6px 12px;font-size:14px;background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="dupProd('${p.id}')">Copy</button><button class="btn" style="width:auto;padding:6px 12px;font-size:14px" onclick="openP=openP==='${p.id}'?null:'${p.id}';render()">${openP===p.id?'Close':'Recipe'}</button><button class="x" onclick="del('products','${p.id}')">×</button></span>${openP===p.id?`<div style="width:100%">${recipe(p)}</div>`:''}</div>`).join('');
+function prodList(h){const list=S.products.map(p=>`<div class="li" style="flex-wrap:wrap"><span>${esc(p.name)}<br><span class="note">Price ${m(p.price)} · Cost ${m(p.cost)} · Margin ${pct(p.price-p.cost,p.price)}</span><br><select aria-label="Category" style="width:auto;min-width:130px;padding:4px 8px;font-size:13px;margin-top:6px" onchange="setCat('${p.id}',this.value)"><option value="">No category</option>${catList().map(c=>`<option value="${esc(c)}" ${p.cat===c?'selected':''}>${esc(c)}</option>`).join('')}</select></span><span style="display:flex;align-items:center;gap:6px"><button class="btn" style="width:auto;padding:6px 12px;font-size:14px;background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="dupProd('${p.id}')">Copy</button><button class="btn" style="width:auto;padding:6px 12px;font-size:14px" onclick="openP=openP==='${p.id}'?null:'${p.id}';render()">${openP===p.id?'Close':'Recipe'}</button><button class="x" onclick="del('products','${p.id}')">×</button></span>${openP===p.id?`<div style="width:100%">${recipe(p)}</div>`:''}</div>`).join('');
  return `<div class="card">${h?'<h2>'+h+'</h2>':''}${list||'<div class="note">No products yet.</div>'}</div>`}
 // ===== Desktop (PC) layout: sidebar, bigger cards and charts. Phones and tablets keep the layout above. =====
 const PCQ=matchMedia('(min-width:1024px) and (hover:hover) and (pointer:fine)'),isPC=()=>PCQ.matches;
@@ -567,12 +616,28 @@ function chart(o){const W=720,H=250,L=58,R=10,T=12,B=28,n=o.lab.length,bs=o.bars
  return `<div class="lg2">${lg}</div><div class="ch"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.aria||'')}">${g}${cols}${ln}${xl}</svg></div>`}
 function hbars(R){const mx=Math.max(...R.map(r=>Math.abs(r.v)),0)||1;return R.map(r=>`<div class="hb"><div class="hbl"><span>${esc(r.n)}</span><b class="${r.k||''}">${r.t}</b></div><div class="hbt"><i style="width:${(Math.abs(r.v)/mx*100).toFixed(1)}%;background:${r.c||'var(--c1)'}"></i></div>${r.s?`<div class="note">${r.s}</div>`:''}</div>`).join('')}
 function daily(){const y=+month.slice(0,4),mo=+month.slice(5,7),n=new Date(y,mo,0).getDate(),r=Array(n).fill(0),g=Array(n).fill(0),c=Array(n).fill(0),pm=Object.fromEntries(S.products.map(p=>[p.id,p]));
- S.sales.forEach(s=>{const p=pm[s.pid];if(!p||!inM(s.date))return;const d=+s.date.slice(8,10)-1;r[d]+=s.qty*p.price;g[d]+=s.qty*(p.price-p.cost);c[d]++});
+ S.sales.forEach(s=>{const p=pm[s.pid];if(!p||!inM(s.date))return;const d=+s.date.slice(8,10)-1;r[d]+=s.qty*p.price-(s.disc||0);g[d]+=s.qty*(p.price-p.cost)-(s.disc||0);c[d]++});
  (S.refunds||[]).forEach(x=>{if(!inM(x.date))return;const d=+x.date.slice(8,10)-1;r[d]-=x.amt;g[d]-=x.amt});
  const last=month===lday().slice(0,7)?+lday().slice(8,10)-1:n-1;
  return{n,r,g,c,last,has:c.some(Boolean)||r.some(Boolean)}}
 function dayChart(d,line){const mn=mName(month);return chart({lab:d.r.map((_,i)=>String(i+1)),show:i=>i===0||(i+1)%5===0,bars:[{n:'Sales',c:'var(--c1)',v:d.r}],line:line?{n:'Gross profit',c:'var(--c2)',v:d.g.map((v,i)=>i<=d.last?v:null)}:null,
  tip:i=>`${mn} ${i+1}|Sales: ${m(d.r[i])}`+(line?`|Gross profit: ${m(d.g[i])}`:'')+`|${d.c[i]} sale ${d.c[i]===1?'entry':'entries'}`,aria:'Daily sales for '+mName(month,1)})}
+let dsv='day';
+function salesSeries(mode){const d=daily(),n=d.n,pm=Object.fromEntries(S.products.map(p=>[p.id,p])),mn=mName(month),today=month===lday().slice(0,7)?+lday().slice(8,10):n;
+ if(mode==='day')return{lab:d.r.map((_,i)=>String(i+1)),show:i=>i===0||(i+1)%5===0,r:d.r,g:d.g,c:d.c,last:d.last,tip:i=>mn+' '+(i+1),aria:'Daily sales for '+mName(month,1),has:d.has,note:''};
+ if(mode==='week'){const w=Math.ceil(n/7),r=Array(w).fill(0),g=Array(w).fill(0),c=Array(w).fill(0);
+  for(let i=0;i<n;i++){const k=Math.floor(i/7);r[k]+=d.r[i];g[k]+=d.g[i];c[k]+=d.c[i]}
+  return{lab:r.map((_,i)=>'Wk '+(i+1)),show:null,r,g,c,last:Math.floor((today-1)/7),tip:i=>mn+' '+(i*7+1)+'–'+Math.min(n,i*7+7),aria:'Weekly sales for '+mName(month,1),has:d.has,note:''}}
+ const r=Array(24).fill(0),g=Array(24).fill(0),c=Array(24).fill(0);let miss=0;
+ S.sales.forEach(s=>{const p=pm[s.pid];if(!p||!inM(s.date))return;if(!s.ts){miss++;return}const h=+phParts(new Date(s.ts)).hour;r[h]+=s.qty*p.price-(s.disc||0);g[h]+=s.qty*(p.price-p.cost)-(s.disc||0);c[h]++});
+ (S.refunds||[]).forEach(x=>{if(!inM(x.date)||!x.ts)return;const h=+phParts(new Date(x.ts)).hour;r[h]-=x.amt;g[h]-=x.amt});
+ const hl=h=>(h%12||12)+(h<12?'am':'pm');
+ return{lab:r.map((_,h)=>(h%12||12)+(h<12?'a':'p')),show:i=>i%3===0,r,g,c,last:23,tip:i=>hl(i)+' – '+hl((i+1)%24),aria:'Sales by hour of the day for '+mName(month,1),has:c.some(Boolean),note:miss?miss+' sale'+(miss===1?'':'s')+' without a recorded time not shown.':''}}
+function salesTimeCard(cl){const m0=dsv,S2=salesSeries(m0),ttl={hour:'Sales by hour',day:'Sales by day',week:'Sales by week'}[m0];
+ const seg=`<div class="seg" role="group" aria-label="Group sales by">${[['hour','By hour'],['day','By day'],['week','By week']].map(o=>`<button type="button" class="${m0===o[0]?'on':''}" aria-pressed="${m0===o[0]}" onclick="dsv='${o[0]}';render()">${o[1]}</button>`).join('')}</div>`;
+ const ch=S2.has?chart({lab:S2.lab,show:S2.show,bars:[{n:'Sales',c:'var(--c1)',v:S2.r}],line:m0==='hour'?null:{n:'Gross profit',c:'var(--c2)',v:S2.g.map((v,i)=>i<=S2.last?v:null)},bw:m0==='week'?46:(m0==='hour'?18:22),
+  tip:i=>`${S2.tip(i)}|Sales: ${m(S2.r[i])}${m0==='hour'?'':'|Gross profit: '+m(S2.g[i])}|${S2.c[i]} sale ${S2.c[i]===1?'entry':'entries'}`,aria:S2.aria}):empty('No sales recorded in '+mName(month,1)+' yet.');
+ return `<div class="card ${cl||''}">${chd(ttl,mName(month,1))}${seg}${ch}${S2.note?`<div class="note" style="margin-top:6px">${S2.note}</div>`:''}</div>`}
 const empty=t=>`<div class="empty">${t}</div>`;
 function kpi(ic,label,val,cl,dl){return `<div class="card kpi s3"><div class="k"><span class="kic">${svgI(ic)}</span>${label}</div><div class="v ${cl||''}">${val}</div><div class="dl">${dl||''}</div></div>`}
 function tiles(A){const sp='s'+12/A.length;return `<div class="dg" style="margin-bottom:18px">${A.map(a=>`<div class="card kpi ${sp}"><div class="k">${a[0]}</div><div class="v ${a[2]||''}">${a[1]}</div><div class="dl note">${a[3]||'&nbsp;'}</div></div>`).join('')}</div>`}
@@ -587,7 +652,7 @@ dash(){const c=calc(),pym=ymAdd(month,-1),pc=calcFor(pym),pn=mName(pym),d=daily(
  const mr=[{n:'Product costs',v:c.cogs,t:m(c.cogs),s:of(c.cogs)},{n:'Other expenses',v:c.ops,t:m(c.ops),s:of(c.ops)}];
  if(S.set.rentOn)mr.push({n:'Rent',v:c.rent,t:m(c.rent),s:of(c.rent)});if(S.set.staffOn)mr.push({n:'Staff',v:c.staff,t:m(c.staff),s:of(c.staff)});
  mr.push({n:'Net profit',v:c.net,t:m(c.net),k:cls(c.net),c:c.net>=0?'var(--ok)':'var(--bad)',s:of(c.net)});
- const mhead=`<div class="li" style="margin-bottom:12px"><span>${c.refunds?'Net sales (after '+m(c.refunds)+' refunds)':'Revenue'}</span><b>${m(c.rev)}</b></div>`;
+ const mhead=`<div class="li" style="margin-bottom:12px"><span>${c.refunds?'Net sales (after '+m(c.refunds)+' refunds)':'Revenue'}</span><b>${m(c.rev)}</b></div>${c.disc?`<div class="note" style="margin:-6px 0 10px">Includes ${m(c.disc)} of discounts given.</div>`:''}`;
  const top=S.products.map(p=>({p,x:c.per[p.id]})).filter(o=>o.x.u||o.x.r).sort((a,b)=>b.x.r-a.x.r).slice(0,6);
  const tp=top.length?hbars(top.map(o=>{const g=o.x.r-o.x.c;return{n:o.p.name,v:o.x.r,t:m(o.x.r),s:`${o.x.u} sold · profit ${m(g)} · margin ${pct(g,o.x.r)}`}})):empty('No product sales this month.');
  const rows=S.products.map(p=>{const x=c.per[p.id],g=x.r-x.c;return `<tr><td>${esc(p.name)}</td><td>${x.u}</td><td>${m(x.r)}</td><td>${m(x.c)}</td><td class="${cls(g)}">${m(g)}</td><td>${pct(g,x.r)}</td></tr>`}).join('');
@@ -596,16 +661,16 @@ dash(){const c=calc(),pym=ymAdd(month,-1),pc=calcFor(pym),pn=mName(pym),d=daily(
  ${kpi('peso','Sales (revenue)',m(c.rev),'',dp(c.rev,pc.rev))}${kpi('sales','Net profit',m(c.net),cls(c.net),dp(c.net,pc.net))}
  ${kpi('pct','Gross margin',pct(c.gross,c.rev),'',dm(mg(c.gross,c.rev),mg(pc.gross,pc.rev)))}${kpi('bars','Net margin',pct(c.net,c.rev),cls(c.net),dm(mg(c.net,c.rev),mg(pc.net,pc.rev)))}
  ${low?`<div class="s12">${low}</div>`:''}
- <div class="dg eq s12"><div class="card s8">${chd('Daily sales',mName(month,1))}${d.has?dayChart(d,1):empty('No sales recorded in '+mName(month,1)+' yet.')}</div>
+ <div class="dg eq s12">${salesTimeCard('s8')}
  <div class="card s4">${chd('Where the money goes','Share of sales')}${mhead}<div class="fill">${hbars(mr)}</div></div>
  <div class="card s8">${chd('Last 6 months',mName(ms[0])+' – '+mName(ms[5]))}${mch}</div>
  <div class="card s4">${chd('Top products','By sales')}<div class="fill">${tp}</div></div></div>
  ${tax?`<div class="s12">${tax}</div>`:''}
  <div class="card s12"><h2>Per product</h2>${rows?`<div class="ov"><table><tr><th>Product</th><th>Sold</th><th>Sales</th><th>Cost</th><th>Profit</th><th>Margin</th></tr>${rows}</table></div>`:'<div class="note">Add products first.</div>'}</div></div>`},
-sales(){const c=calc(),d=daily(),n=S.sales.filter(s=>inM(s.date)).length,rc=receiptCard('only');
- return pHead('Sales','Record sales, shifts, refunds and receipts',1)+tiles([['Gross sales',m(c.soldTotal)],['Refunds',m(c.refunds),c.refunds?'neg':''],['Net sales',m(c.rev)],['Sale entries',String(n)]])+`<div class="dg">`
- +col(8,card('Daily sales',mName(month,1),d.has?dayChart(d,0):empty('No sales recorded in '+mName(month,1)+' yet.')))+col(4,salesForm())
- +col(4,shiftCard(),'act')+col(4,refundCard(),'act')+col(4,receiptCard(1),'act')
+sales(){const c=calc(),n=S.sales.filter(s=>inM(s.date)).length,rc=receiptCard('only');
+ return pHead('Sales','Record sales, shifts, refunds and receipts',1)+tiles([['Sale entries',String(n)],['Refunds',m(c.refunds),c.refunds?'neg':''],['Discounts given',m(c.disc)]])+`<div class="dg">`
+ +col(8,salesForm())+col(4,shiftCard(),'top')
+ +col(6,refundCard(),'act')+col(6,receiptCard(1),'act')
  +col(8,salesList('Sales in '+mName(month,1)),'lim')+col(4,rc||card('Recent receipts','',empty('No receipts yet.')),'lim')+`</div>`},
 inv(){const low=S.inv.filter(v=>v.qty>0&&v.low>0&&v.qty<=v.low).length,out=S.inv.filter(v=>v.qty<=0).length,val=S.inv.reduce((a,v)=>a+(v.pack>0?Math.max(0,v.qty)/v.pack*v.pc:0),0);
  const sv=S.inv.map(v=>({n:v.name,v:v.pack>0?Math.max(0,v.qty)/v.pack*v.pc:0})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v),need=S.inv.filter(v=>v.qty<=0||(v.low>0&&v.qty<=v.low));
@@ -617,7 +682,7 @@ prod(){const P=S.products.filter(p=>p.price>0).map(p=>({p,g:(p.price-p.cost)/p.p
  const ch=P.length?`<div class="fill">${hbars(P.map(x=>({n:x.p.name,v:x.g,t:x.g.toFixed(1)+'%',k:x.g<0?'neg':'',c:x.g>=0?'var(--c1)':'var(--bad)',s:`Price ${m(x.p.price)} · Cost ${m(x.p.cost)}`})))}</div>`:empty('Add a product to see its margin.');
  const U=S.products.map(p=>({p,u:p.price-p.cost})).sort((a,b)=>b.u-a.u),pp=U.length?`<div class="fill">${hbars(U.map(x=>({n:x.p.name,v:x.u,t:m(x.u),k:cls(x.u),c:x.u>=0?'var(--c2)':'var(--bad)'})))}</div>`:empty('No products yet.');
  return pHead('Products','Prices, recipes and margins')+tiles([['Products',String(S.products.length)],['Average margin',avg==null?'–':avg.toFixed(1)+'%'],['Best margin',P.length?P[0].g.toFixed(1)+'%':'–','',P.length?esc(P[0].p.name):''],['Lowest margin',lo?lo.g.toFixed(1)+'%':'–',lo&&lo.g<0?'neg':'',lo?esc(lo.p.name):'']])+`<div class="dg">`
- +col(8,prodList('Your products'))+col(4,prodForm())
+ +col(8,prodList('Your products'))+col(4,prodForm()+catCard())
  +col(8,card('Margin by product','Share of the price you keep',ch))+col(4,card('Profit per piece','Price minus cost',pp))+`</div>`},
 exp(){const c=calc(),by={};S.expenses.filter(e=>inM(e.date)).forEach(e=>by[e.cat]=(by[e.cat]||0)+e.amt);const cats=Object.entries(by).sort((a,b)=>b[1]-a[1]),fx=c.rent+c.staff;
  return pHead('Expenses','Costs that come out of your profit',1)+tiles([['Other expenses',m(c.ops)],['Fixed costs',m(fx),'','Rent and staff'],['Total costs',m(c.ops+fx)],['Biggest category',cats.length?esc(cats[0][0]):'–','',cats.length?m(cats[0][1]):'']])+`<div class="dg">`
@@ -649,7 +714,7 @@ async function dlOff(){const mm=$('#dlm'),v=$('#dl_u').value;if(Date.now()<rsUnt
  rsTries++;if(rsTries>=5){rsUntil=Date.now()+60000;rsTries=0}$('#dl_u').value='';mm.textContent='Wrong passcode.'}
 function dlDemo(){const d=EMPTY(),ym=month,last=Math.min(28,Math.max(5,+lday().slice(8,10)||15));
  d.products=[{id:'d1',name:'Cinnamon roll',price:45,cost:20},{id:'d2',name:'Iced latte',price:95,cost:35},{id:'d3',name:'Ube pandesal',price:30,cost:12}];
- for(let i=1;i<=last;i++)d.products.forEach((p,k)=>{const q=3+((i*7+k*5)%9);d.sales.push({id:'x'+i+k,date:ym+'-'+String(i).padStart(2,'0'),pid:p.id,qty:q,ts:ym+'-'+String(i).padStart(2,'0')+'T08:00:00.000Z',amt:p.price*q,use:{}})});
+ for(let i=1;i<=last;i++)d.products.forEach((p,k)=>{const q=3+((i*7+k*5)%9);d.sales.push({id:'x'+i+k,date:ym+'-'+String(i).padStart(2,'0'),pid:p.id,qty:q,ts:ym+'-'+String(i).padStart(2,'0')+'T'+String((i*3+k*5+q)%24).padStart(2,'0')+':00:00.000Z',amt:p.price*q,use:{}})});
  d.expenses=[{id:'e1',date:ym+'-01',cat:'Supplies',desc:'',amt:2500,ts:ym+'-01T08:00:00.000Z'},{id:'e2',date:ym+'-02',cat:'Transport',desc:'',amt:900,ts:ym+'-02T08:00:00.000Z'}];return d}
 function dlWrap(orig){return function(){if(!dlOn())return orig();let h='';const real=S;try{S=dlDemo();h=orig()}catch(e){h='<div style="height:420px"></div>'}finally{S=real}
  return `<div class="lkw"><div class="lkb" inert aria-hidden="true">${h}</div><div class="lko"><div class="lkc" role="status"><div class="lki">${DLI}</div><b>Dashboard locked</b><p>The dashboard lock system is enabled. Please disable it to see the dashboard</p><button class="btn" onclick="tab='set';render();setTimeout(()=>{const e=$('#dl_u');if(e){e.scrollIntoView({block:'center'});e.focus()}},60)">Disable in Settings</button></div></div></div>`}}
@@ -659,9 +724,13 @@ function render(){if(tab!=='set'){rsOpen=false;rsConf=false;rsForgot=false;rsChg
 let undoS=null,undoT=null;
 function del(k,id){if(k==='sales'||k==='rcpt')return;undoS=JSON.stringify(S);S[k]=S[k].filter(x=>x.id!==id);save();render();const u=$('#undo');u.innerHTML='Deleted. <a href="#" onclick="undo();return false" style="color:var(--ac);font-weight:700">Undo</a>';clearTimeout(undoT);undoT=setTimeout(()=>{u.textContent=''},10000)}
 function undo(){if(!undoS)return;S=JSON.parse(undoS);undoS=null;save();render();$('#undo').textContent=''}
-function addSale(){const q=+$('#sq').value;if(!(q>0))return;const pp=gp($('#sp').value),s={id:uid(),date:$('#sd').value||lday(),pid:$('#sp').value,qty:q,ts:new Date().toISOString(),amt:pp?pp.price*q:0};s.use=pp?useOf(pp,q):{};Object.keys(s.use).forEach(k=>{const v=S.inv.find(x=>x.id===k);if(v)v.qty=+(v.qty-s.use[k]).toFixed(3)});S.sales.push(s);month=($('#sd').value||lday()).slice(0,7);save();render()}
+function addSale(){const q=+(($('#sq')||{}).value);const pp=gp(sPid);if(!pp||!(q>0)){msg('Choose a product and enter the quantity.');return}
+ const sub=pp.price*q,disc=discAmt(sDK,sDV,sub),date=($('#sd')||{}).value||lday(),s={id:uid(),date,pid:pp.id,qty:q,ts:new Date().toISOString(),amt:+(sub-disc).toFixed(2)};
+ if(disc>0){s.disc=disc;s.dk=sDK;if(sDK==='pwd'&&sDno.trim())s.dno=sDno.trim()}
+ s.use=useOf(pp,q);Object.keys(s.use).forEach(k=>{const v=S.inv.find(x=>x.id===k);if(v)v.qty=+(v.qty-s.use[k]).toFixed(3)});S.sales.push(s);
+ month=date.slice(0,7);sPid='';sQty='';sDK='none';sDV='';sDno='';sDate=date;save();render();msg('Sale added.')}
 function addExp(){const a=+$('#ea').value;if(!(a>0))return;S.expenses.push({id:uid(),date:$('#ed').value||lday(),cat:$('#ec').value,desc:$('#ex').value.trim(),amt:a,ts:new Date().toISOString()});month=($('#ed').value||lday()).slice(0,7);save();render()}
-function addProd(){const n=$('#pn').value.trim(),p=+$('#pp').value,c=+$('#pc').value||0;if(!n||!(p>0))return;S.products.push({id:uid(),name:n,price:p,cost:c});save();render()}
+function addProd(){const n=$('#pn').value.trim(),p=+$('#pp').value,c=+$('#pc').value||0;if(!n||!(p>0))return;S.products.push({id:uid(),name:n,price:p,cost:c,cat:($('#pcat')||{}).value||''});save();render()}
 function setBatch(id,v){const p=S.products.find(x=>x.id===id);if(p&&+v>0){p.batch=+v;sync(p);save()}}
 function applyPrice(id){const p=S.products.find(x=>x.id===id),tm=(S.set.tm??40)/100;if(p&&tm<1){p.price=+(p.cost/(1-tm)).toFixed(2);save();render()}}
 let openP=null,openI=null,openV=null;
@@ -713,6 +782,10 @@ function toggleTheme(){setTheme(effTheme()==='dark'?'light':'dark')}
 try{const t=localStorage.getItem('ppt-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}
 $('#th').textContent=effTheme()==='dark'?'☀️':'🌙';
 function setExtra(id){const p=gp(id);if(!p)return;p.pk=+$('#pkp').value||0;p.pkn=+$('#pkq').value||0;p.ut=+$('#utv').value||0;sync(p);save();render()}
+function setCat(id,v){const p=gp(id);if(p){p.cat=v;save();render()}}
+function addCat(){const v=$('#cn').value.trim().replace(/\s+/g,' ');if(!v)return;const L=catList().slice();if(L.some(x=>x.toLowerCase()===v.toLowerCase())){msg('That category already exists.');return}if(v.toLowerCase()==='uncategorized'||v.length>30){msg('Choose another name (up to 30 letters).');return}S.set.cats=L.concat([v]);save();render()}
+function delCat(i){const L=catList().slice(),n=L[i];if(n==null)return;S.products.forEach(p=>{if(p.cat===n)p.cat=''});L.splice(i,1);S.set.cats=L;if(sCat===n){sCat='';sPid=''}save();render()}
+function catCard(){const L=catList();return `<div class="card"><h2>Categories</h2><div class="note" style="margin:-4px 0 10px">Group your products (pastry, drinks, meals…). The Sales tab lets you pick a category first, then a product.</div>${L.length?L.map((c,i)=>`<div class="li"><span>${esc(c)}<br><span class="note">${S.products.filter(p=>p.cat===c).length} product${S.products.filter(p=>p.cat===c).length===1?'':'s'}</span></span><button class="x" aria-label="Remove category" onclick="delCat(${i})">×</button></div>`).join(''):'<div class="note">No categories yet.</div>'}<div class="row" style="margin-top:10px"><input id="cn" placeholder="New category (e.g. Sandwiches)" maxlength="30" onkeydown="if(event.key==='Enter')addCat()"><button class="btn" style="flex:0 0 auto;width:auto" onclick="addCat()">Add</button></div></div>`}
 function dupProd(id){const p=gp(id);if(!p)return;const c=JSON.parse(JSON.stringify(p));c.id=uid();c.name=p.name+' (copy)';(c.ing||[]).forEach(i=>i.id=uid());S.products.push(c);openP=c.id;save();render()}
 function pEdit(id,f,v){const p=gp(id);if(!p)return;if(f==='price')p.price=+v||0;else p.name=v.trim()||p.name;save();render()}
 const BR=[[0,0,0],[250000,0,.15],[400000,22500,.20],[800000,102500,.25],[2000000,402500,.30],[8000000,2202500,.35]];
