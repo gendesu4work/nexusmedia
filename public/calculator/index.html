@@ -706,21 +706,21 @@ document.addEventListener('mousemove',e=>{const tp=$('#tip'),t=e.target.closest&
  const p=t.dataset.tip.split('|');tp.innerHTML='<b>'+esc(p[0])+'</b>'+p.slice(1).map(esc).join('<br>');tp.style.display='block';
  const r=tp.getBoundingClientRect();let x=e.clientX+14,y=e.clientY+14;if(x+r.width>innerWidth-8)x=e.clientX-r.width-14;if(y+r.height>innerHeight-8)y=e.clientY-r.height-14;tp.style.left=x+'px';tp.style.top=y+'px'});
 addEventListener('scroll',()=>{$('#tip').style.display='none'},{passive:true});document.addEventListener('mouseleave',()=>{$('#tip').style.display='none'});
-/* ===== Owner mode (Dashboard, Inventory, Products): blurs the dashboard until the owner passcode (same one as Reset sales) turns it off ===== */
+/* ===== Staff mode (Dashboard, Inventory, Products): blurs the dashboard until the owner passcode (same one as Reset sales) turns it off ===== */
 const DLI='<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.2" fill="currentColor"/></svg>';
 const dlOn=()=>!!(S.set&&S.set.dlock&&S.set.pinH);
-function dlCard(){const s=S.set,on=dlOn(),h='<h2>🔒 Owner mode</h2>',out='<div class="note" id="dlm" style="margin-top:8px;min-height:16px"></div>',
- info='<div class="note" style="margin:-4px 0 10px">Hide your profit, margin, inventory and products from staff. When Owner mode is on, the Dashboard, Inventory and Products tabs are blurred until the owner turns it off with the owner passcode.</div>',
+function dlCard(){const s=S.set,on=dlOn(),h='<h2>🔒 Staff mode</h2>',out='<div class="note" id="dlm" style="margin-top:8px;min-height:16px"></div>',
+ info='<div class="note" style="margin:-4px 0 10px">Hide your profit, margin, inventory and products from staff. When Staff mode is on, the Dashboard, Inventory and Products tabs are blurred until the owner turns it off with the owner passcode.</div>',
  st=`<div class="li"><span>Status</span><b class="${on?'pos':''}">${on?'On (locked)':'Off'}</b></div>`;
- if(on)return `<div class="card">${h}${info}${st}<div style="margin-top:12px">${pinIn('dl_u','Owner passcode','off',"dlOff()")}<button class="btn" onclick="dlOff()">Turn Owner mode off</button></div><div class="note" style="margin-top:8px">Forgot the passcode? Use “Forgot passcode?” in the Reset sales card below.</div>${out}</div>`;
- if(!s.pinH)return `<div class="card">${h}${info}${st}<div class="note" style="margin:10px 0">Set a 6-digit owner passcode to turn Owner mode on. The same passcode is used to reset sales.</div>${pinIn('dl_a','New 6-digit passcode','new-password')}${pinIn('dl_b','Repeat passcode','new-password',"dlNew()")}<button class="btn" onclick="dlNew()">Save passcode and turn Owner mode on</button>${out}</div>`;
- return `<div class="card">${h}${info}${st}<div style="margin-top:12px"><button class="btn" onclick="dlTurn()">Turn Owner mode on</button></div>${out}</div>`}
-function dlTurn(){S.set.dlock=true;save();render();msg('Owner mode is on.')}
+ if(on)return `<div class="card">${h}${info}${st}<div style="margin-top:12px">${pinIn('dl_u','Owner passcode','off',"dlOff()")}<button class="btn" onclick="dlOff()">Turn Staff mode off</button></div><div class="note" style="margin-top:8px">Forgot the passcode? Use “Forgot passcode?” in the Reset sales card below.</div>${out}</div>`;
+ if(!s.pinH)return `<div class="card">${h}${info}${st}<div class="note" style="margin:10px 0">Set a 6-digit owner passcode to turn Staff mode on. The same passcode is used to reset sales.</div>${pinIn('dl_a','New 6-digit passcode','new-password')}${pinIn('dl_b','Repeat passcode','new-password',"dlNew()")}<button class="btn" onclick="dlNew()">Save passcode and turn Staff mode on</button>${out}</div>`;
+ return `<div class="card">${h}${info}${st}<div style="margin-top:12px"><button class="btn" onclick="dlTurn()">Turn Staff mode on</button></div>${out}</div>`}
+function dlTurn(){S.set.dlock=true;save();render();msg('Staff mode is on.')}
 async function dlNew(){const a=$('#dl_a').value,b=$('#dl_b').value,mm=$('#dlm');if(!pinOk(a,b,mm))return;
  if(!window.crypto||!crypto.subtle){mm.textContent='This browser cannot save a passcode securely.';return}
- S.set.dlock=true;await pinStore(a);render();msg('Owner passcode saved. Owner mode is on.')}
+ S.set.dlock=true;await pinStore(a);render();msg('Owner passcode saved. Staff mode is on.')}
 async function dlOff(){const mm=$('#dlm'),v=$('#dl_u').value;if(Date.now()<rsUntil){mm.textContent='Too many wrong tries. Wait a minute, then try again.';return}
- if(/^\d{6}$/.test(v)&&await pinHash(v,S.set.pinS)===S.set.pinH){S.set.dlock=false;rsTries=0;save();render();msg('Owner mode is off.');return}
+ if(/^\d{6}$/.test(v)&&await pinHash(v,S.set.pinS)===S.set.pinH){S.set.dlock=false;rsTries=0;save();render();msg('Staff mode is off.');return}
  rsTries++;if(rsTries>=5){rsUntil=Date.now()+60000;rsTries=0}$('#dl_u').value='';mm.textContent='Wrong passcode.'}
 function dlDemo(){const d=EMPTY(),ym=month,last=Math.min(28,Math.max(5,+lday().slice(8,10)||15));
  d.products=[{id:'d1',name:'Cinnamon roll',price:45,cost:20},{id:'d2',name:'Iced latte',price:95,cost:35},{id:'d3',name:'Ube pandesal',price:30,cost:12}];
@@ -728,7 +728,7 @@ function dlDemo(){const d=EMPTY(),ym=month,last=Math.min(28,Math.max(5,+lday().s
  d.inv=[{id:'i1',name:'All-purpose flour',u:'g',qty:8200,low:2000,pack:1000,pc:55},{id:'i2',name:'Butter',u:'g',qty:900,low:1000,pack:225,pc:95},{id:'i3',name:'Sugar',u:'g',qty:5400,low:1500,pack:1000,pc:70},{id:'i4',name:'Milk',u:'ml',qty:0,low:1000,pack:1000,pc:98}];
  d.expenses=[{id:'e1',date:ym+'-01',cat:'Supplies',desc:'',amt:2500,ts:ym+'-01T08:00:00.000Z'},{id:'e2',date:ym+'-02',cat:'Transport',desc:'',amt:900,ts:ym+'-02T08:00:00.000Z'}];return d}
 function dlWrap(orig,what){return function(){if(!dlOn())return orig();let h='';const real=S;try{S=dlDemo();h=orig()}catch(e){h='<div style="height:420px"></div>'}finally{S=real}
- return `<div class="lkw"><div class="lkb" inert aria-hidden="true">${h}</div><div class="lko"><div class="lkc" role="status"><div class="lki">${DLI}</div><b>Owner mode</b><p>Owner mode is enabled. Please disable it to see the ${what}.</p><button class="btn" onclick="tab='set';render();setTimeout(()=>{const e=$('#dl_u');if(e){e.scrollIntoView({block:'center'});e.focus()}},60)">Disable in Settings</button></div></div></div>`}}
+ return `<div class="lkw"><div class="lkb" inert aria-hidden="true">${h}</div><div class="lko"><div class="lkc" role="status"><div class="lki">${DLI}</div><b>Staff mode</b><p>Staff mode is enabled. Please disable it to see the ${what}.</p><button class="btn" onclick="tab='set';render();setTimeout(()=>{const e=$('#dl_u');if(e){e.scrollIntoView({block:'center'});e.focus()}},60)">Disable in Settings</button></div></div></div>`}}
 [['dash','dashboard'],['inv','inventory'],['prod','products']].forEach(a=>{V[a[0]]=dlWrap(V[a[0]],a[1]);D[a[0]]=dlWrap(D[a[0]],a[1])});
 function render(){if(tab!=='set'){rsOpen=false;rsConf=false;rsForgot=false;rsChg=false}applyPal();S.products.forEach(sync);renderBrand();$('#fl').src=APPLOGO;const T=[['dash','Dashboard'],['sales','Sales'],['inv','Inventory'],['prod','Products'],['exp','Expenses'],['set','Settings']].map(t=>dlOn()&&['dash','inv','prod'].includes(t[0])?[t[0],t[1]+' 🔒']:t);
  $('#nav').innerHTML=T.map(t=>`<button class="${tab==t[0]?'on':''}" onclick="tab='${t[0]}';render()">${t[1]}</button>`).join('');document.body.classList.add('inapp');$('#tip').style.display='none';$('#side').innerHTML=sideHTML(T);$('#app').innerHTML=(isPC()?D:V)[tab]()}
