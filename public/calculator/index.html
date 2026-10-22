@@ -137,20 +137,20 @@ footer img{width:18px;height:18px;vertical-align:-4px;margin-right:4px}.fd{displ
 #side{display:none}:root{--c1:var(--ac);--c2:#1b8a4e}
 #tip{position:fixed;z-index:200;pointer-events:none;background:var(--tx);color:var(--card);font-size:12.5px;line-height:1.5;padding:8px 11px;border-radius:9px;box-shadow:0 10px 28px rgba(0,0,0,.25);display:none;max-width:260px}#tip b{display:block}
 @media(min-width:1024px) and (hover:hover) and (pointer:fine){
-body.inapp main{max-width:none;margin:0;padding:30px 36px 22px 330px}
+body.inapp main{max-width:none;margin:0;padding:30px 36px 22px 356px}
 body.inapp header,body.inapp #nav,body.inapp #bar{display:none}
-body.inapp #side{display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;width:294px;background:var(--card);border-right:1px solid var(--ln);padding:22px 16px;z-index:10;overflow-y:auto}
-.sbb{display:flex;align-items:center;gap:12px;padding:2px 8px 20px;border-bottom:1px solid var(--ln);margin-bottom:14px}
-.sbb img{width:46px;height:46px;border-radius:12px;background:#fff;object-fit:contain;padding:3px;border:1px solid var(--ln);flex:none}
-.sbb .bn{font-size:17px}.sbb .bs{color:var(--mut);opacity:1}
+body.inapp #side{display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;width:320px;background:var(--card);border-right:1px solid var(--ln);padding:26px 20px 22px;z-index:10;overflow-y:auto}
+.sbb{display:flex;align-items:center;gap:14px;padding:0 6px 22px;border-bottom:1px solid var(--ln);margin-bottom:22px}
+.sbb img{width:56px;height:56px;border-radius:14px;background:#fff;object-fit:contain;padding:3px;border:1px solid var(--ln);flex:none}
+.sbb .bn{font-size:20px;letter-spacing:-.2px}.sbb .bs{color:var(--mut);opacity:1;font-size:13.5px;margin-top:2px}.sbh{font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--mut);padding:0 14px;margin:0 0 10px}
 .sbn{display:flex;flex-direction:column;gap:6px}
-.sbn button{display:flex;align-items:center;gap:14px;width:100%;border:0;background:none;color:var(--mut);font:inherit;font-size:16.5px;font-weight:600;padding:15px 18px;border-radius:12px;cursor:pointer;text-align:left}
-.sbn button:hover{background:var(--bg);color:var(--tx)}
-.sbn button.on{background:color-mix(in srgb,var(--ac) 13%,transparent);color:var(--ac)}
-.sbn .i{width:23px;height:23px}.kic .i{width:20px;height:20px}
-.sbf{margin-top:auto;padding-top:16px;display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--ln);font-size:13px;color:var(--mut)}
-.sbu{overflow-wrap:anywhere;line-height:1.5;padding:0 4px 2px}.sbu b{color:var(--tx)}.sbf .btn{padding:12px;font-weight:700;font-size:14.5px;border-radius:10px}.sbf .btn.ghost{border-width:1.5px}.chd{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:14px}.chd h2{margin:0!important}.chd span{font-size:13px;color:var(--mut)}.dg>.card{display:flex;flex-direction:column}.dg.eq{grid-auto-rows:1fr}.fill{flex:1;display:flex;flex-direction:column;justify-content:space-evenly;gap:12px}.fill .hb{margin:0}.dg .empty{flex:1;display:grid;place-items:center}.lowbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card);border:1px solid color-mix(in srgb,var(--bad) 45%,var(--ln));border-radius:16px;padding:12px 14px 12px 20px}.chip{background:color-mix(in srgb,var(--bad) 11%,transparent);color:var(--bad);border-radius:999px;padding:6px 12px;font-size:13.5px;font-weight:600}.lowbar .btn{width:auto;margin-left:auto;padding:9px 16px}
-.sbt{width:100%;border:1px solid var(--ln);background:var(--bg);color:var(--tx);border-radius:10px;padding:9px;font:inherit;font-size:13.5px;cursor:pointer}.sbt:hover{border-color:var(--ac)}
+.sbn button{display:flex;align-items:center;gap:16px;width:100%;border:0;background:none;color:var(--tx);opacity:.78;font:inherit;font-size:18px;font-weight:600;padding:16px 18px;border-radius:12px;cursor:pointer;text-align:left;position:relative;transition:background .15s,opacity .15s}
+.sbn button:hover{background:var(--bg);opacity:1}.sbn button:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 35%,transparent)}
+.sbn button.on{background:color-mix(in srgb,var(--ac) 13%,transparent);color:var(--ac);opacity:1;font-weight:700}.sbn button.on::before{content:'';position:absolute;left:-20px;top:12px;bottom:12px;width:4px;border-radius:0 4px 4px 0;background:var(--ac)}
+.sbn .i{width:26px;height:26px;stroke-width:1.8}.kic .i{width:20px;height:20px}
+.sbf{margin-top:auto;padding-top:20px;display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--ln);font-size:14px;color:var(--mut)}.sbf .sbh{margin:4px 0 0}
+.sbu{overflow-wrap:anywhere;line-height:1.5;padding:12px 14px;background:var(--bg);border:1px solid var(--ln);border-radius:12px;font-size:14px}.sbu b{color:var(--tx);font-size:15.5px}.sbf .btn{padding:14px;font-weight:700;font-size:16px;border-radius:12px}.sbf .btn.ghost{border-width:1.5px}.chd{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:14px}.chd h2{margin:0!important}.chd span{font-size:13px;color:var(--mut)}.dg>.card{display:flex;flex-direction:column}.dg.eq{grid-auto-rows:1fr}.fill{flex:1;display:flex;flex-direction:column;justify-content:space-evenly;gap:12px}.fill .hb{margin:0}.dg .empty{flex:1;display:grid;place-items:center}.lowbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card);border:1px solid color-mix(in srgb,var(--bad) 45%,var(--ln));border-radius:16px;padding:12px 14px 12px 20px}.chip{background:color-mix(in srgb,var(--bad) 11%,transparent);color:var(--bad);border-radius:999px;padding:6px 12px;font-size:13.5px;font-weight:600}.lowbar .btn{width:auto;margin-left:auto;padding:9px 16px}
+.sbt{width:100%;display:flex;align-items:center;justify-content:space-between;border:1px solid var(--ln);background:var(--bg);color:var(--tx);border-radius:12px;padding:13px 14px;font:inherit;font-size:16px;font-weight:600;cursor:pointer}.sbt:hover{border-color:var(--ac)}.tgl{width:44px;height:24px;border-radius:12px;background:var(--ln);position:relative;flex:none;transition:background .2s}.tgl::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s}.tgl.on{background:var(--ac)}.tgl.on::after{left:23px}
 body.inapp .card{padding:20px 22px;border-radius:16px;margin-bottom:18px}
 body.inapp h2{font-size:17px;margin-bottom:14px}
 body.inapp input,body.inapp select{padding:11px 12px}
@@ -491,10 +491,10 @@ peso:'<path d="M8 4v16"/><path d="M8 4h5a4 4 0 0 1 0 8H8"/><path d="M5 7.5h14M5 
 bars:'<path d="M4 20V11M10 20V5M16 20v-6M2 20h20"/>',
 pct:'<path d="M19 5L5 19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/>'};
 const svgI=k=>`<svg viewBox="0 0 24 24" class="i" aria-hidden="true">${ICO[k]}</svg>`;
-function thLabel(){const d=effTheme()==='dark';return (d?'☀️ Light mode':'🌙 Dark mode')}
+function thLabel(){const d=effTheme()==='dark';return `<span>🌙 Dark mode</span><i class="tgl${d?' on':''}"></i>`}
 function sideHTML(T){const b=S.brand||{};return `<div class="sbb"><img alt="" src="${b.logo||APPLOGO}"><div style="min-width:0"><div class="bn">${esc(b.name||'Product Calculator')}</div><div class="bs">${b.name?'Powered by NEXUSMEDIA':'Cost, stock & profit tracker'}</div></div></div>
- <div class="sbn" role="navigation">${T.map(t=>`<button class="${tab==t[0]?'on':''}" ${tab==t[0]?'aria-current="page"':''} onclick="tab='${t[0]}';render();scrollTo(0,0)">${svgI(t[0])}${t[1]}</button>`).join('')}</div>
- <div class="sbf"><button id="th2" class="sbt" onclick="toggleTheme()">${thLabel()}</button>${sideAcct()}</div>`}
+ <div class="sbh">Menu</div><div class="sbn" role="navigation">${T.map(t=>`<button class="${tab==t[0]?'on':''}" ${tab==t[0]?'aria-current="page"':''} onclick="tab='${t[0]}';render();scrollTo(0,0)">${svgI(t[0])}${t[1]}</button>`).join('')}</div>
+ <div class="sbf"><button id="th2" class="sbt" role="switch" aria-checked="${effTheme()==='dark'}" onclick="toggleTheme()">${thLabel()}</button><div class="sbh">Account</div>${sideAcct()}</div>`}
 let uEmail='';
 function sideAcct(){if(guest)return `<div class="sbu"><b>Guest mode</b><br>Nothing is saved until you sign up.</div><button class="btn" onclick="openPackage()">Sign up to save online</button><button class="btn ghost" onclick="leaveGuest()">Log in</button>`;
  return `<div class="sbu">Signed in as<br><b>${esc(uEmail)}</b></div><button class="btn ghost" onclick="doLogout()">Log out</button>`}
@@ -635,10 +635,10 @@ const PV=['bg','card','tx','mut','ac','on','ln','ok','bad','hd1','hd2'];
 function curPal(){let k=S.set&&S.set.pal;if(!k){try{k=localStorage.getItem('ppt-pal')}catch(e){}}return PAL[k]?k:'sky'}
 function applyPal(){const st=document.documentElement.style,k=curPal(),p=PAL[k];PV.forEach(n=>st.removeProperty('--'+n));st.setProperty('--c2',CH[k][effTheme()==='dark'?1:0]);if(!p.l)return;const v=p[effTheme()==='dark'?'d':'l'];PV.forEach((n,i)=>st.setProperty('--'+n,v[i]))}
 function setPal(k){if(!PAL[k])return;S.set.pal=k;try{localStorage.setItem('ppt-pal',k)}catch(e){}save();render()}
-function palCard(){const cur=curPal();return `<div class="card"><h2>Appearance</h2><div class="note" style="margin:-4px 0 10px">Choose a color theme for the app.</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${Object.keys(PAL).map(k=>{const p=PAL[k],pv=p.pv||[p.l[9],p.l[10],p.l[4],p.l[0]],on=cur===k;return `<button class="sw ${on?'on':''}" onclick="setPal('${k}')" aria-pressed="${on}"><span class="pv" style="background:${p.pv?p.pv[2]:p.l[0]}"><span style="background:linear-gradient(135deg,${p.pv?p.pv[0]:p.l[9]},${p.pv?p.pv[1]:p.l[10]})"></span><i style="background:${p.pv?p.pv[0]:p.l[4]}"></i></span><b>${p.n}</b><span class="note">${on?'✓ Selected':'&nbsp;'}</span></button>`}).join('')}</div><div class="note" style="margin-top:10px">Use the ${isPC()?'dark mode button in the sidebar':'🌙 button at the top'} for dark mode. Every theme has a light and a dark version.</div></div>`}
+function palCard(){const cur=curPal();return `<div class="card"><h2>Appearance</h2><div class="note" style="margin:-4px 0 10px">Choose a color theme for the app.</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${Object.keys(PAL).map(k=>{const p=PAL[k],pv=p.pv||[p.l[9],p.l[10],p.l[4],p.l[0]],on=cur===k;return `<button class="sw ${on?'on':''}" onclick="setPal('${k}')" aria-pressed="${on}"><span class="pv" style="background:${p.pv?p.pv[2]:p.l[0]}"><span style="background:linear-gradient(135deg,${p.pv?p.pv[0]:p.l[9]},${p.pv?p.pv[1]:p.l[10]})"></span><i style="background:${p.pv?p.pv[0]:p.l[4]}"></i></span><b>${p.n}</b><span class="note">${on?'✓ Selected':'&nbsp;'}</span></button>`}).join('')}</div><div class="note" style="margin-top:10px">Use the ${isPC()?'Dark mode switch in the sidebar':'🌙 button at the top'} for dark mode. Every theme has a light and a dark version.</div></div>`}
 try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyPal)}catch(e){}
 function effTheme(){return document.documentElement.dataset.theme||(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
-function setTheme(t){document.documentElement.dataset.theme=t;applyPal();try{localStorage.setItem('ppt-theme',t)}catch(e){}$('#th').textContent=t==='dark'?'☀️':'🌙';const t2=$('#th2');if(t2)t2.textContent=thLabel()}
+function setTheme(t){document.documentElement.dataset.theme=t;applyPal();try{localStorage.setItem('ppt-theme',t)}catch(e){}$('#th').textContent=t==='dark'?'☀️':'🌙';const t2=$('#th2');if(t2){t2.innerHTML=thLabel();t2.setAttribute('aria-checked',t==='dark')}}
 function toggleTheme(){setTheme(effTheme()==='dark'?'light':'dark')}
 try{const t=localStorage.getItem('ppt-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}
 $('#th').textContent=effTheme()==='dark'?'☀️':'🌙';
