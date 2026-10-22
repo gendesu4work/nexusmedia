@@ -75,7 +75,7 @@ footer img{width:18px;height:18px;vertical-align:-4px;margin-right:4px}.fd{displ
 .eye svg{width:19px;height:19px;stroke:var(--mut);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .lbtn{width:100%;height:46px;font-size:15px;font-weight:700;border-radius:10px;margin-top:2px}
 .btn.ghost{background:transparent;color:var(--ac);border:1.5px solid var(--ln)}
-.btn.ghost:hover{border-color:var(--ac)}
+.btn.ghost:hover{border-color:var(--ac)}.btn:disabled{opacity:.45;cursor:not-allowed}
 .fgb{margin-top:12px;padding:12px;border:1px dashed var(--ln);border-radius:12px}.fgb input{margin:8px 0}
 .lm{min-height:18px;margin-top:10px;text-align:center}
 .or{display:flex;align-items:center;gap:12px;color:var(--mut);font-size:12px;margin:6px 0 14px}
@@ -309,6 +309,46 @@ async function doReset(){const p=$('#rp1').value,q=$('#rp2').value,mm=$('#rmsg')
  if(r.error){mm.textContent=r.error.message||'Could not save. Please ask for a new link.';return}
  recovering=false;history.replaceState(null,'',location.pathname);$('#reset').style.display='none';
  const s=await sb.auth.getSession();if(s.data&&s.data.session)await enter(s.data.session.user);else showLogin('Password changed. Please log in.')}
+// ===== Reset sales (owner passcode). Removes sales, refunds, receipts and closed shifts in a period; products, inventory and expenses stay. =====
+let rsOpen=false,rsP='day',rsD='',rsM='',rsConf=false,rsForgot=false,rsChg=false,rsTries=0,rsUntil=0;
+async function pinHash(pin,salt){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(salt+':'+pin));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+async function pinStore(a){const salt=uid()+uid()+uid();S.set.pinS=salt;S.set.pinH=await pinHash(a,salt);save()}
+function pinOk(a,b,mm){if(!/^\d{6}$/.test(a)){mm.textContent='The passcode must be exactly 6 digits.';return false}if(a!==b){mm.textContent='The two passcodes do not match.';return false}return true}
+const addDay=(d,k)=>{const t=new Date(d+'T00:00:00Z');t.setUTCDate(t.getUTCDate()+k);return t.toISOString().slice(0,10)};
+const fmtD=d=>new Date(d+'T00:00:00').toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});
+const shDate=x=>{const p=phParts(new Date(x.openTs));return p.year+'-'+p.month+'-'+p.day};
+function rsRange(){const d=rsD||lday(),mo=rsM||lday().slice(0,7);if(rsP==='month')return{f:mo+'-01',t:mo+'-31',lab:mName(mo,1)};if(rsP==='week'){const f=addDay(d,-6);return{f,t:d,lab:fmtD(f)+' – '+fmtD(d)}}return{f:d,t:d,lab:fmtD(d)}}
+function rsPick(){const r=rsRange(),inR=d=>!!d&&d>=r.f&&d<=r.t;return{r,sales:S.sales.filter(s=>inR(s.date)),refunds:(S.refunds||[]).filter(x=>inR(x.date)),rcpt:(S.rcpt||[]).filter(x=>inR(x.date)),shifts:(S.shifts||[]).filter(x=>x.closeTs&&inR(shDate(x)))}}
+const pinIn=(id,ph,ac,ent)=>`<input id="${id}" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="${ac}" placeholder="${ph}" style="margin-bottom:8px"${ent?` onkeydown="if(event.key==='Enter')${ent}"`:''}>`;
+function resetCard(){const s=S.set,h='<h2>🔒 Reset sales</h2>',out='<div class="note" id="rsm" style="margin-top:8px"></div>',ghost='class="btn ghost"';
+ if(!s.pinH)return `<div class="card">${h}<div class="note" style="margin:-4px 0 10px">Set a 6-digit owner passcode first. Only someone who knows it can reset sales.</div>${pinIn('rp_a','New 6-digit passcode','new-password')}${pinIn('rp_b','Repeat passcode','new-password',"pinSet()")}<button class="btn" onclick="pinSet()">Save passcode</button>${out}</div>`;
+ if(rsForgot){if(guest||!uidU)return `<div class="card">${h}<div class="note" style="margin:-4px 0 10px">Guest mode has no account password. Your guest data and this passcode are erased when you leave the page.</div><button ${ghost} onclick="rsForgot=false;render()">Back</button></div>`;
+  return `<div class="card">${h}<div class="note" style="margin:-4px 0 10px">Enter your account password to set a new owner passcode.</div><input id="rp_o" type="password" autocomplete="current-password" placeholder="Account password" style="margin-bottom:8px">${pinIn('rp_a','New 6-digit passcode','new-password')}${pinIn('rp_b','Repeat passcode','new-password',"pinRecover()")}<div class="row"><button class="btn" onclick="pinRecover()">Set new passcode</button><button ${ghost} onclick="rsForgot=false;render()">Cancel</button></div>${out}</div>`}
+ if(!rsOpen)return `<div class="card">${h}<div class="note" style="margin:-4px 0 10px">Enter the owner passcode to reset sales for a day, the last 7 days or a month.</div>${pinIn('rp_u','Owner passcode','off',"rsUnlock()")}<button class="btn" onclick="rsUnlock()">Unlock</button><div class="note" style="margin-top:8px"><a href="#" onclick="rsForgot=true;render();return false" style="color:var(--ac)">Forgot passcode?</a></div>${out}</div>`;
+ if(rsChg)return `<div class="card">${h}<div class="note" style="margin:-4px 0 10px">Choose a new 6-digit owner passcode.</div>${pinIn('rp_a','New 6-digit passcode','new-password')}${pinIn('rp_b','Repeat passcode','new-password',"pinSet()")}<div class="row"><button class="btn" onclick="pinSet()">Save passcode</button><button ${ghost} onclick="rsChg=false;render()">Cancel</button></div>${out}</div>`;
+ const k=rsPick(),tot=k.sales.reduce((a,x)=>{const p=gp(x.pid);return a+(x.amt!=null?x.amt:(p?p.price*x.qty:0))},0),n=k.sales.length+k.refunds.length+k.rcpt.length+k.shifts.length;
+ return `<div class="card" style="border-color:var(--bad)">${h}<div class="note" style="margin:-4px 0 10px">Products, inventory and expenses are not touched, and stock is not put back.</div>
+ <div class="row"><select onchange="rsP=this.value;rsConf=false;render()">${[['day','One day'],['week','Last 7 days'],['month','One month']].map(o=>`<option value="${o[0]}" ${rsP===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>${rsP==='month'?`<input type="month" value="${rsM||lday().slice(0,7)}" onchange="rsM=this.value;rsConf=false;render()">`:`<input type="date" value="${rsD||lday()}" onchange="rsD=this.value;rsConf=false;render()">`}</div>
+ <div class="li"><span>Period</span><b>${k.r.lab}</b></div><div class="li"><span>Sales</span><b>${k.sales.length} · ${m(tot)}</b></div><div class="li"><span>Refunds</span><b>${k.refunds.length}</b></div><div class="li"><span>Receipts</span><b>${k.rcpt.length}</b></div><div class="li"><span>Closed shifts</span><b>${k.shifts.length}</b></div>
+ ${!n?'<div class="note" style="margin-top:10px">Nothing to remove in this period.</div>':''}
+ ${rsConf?`<div class="neg" style="margin:12px 0 8px;font-weight:700">This removes ${n} record${n===1?'':'s'} for ${k.r.lab}. Are you sure?</div><div class="row"><button class="btn" style="background:var(--bad)" onclick="rsDo()">Yes, remove them</button><button ${ghost} onclick="rsConf=false;render()">Cancel</button></div>`
+ :`<div class="row" style="margin-top:12px"><button class="btn" style="background:var(--bad)" ${n?'':'disabled'} onclick="rsConf=true;render()">Reset sales</button><button ${ghost} onclick="rsOpen=false;render()">Lock</button></div>`}
+ <div class="note" style="margin-top:8px"><a href="#" onclick="rsChg=true;rsConf=false;render();return false" style="color:var(--ac)">Change passcode</a></div></div>`}
+async function pinSet(){const a=$('#rp_a').value,b=$('#rp_b').value,mm=$('#rsm');if(S.set.pinH&&!rsOpen)return;if(!pinOk(a,b,mm))return;
+ if(!window.crypto||!crypto.subtle){mm.textContent='This browser cannot save a passcode securely.';return}
+ await pinStore(a);rsChg=false;render();msg('Owner passcode saved.')}
+async function rsUnlock(){const mm=$('#rsm'),v=$('#rp_u').value;if(Date.now()<rsUntil){mm.textContent='Too many wrong tries. Wait a minute, then try again.';return}
+ if(/^\d{6}$/.test(v)&&await pinHash(v,S.set.pinS)===S.set.pinH){rsOpen=true;rsTries=0;rsConf=false;render();return}
+ rsTries++;if(rsTries>=5){rsUntil=Date.now()+60000;rsTries=0}$('#rp_u').value='';mm.textContent='Wrong passcode.'}
+async function pinRecover(){const o=$('#rp_o').value,a=$('#rp_a').value,b=$('#rp_b').value,mm=$('#rsm');if(!o){mm.textContent='Enter your account password.';return}if(!pinOk(a,b,mm))return;
+ if(!navigator.onLine){mm.textContent='You need internet to check your password.';return}mm.textContent='Checking…';
+ let em=null;try{const w=await sb.auth.getUser();em=w.data&&w.data.user&&w.data.user.email}catch(e){}
+ let c={error:1};try{if(em)c=await sb.auth.signInWithPassword({email:em,password:o})}catch(e){}
+ if(c.error){mm.textContent='Your account password is not correct.';return}
+ await pinStore(a);rsForgot=false;rsOpen=true;rsTries=0;render();msg('New owner passcode saved.')}
+function rsDo(){const k=rsPick(),ids=a=>new Set(a.map(x=>x.id)),A=ids(k.sales),B=ids(k.refunds),C=ids(k.rcpt),E=ids(k.shifts);undoS=JSON.stringify(S);
+ S.sales=S.sales.filter(x=>!A.has(x.id));S.refunds=(S.refunds||[]).filter(x=>!B.has(x.id));S.rcpt=(S.rcpt||[]).filter(x=>!C.has(x.id));S.shifts=(S.shifts||[]).filter(x=>!E.has(x.id));
+ rsConf=false;shRep=null;rShow=null;save();render();const u=$('#undo');u.innerHTML='Sales reset for '+esc(k.r.lab)+'. <a href="#" onclick="undo();return false" style="color:var(--ac);font-weight:700">Undo</a>';clearTimeout(undoT);undoT=setTimeout(()=>{u.textContent=''},15000)}
 function acctCard(){if(guest||!uidU)return '';return `<div class="card"><h2>Account</h2><div class="note" style="margin:-4px 0 8px">Change your password</div><input id="cp0" type="password" placeholder="Current password" autocomplete="current-password" style="margin-bottom:8px"><input id="cp1" type="password" placeholder="New password (8+ characters)" autocomplete="new-password" style="margin-bottom:8px"><input id="cp2" type="password" placeholder="Repeat new password" autocomplete="new-password" style="margin-bottom:8px"><button class="btn" onclick="doChange()">Change password</button><div class="note" id="cmsg" style="margin-top:8px"></div></div>`}
 async function doChange(){const o=$('#cp0').value,p=$('#cp1').value,q=$('#cp2').value,mm=$('#cmsg');
  if(!o||p.length<8){mm.textContent='Enter your current password and a new one with at least 8 characters.';return}
@@ -452,7 +492,7 @@ dash(){const c=calc();const rows=S.products.map(p=>{const x=c.per[p.id],g=x.r-x.
 sales(){return shiftCard()+salesForm()+refundCard()+receiptCard()+monthSel()+salesList()},
 exp(){return expForm()+fixedCard()+monthSel()+expList()},
 prod(){return prodForm()+prodList()},
-set(){return brandCard()+`${taxSet()}${palCard()}${acctCard()}`}};
+set(){return brandCard()+`${taxSet()}${palCard()}${resetCard()}${acctCard()}`}};
 function invAddCard(){return `<div class="card"><h2>Add ingredient</h2><div class="row"><input id="vn" placeholder="Ingredient name"><select id="vu" style="flex:0 0 76px"><option>g</option><option>ml</option><option>pcs</option></select></div><div class="row"><input id="vq" type="number" placeholder="On hand now" inputmode="decimal"><input id="vl" type="number" placeholder="Low-stock alert at" inputmode="decimal"></div><div class="row"><input id="vk" type="number" placeholder="Pack size (same unit)" inputmode="decimal"><input id="vc" type="number" placeholder="Price of that pack" inputmode="decimal"></div><button class="btn" onclick="addInv()">Add to inventory</button></div>`}
 function invListCard(){const L=S.inv.map(v=>{const st=v.qty<=0?['Out','neg']:(v.low>0&&v.qty<=v.low?['Low','neg']:['OK','pos']);
  const num=(l,k,val)=>`<div><div class="note">${l}</div><input type="number" value="${val}" inputmode="decimal" onchange="invEdit('${v.id}','${k}',this.value)"></div>`;
@@ -577,14 +617,14 @@ exp(){const c=calc(),by={};S.expenses.filter(e=>inM(e.date)).forEach(e=>by[e.cat
  +col(8,card('By category',mName(month,1),cats.length?`<div class="fill">${hbars(cats.map(x=>({n:x[0],v:x[1],t:m(x[1]),s:pct(x[1],c.ops)+' of other expenses'})))}</div>`:empty('No expenses in '+mName(month,1)+' yet.')))+col(4,expForm())
  +col(8,expList('Expenses in '+mName(month,1)),'lim')+col(4,fixedCard())+`</div>`},
 set(){const ac=acctCard()||`<div class="card">${chd('Save your data','Guest mode')}<div class="note" style="font-size:14px">You are in guest mode, so nothing is saved. Sign up to keep your data online and use it on your phone, tablet and computer.</div><div class="row" style="margin:auto 0 0;padding-top:16px"><button class="btn" onclick="openPackage()">Sign up to save online</button><button class="btn ghost" onclick="leaveGuest()">Log in</button></div></div>`;
- return pHead('Settings','Business profile, tax and appearance')+`<div class="dg">`+col(6,brandCard())+col(6,palCard())+col(6,taxSet())+col(6,ac)+`</div>`}};
+ return pHead('Settings','Business profile, tax, appearance and sales reset')+`<div class="dg">`+col(6,brandCard())+col(6,palCard())+col(6,taxSet())+col(6,ac)+col(12,resetCard())+`</div>`}};
 const col=(sp,h,x)=>`<div class="col s${sp}${x?' '+x:''}">${h}</div>`;
 const card=(t,sub,h)=>`<div class="card">${chd(t,sub)}${h}</div>`;
 document.addEventListener('mousemove',e=>{const tp=$('#tip'),t=e.target.closest&&e.target.closest('[data-tip]');if(!t){tp.style.display='none';return}
  const p=t.dataset.tip.split('|');tp.innerHTML='<b>'+esc(p[0])+'</b>'+p.slice(1).map(esc).join('<br>');tp.style.display='block';
  const r=tp.getBoundingClientRect();let x=e.clientX+14,y=e.clientY+14;if(x+r.width>innerWidth-8)x=e.clientX-r.width-14;if(y+r.height>innerHeight-8)y=e.clientY-r.height-14;tp.style.left=x+'px';tp.style.top=y+'px'});
 addEventListener('scroll',()=>{$('#tip').style.display='none'},{passive:true});document.addEventListener('mouseleave',()=>{$('#tip').style.display='none'});
-function render(){applyPal();S.products.forEach(sync);renderBrand();$('#fl').src=APPLOGO;const T=[['dash','Dashboard'],['sales','Sales'],['inv','Inventory'],['prod','Products'],['exp','Expenses'],['set','Settings']];
+function render(){if(tab!=='set'){rsOpen=false;rsConf=false;rsForgot=false;rsChg=false}applyPal();S.products.forEach(sync);renderBrand();$('#fl').src=APPLOGO;const T=[['dash','Dashboard'],['sales','Sales'],['inv','Inventory'],['prod','Products'],['exp','Expenses'],['set','Settings']];
  $('#nav').innerHTML=T.map(t=>`<button class="${tab==t[0]?'on':''}" onclick="tab='${t[0]}';render()">${t[1]}</button>`).join('');document.body.classList.add('inapp');$('#tip').style.display='none';$('#side').innerHTML=sideHTML(T);$('#app').innerHTML=(isPC()?D:V)[tab]()}
 let undoS=null,undoT=null;
 function del(k,id){if(k==='sales'||k==='rcpt')return;undoS=JSON.stringify(S);S[k]=S[k].filter(x=>x.id!==id);save();render();const u=$('#undo');u.innerHTML='Deleted. <a href="#" onclick="undo();return false" style="color:var(--ac);font-weight:700">Undo</a>';clearTimeout(undoT);undoT=setTimeout(()=>{u.textContent=''},10000)}
