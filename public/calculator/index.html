@@ -137,19 +137,19 @@ footer img{width:18px;height:18px;vertical-align:-4px;margin-right:4px}
 #side{display:none}:root{--c1:var(--ac);--c2:#1b8a4e}
 #tip{position:fixed;z-index:200;pointer-events:none;background:var(--tx);color:var(--card);font-size:12.5px;line-height:1.5;padding:8px 11px;border-radius:9px;box-shadow:0 10px 28px rgba(0,0,0,.25);display:none;max-width:260px}#tip b{display:block}
 @media(min-width:1024px) and (hover:hover) and (pointer:fine){
-body.inapp main{max-width:1560px;margin:0;padding:28px 36px 40px 304px}
+body.inapp main{max-width:none;margin:0;padding:30px 36px 40px 330px}
 body.inapp header,body.inapp #nav,body.inapp #bar{display:none}
-body.inapp #side{display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;width:268px;background:var(--card);border-right:1px solid var(--ln);padding:20px 14px;z-index:10;overflow-y:auto}
+body.inapp #side{display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;width:294px;background:var(--card);border-right:1px solid var(--ln);padding:22px 16px;z-index:10;overflow-y:auto}
 .sbb{display:flex;align-items:center;gap:12px;padding:2px 8px 20px;border-bottom:1px solid var(--ln);margin-bottom:14px}
 .sbb img{width:46px;height:46px;border-radius:12px;background:#fff;object-fit:contain;padding:3px;border:1px solid var(--ln);flex:none}
 .sbb .bn{font-size:17px}.sbb .bs{color:var(--mut);opacity:1}
-.sbn{display:flex;flex-direction:column;gap:4px}
-.sbn button{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;color:var(--mut);font:inherit;font-size:15px;font-weight:600;padding:11px 14px;border-radius:10px;cursor:pointer;text-align:left}
+.sbn{display:flex;flex-direction:column;gap:6px}
+.sbn button{display:flex;align-items:center;gap:14px;width:100%;border:0;background:none;color:var(--mut);font:inherit;font-size:16.5px;font-weight:600;padding:15px 18px;border-radius:12px;cursor:pointer;text-align:left}
 .sbn button:hover{background:var(--bg);color:var(--tx)}
 .sbn button.on{background:color-mix(in srgb,var(--ac) 13%,transparent);color:var(--ac)}
-.sbn .i,.kic .i{width:20px;height:20px}
-.sbf{margin-top:auto;padding-top:14px;border-top:1px solid var(--ln);font-size:13px;color:var(--mut)}
-.sbu{overflow-wrap:anywhere;margin-bottom:10px;line-height:1.6}
+.sbn .i{width:23px;height:23px}.kic .i{width:20px;height:20px}
+.sbf{margin-top:auto;padding-top:16px;display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--ln);font-size:13px;color:var(--mut)}
+.sbu{overflow-wrap:anywhere;line-height:1.5;padding:0 4px 2px}.sbu b{color:var(--tx)}.sbf .btn{padding:12px;font-weight:700;font-size:14.5px;border-radius:10px}.sbf .btn.ghost{border-width:1.5px}.chd{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:14px}.chd h2{margin:0!important}.chd span{font-size:13px;color:var(--mut)}.dg>.card{display:flex;flex-direction:column}.dg.eq{grid-auto-rows:1fr}.fill{flex:1;display:flex;flex-direction:column;justify-content:space-evenly;gap:12px}.fill .hb{margin:0}.dg .empty{flex:1;display:grid;place-items:center}.lowbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card);border:1px solid color-mix(in srgb,var(--bad) 45%,var(--ln));border-radius:16px;padding:12px 14px 12px 20px}.chip{background:color-mix(in srgb,var(--bad) 11%,transparent);color:var(--bad);border-radius:999px;padding:6px 12px;font-size:13.5px;font-weight:600}.lowbar .btn{width:auto;margin-left:auto;padding:9px 16px}
 .sbt{width:100%;border:1px solid var(--ln);background:var(--bg);color:var(--tx);border-radius:10px;padding:9px;font:inherit;font-size:13.5px;cursor:pointer}.sbt:hover{border-color:var(--ac)}
 body.inapp .card{padding:20px 22px;border-radius:16px;margin-bottom:18px}
 body.inapp h2{font-size:17px;margin-bottom:14px}
@@ -161,7 +161,7 @@ body.inapp .sync{font-size:13px}
 .ph{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:22px}
 .ph h1{font-size:30px;color:var(--tx);margin:0 0 4px;letter-spacing:-.4px}.ph .note{font-size:14px}
 .phm{display:flex;flex-direction:column;gap:4px}.phm input{width:auto;min-width:190px;background:var(--card)}
-.dg{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:18px;align-items:start}
+.dg{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:18px;align-items:stretch}
 body.inapp .dg>.card,.dg>div>.card{margin:0}
 .s3{grid-column:span 3}.s4{grid-column:span 4}.s5{grid-column:span 5}.s6{grid-column:span 6}.s7{grid-column:span 7}.s8{grid-column:span 8}.s12{grid-column:span 12}
 .two{display:grid;grid-template-columns:minmax(380px,5fr) minmax(0,7fr);gap:18px;align-items:start}
@@ -281,7 +281,7 @@ async function enter(u){guest=false;clearTimeout(promoT);$('#promo').style.displ
  if(useLocal){S=Object.assign(S,src);if(!err&&!dirty)setD(new Date().toISOString())}
  else{S=Object.assign(S,row?row.data:{});if(dirty)setD(null)}
  wj('ppt-'+uidU,S);wj('ppt-last',{id:u.id,email:u.email});
- $('#login').style.display='none';$('#shell').style.display='';$('#bar').innerHTML=esc(u.email)+' · <a href="#" onclick="doLogout();return false" style="color:var(--ac);font-weight:700">Log out</a>';render();status();trySync()}
+ $('#login').style.display='none';$('#shell').style.display='';uEmail=u.email||'';$('#bar').innerHTML=esc(u.email)+' · <a href="#" onclick="doLogout();return false" style="color:var(--ac);font-weight:700">Log out</a>';render();status();trySync()}
 let recovering=false;
 let promoT=null,promoH=null,promoN=0;
 function schedulePromo(){clearTimeout(promoT);if(guest)promoT=setTimeout(showPromo,(promoN>=2?15:3)*60000)}
@@ -483,12 +483,18 @@ prod:'<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0
 exp:'<path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M9 8h6M9 12h6"/>',
 set:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1L7 17M17 7l2.1-2.1"/>',
 peso:'<path d="M8 4v16"/><path d="M8 4h5a4 4 0 0 1 0 8H8"/><path d="M5 7.5h14M5 10.5h14"/>',
+bars:'<path d="M4 20V11M10 20V5M16 20v-6M2 20h20"/>',
 pct:'<path d="M19 5L5 19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/>'};
 const svgI=k=>`<svg viewBox="0 0 24 24" class="i" aria-hidden="true">${ICO[k]}</svg>`;
 function thLabel(){const d=effTheme()==='dark';return (d?'☀️ Light mode':'🌙 Dark mode')}
 function sideHTML(T){const b=S.brand||{};return `<div class="sbb"><img alt="" src="${b.logo||APPLOGO}"><div style="min-width:0"><div class="bn">${esc(b.name||'Product Calculator')}</div><div class="bs">${b.name?'Powered by NEXUSMEDIA':'Cost, stock & profit tracker'}</div></div></div>
  <div class="sbn" role="navigation">${T.map(t=>`<button class="${tab==t[0]?'on':''}" ${tab==t[0]?'aria-current="page"':''} onclick="tab='${t[0]}';render();scrollTo(0,0)">${svgI(t[0])}${t[1]}</button>`).join('')}</div>
- <div class="sbf"><div class="sbu">${$('#bar').innerHTML}</div><button id="th2" class="sbt" onclick="toggleTheme()">${thLabel()}</button></div>`}
+ <div class="sbf"><button id="th2" class="sbt" onclick="toggleTheme()">${thLabel()}</button>${sideAcct()}</div>`}
+let uEmail='';
+function sideAcct(){if(guest)return `<div class="sbu"><b>Guest mode</b><br>Nothing is saved until you sign up.</div><button class="btn" onclick="openPackage()">Sign up to save online</button><button class="btn ghost" onclick="leaveGuest()">Log in</button>`;
+ return `<div class="sbu">Signed in as<br><b>${esc(uEmail)}</b></div><button class="btn ghost" onclick="doLogout()">Log out</button>`}
+const chd=(t,sub)=>`<div class="chd"><h2>${t}</h2><span>${sub||''}</span></div>`;
+function lowBar(){const L=S.inv.filter(v=>v.qty<=0||(v.low>0&&v.qty<=v.low));if(!L.length)return '';return `<div class="lowbar"><b>⚠️ Low stock</b>${L.map(v=>`<span class="chip">${esc(v.name)} · ${+(+v.qty).toFixed(1)} ${v.u} left</span>`).join('')}<button class="btn ghost" onclick="tab='inv';render();scrollTo(0,0)">View inventory</button></div>`}
 const ymAdd=(ym,k)=>{let y=+ym.slice(0,4),mo=+ym.slice(5,7)+k;while(mo<1){mo+=12;y--}while(mo>12){mo-=12;y++}return y+'-'+String(mo).padStart(2,'0')};
 const mName=(ym,f)=>new Date(+ym.slice(0,4),+ym.slice(5,7)-1,1).toLocaleDateString('en-PH',f?{month:'long',year:'numeric'}:{month:'short'});
 const km=n=>{const a=Math.abs(n),s=n<0?'−':'';return s+'₱'+(a>=1e6?+(a/1e6).toFixed(1)+'M':a>=1e3?+(a/1e3).toFixed(1)+'k':+a.toFixed(a%1?1:0))};
@@ -517,7 +523,7 @@ function dayChart(d,line){const mn=mName(month);return chart({lab:d.r.map((_,i)=
  tip:i=>`${mn} ${i+1}|Sales: ${m(d.r[i])}`+(line?`|Gross profit: ${m(d.g[i])}`:'')+`|${d.c[i]} sale ${d.c[i]===1?'entry':'entries'}`,aria:'Daily sales for '+mName(month,1)})}
 const empty=t=>`<div class="empty">${t}</div>`;
 function kpi(ic,label,val,cl,dl){return `<div class="card kpi s3"><div class="k"><span class="kic">${svgI(ic)}</span>${label}</div><div class="v ${cl||''}">${val}</div><div class="dl">${dl||''}</div></div>`}
-function tiles(A){const sp='s'+12/A.length;return `<div class="dg" style="margin-bottom:18px">${A.map(a=>`<div class="card kpi ${sp}"><div class="k">${a[0]}</div><div class="v ${a[2]||''}">${a[1]}</div>${a[3]?`<div class="dl note">${a[3]}</div>`:''}</div>`).join('')}</div>`}
+function tiles(A){const sp='s'+12/A.length;return `<div class="dg" style="margin-bottom:18px">${A.map(a=>`<div class="card kpi ${sp}"><div class="k">${a[0]}</div><div class="v ${a[2]||''}">${a[1]}</div><div class="dl note">${a[3]||'&nbsp;'}</div></div>`).join('')}</div>`}
 function pHead(t,sub,mon){return `<div class="ph"><div><h1>${t}</h1><div class="note">${sub}</div></div>${mon?`<label class="phm"><span class="note">Month</span><input type="month" value="${month}" onchange="month=this.value||month;render()"></label>`:''}</div>`}
 const D={
 dash(){const c=calc(),pym=ymAdd(month,-1),pc=calcFor(pym),pn=mName(pym),d=daily();
@@ -533,15 +539,15 @@ dash(){const c=calc(),pym=ymAdd(month,-1),pc=calcFor(pym),pn=mName(pym),d=daily(
  const top=S.products.map(p=>({p,x:c.per[p.id]})).filter(o=>o.x.u||o.x.r).sort((a,b)=>b.x.r-a.x.r).slice(0,6);
  const tp=top.length?hbars(top.map(o=>{const g=o.x.r-o.x.c;return{n:o.p.name,v:o.x.r,t:m(o.x.r),s:`${o.x.u} sold · profit ${m(g)} · margin ${pct(g,o.x.r)}`}})):empty('No product sales this month.');
  const rows=S.products.map(p=>{const x=c.per[p.id],g=x.r-x.c;return `<tr><td>${esc(p.name)}</td><td>${x.u}</td><td>${m(x.r)}</td><td>${m(x.c)}</td><td class="${cls(g)}">${m(g)}</td><td>${pct(g,x.r)}</td></tr>`}).join('');
- const low=lowCard(),tax=taxCard(c);
+ const low=lowBar(),tax=taxCard(c);
  return pHead('Dashboard','Your business at a glance · '+mName(month,1),1)+`<div class="dg">
  ${kpi('peso','Sales (revenue)',m(c.rev),'',dp(c.rev,pc.rev))}${kpi('sales','Net profit',m(c.net),cls(c.net),dp(c.net,pc.net))}
- ${kpi('pct','Gross margin',pct(c.gross,c.rev),'',dm(mg(c.gross,c.rev),mg(pc.gross,pc.rev)))}${kpi('pct','Net margin',pct(c.net,c.rev),cls(c.net),dm(mg(c.net,c.rev),mg(pc.net,pc.rev)))}
+ ${kpi('pct','Gross margin',pct(c.gross,c.rev),'',dm(mg(c.gross,c.rev),mg(pc.gross,pc.rev)))}${kpi('bars','Net margin',pct(c.net,c.rev),cls(c.net),dm(mg(c.net,c.rev),mg(pc.net,pc.rev)))}
  ${low?`<div class="s12">${low}</div>`:''}
- <div class="card s8"><h2>Daily sales</h2>${d.has?dayChart(d,1):empty('No sales recorded in '+mName(month,1)+' yet.')}</div>
- <div class="card s4"><h2>Where the money goes</h2>${mhead}${hbars(mr)}</div>
- <div class="card s7"><h2>Last 6 months</h2>${mch}</div>
- <div class="card s5"><h2>Top products</h2>${tp}</div>
+ <div class="dg eq s12"><div class="card s8">${chd('Daily sales',mName(month,1))}${d.has?dayChart(d,1):empty('No sales recorded in '+mName(month,1)+' yet.')}</div>
+ <div class="card s4">${chd('Where the money goes','Share of sales')}${mhead}<div class="fill">${hbars(mr)}</div></div>
+ <div class="card s8">${chd('Last 6 months',mName(ms[0])+' – '+mName(ms[5]))}${mch}</div>
+ <div class="card s4">${chd('Top products','By sales')}<div class="fill">${tp}</div></div></div>
  ${tax?`<div class="s12">${tax}</div>`:''}
  <div class="card s12"><h2>Per product</h2>${rows?`<div class="ov"><table><tr><th>Product</th><th>Sold</th><th>Sales</th><th>Cost</th><th>Profit</th><th>Margin</th></tr>${rows}</table></div>`:'<div class="note">Add products first.</div>'}</div></div>`},
 sales(){const c=calc(),d=daily(),n=S.sales.filter(s=>inM(s.date)).length;
@@ -613,7 +619,7 @@ const PV=['bg','card','tx','mut','ac','on','ln','ok','bad','hd1','hd2'];
 function curPal(){let k=S.set&&S.set.pal;if(!k){try{k=localStorage.getItem('ppt-pal')}catch(e){}}return PAL[k]?k:'sky'}
 function applyPal(){const st=document.documentElement.style,k=curPal(),p=PAL[k];PV.forEach(n=>st.removeProperty('--'+n));st.setProperty('--c2',CH[k][effTheme()==='dark'?1:0]);if(!p.l)return;const v=p[effTheme()==='dark'?'d':'l'];PV.forEach((n,i)=>st.setProperty('--'+n,v[i]))}
 function setPal(k){if(!PAL[k])return;S.set.pal=k;try{localStorage.setItem('ppt-pal',k)}catch(e){}save();render()}
-function palCard(){const cur=curPal();return `<div class="card"><h2>Appearance</h2><div class="note" style="margin:-4px 0 10px">Choose a color theme for the app.</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${Object.keys(PAL).map(k=>{const p=PAL[k],pv=p.pv||[p.l[9],p.l[10],p.l[4],p.l[0]],on=cur===k;return `<button class="sw ${on?'on':''}" onclick="setPal('${k}')" aria-pressed="${on}"><span class="pv" style="background:${p.pv?p.pv[2]:p.l[0]}"><span style="background:linear-gradient(135deg,${p.pv?p.pv[0]:p.l[9]},${p.pv?p.pv[1]:p.l[10]})"></span><i style="background:${p.pv?p.pv[0]:p.l[4]}"></i></span><b>${p.n}</b><span class="note">${on?'✓ Selected':'&nbsp;'}</span></button>`}).join('')}</div><div class="note" style="margin-top:10px">Use the 🌙 button at the top for dark mode. Every theme has a light and a dark version.</div></div>`}
+function palCard(){const cur=curPal();return `<div class="card"><h2>Appearance</h2><div class="note" style="margin:-4px 0 10px">Choose a color theme for the app.</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${Object.keys(PAL).map(k=>{const p=PAL[k],pv=p.pv||[p.l[9],p.l[10],p.l[4],p.l[0]],on=cur===k;return `<button class="sw ${on?'on':''}" onclick="setPal('${k}')" aria-pressed="${on}"><span class="pv" style="background:${p.pv?p.pv[2]:p.l[0]}"><span style="background:linear-gradient(135deg,${p.pv?p.pv[0]:p.l[9]},${p.pv?p.pv[1]:p.l[10]})"></span><i style="background:${p.pv?p.pv[0]:p.l[4]}"></i></span><b>${p.n}</b><span class="note">${on?'✓ Selected':'&nbsp;'}</span></button>`}).join('')}</div><div class="note" style="margin-top:10px">Use the ${isPC()?'dark mode button in the sidebar':'🌙 button at the top'} for dark mode. Every theme has a light and a dark version.</div></div>`}
 try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyPal)}catch(e){}
 function effTheme(){return document.documentElement.dataset.theme||(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
 function setTheme(t){document.documentElement.dataset.theme=t;applyPal();try{localStorage.setItem('ppt-theme',t)}catch(e){}$('#th').textContent=t==='dark'?'☀️':'🌙';const t2=$('#th2');if(t2)t2.textContent=thLabel()}
