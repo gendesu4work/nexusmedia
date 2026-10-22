@@ -47,7 +47,7 @@ header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;borde
 th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut)}
 nav button{border-radius:999px}
 .av{width:44px;height:44px;border-radius:50%;background:var(--ln);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--ac);overflow:hidden;cursor:pointer;flex:0 0 auto;font-size:13px}.av img{width:100%;height:100%;object-fit:cover}
-footer img{width:18px;height:18px;vertical-align:-4px;margin-right:4px}
+footer img{width:18px;height:18px;vertical-align:-4px;margin-right:4px}.fd{display:none}
 #pk{position:fixed;inset:0;background:rgba(8,20,30,.62);z-index:30;overflow:auto;padding:calc(16px + env(safe-area-inset-top,0px)) 14px 16px}
 .sw{display:flex;flex-direction:column;align-items:stretch;text-align:center;gap:6px;padding:8px;border:2px solid var(--ln);border-radius:12px;background:var(--card);cursor:pointer;color:var(--tx);font:inherit;font-size:13px}.sw.on{border-color:var(--ac);box-shadow:0 0 0 2px var(--ac) inset}.sw .note{font-size:11px;min-height:14px}.pv{display:block;height:48px;border-radius:8px;border:1px solid var(--ln);overflow:hidden;position:relative}.pv span{display:block;height:22px}.pv i{position:absolute;right:6px;bottom:7px;width:18px;height:8px;border-radius:4px}
 #rcp{background:#fff;color:#111;max-width:340px;margin:0 auto 12px;padding:18px 16px;border-radius:10px;font:14px/1.45 ui-monospace,Menlo,Consolas,monospace;box-shadow:0 2px 10px rgba(0,0,0,.18)}
@@ -137,7 +137,7 @@ footer img{width:18px;height:18px;vertical-align:-4px;margin-right:4px}
 #side{display:none}:root{--c1:var(--ac);--c2:#1b8a4e}
 #tip{position:fixed;z-index:200;pointer-events:none;background:var(--tx);color:var(--card);font-size:12.5px;line-height:1.5;padding:8px 11px;border-radius:9px;box-shadow:0 10px 28px rgba(0,0,0,.25);display:none;max-width:260px}#tip b{display:block}
 @media(min-width:1024px) and (hover:hover) and (pointer:fine){
-body.inapp main{max-width:none;margin:0;padding:30px 36px 40px 330px}
+body.inapp main{max-width:none;margin:0;padding:30px 36px 22px 330px}
 body.inapp header,body.inapp #nav,body.inapp #bar{display:none}
 body.inapp #side{display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;width:294px;background:var(--card);border-right:1px solid var(--ln);padding:22px 16px;z-index:10;overflow-y:auto}
 .sbb{display:flex;align-items:center;gap:12px;padding:2px 8px 20px;border-bottom:1px solid var(--ln);margin-bottom:14px}
@@ -164,7 +164,12 @@ body.inapp .sync{font-size:13px}
 .dg{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:18px;align-items:stretch}
 body.inapp .dg>.card,.dg>div>.card{margin:0}
 .s3{grid-column:span 3}.s4{grid-column:span 4}.s5{grid-column:span 5}.s6{grid-column:span 6}.s7{grid-column:span 7}.s8{grid-column:span 8}.s12{grid-column:span 12}
-.two{display:grid;grid-template-columns:minmax(380px,5fr) minmax(0,7fr);gap:18px;align-items:start}
+.col{display:flex;flex-direction:column;gap:18px;min-width:0}body.inapp .col>.card{margin:0;display:flex;flex-direction:column}.col>.card:last-child{flex:1}.col>#rcp{margin:0 auto}
+.act>.card>.btn:last-child,.act>.card>.row:last-child{margin-top:auto}.act>.card[style*="space-between"]{flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important}.act>.card[style*="space-between"]>div>b{display:block;font-size:17px;margin-bottom:8px}.act>.card[style*="space-between"]>.btn{width:100%!important;margin-top:auto;padding:12px 16px!important}.lim>.card{max-height:640px;overflow:auto}.lim>.card>h2,.lim>.card>.chd{position:sticky;top:-20px;z-index:1;background:var(--card);margin:-20px -22px 12px!important;padding:20px 22px 12px}
+body.inapp main{min-height:100vh;display:flex;flex-direction:column}body.inapp #shell{padding-bottom:32px}
+body.inapp footer{margin-top:auto;display:flex;align-items:center;gap:14px;text-align:left;font-size:13px;padding:20px 4px 4px;border-top:1px solid var(--ln)}
+body.inapp .fa{display:flex;align-items:center;gap:10px;margin-right:auto;font-size:14px;font-weight:700;color:var(--tx)}body.inapp footer img{width:28px;height:28px;margin:0;vertical-align:0;border-radius:7px;background:#fff;padding:2px;border:1px solid var(--ln)}
+body.inapp .fd{display:inline;font-weight:400;color:var(--mut);padding-left:12px;margin-left:2px;border-left:1px solid var(--ln)}body.inapp .fs{display:none}body.inapp .fc::before{content:'·';margin-right:14px}
 .kpi .k{font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:10px}
 body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .kpi .dl{font-size:13px;min-height:18px}
@@ -181,9 +186,8 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 .hbt{height:10px;border-radius:5px;background:var(--bg);overflow:hidden}.hbt i{display:block;height:100%;border-radius:5px;min-width:3px}
 .hb .note{margin-top:4px}
 .empty{padding:44px 12px;text-align:center;color:var(--mut);font-size:14px;border:1px dashed var(--ln);border-radius:12px}
-.set2{columns:2;column-gap:18px}.set2>.card{break-inside:avoid}
 }
-@media(min-width:1024px) and (max-width:1279px) and (hover:hover) and (pointer:fine){.s3{grid-column:span 6}.s4:not(.kpi),.s5,.s7,.s8{grid-column:span 12}.two{grid-template-columns:1fr}.set2{columns:1}}
+@media(min-width:1024px) and (max-width:1279px) and (hover:hover) and (pointer:fine){.s3{grid-column:span 6}.s4:not(.kpi),.s5,.s7,.s8{grid-column:span 12}.s6:not(.kpi){grid-column:span 12}}
 @media(prefers-reduced-motion:reduce){#login *{animation:none!important}.pl{stroke-dashoffset:0}.pd,.bar,.mg i{opacity:1}.toast{display:none}}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 </head><body><main>
@@ -227,7 +231,7 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 <div class="note" style="line-height:1.8">1. Enter your email and choose a password<br>2. Pay ₱99 on PayMongo’s secure page<br>3. Wait about a minute, then log in<br>Guest entries are erased when you leave this page, so you start with a clean account.</div>
 <div style="margin-top:12px"><input id="se" type="email" placeholder="Your email" autocomplete="email" style="margin-bottom:8px"><input id="sp1" type="password" placeholder="Choose a password (8+ characters)" autocomplete="new-password" style="margin-bottom:8px"><input id="sp2" type="password" placeholder="Repeat password" autocomplete="new-password" style="margin-bottom:8px"><button class="btn" onclick="doSignup()">Pay ₱99 and save my data</button><div class="note" id="smsg" style="margin-top:8px"></div></div>
 <div class="note" style="text-align:center;margin-top:8px"><a href="#" onclick="closePackage();leaveGuest();return false" style="color:var(--ac)">Already paid? Log in</a> · <a href="#" onclick="closePackage();return false" style="color:var(--ac)">Not now</a></div></div></div>
-<footer><img alt="" id="fl">Product Calculator · © 2026 NEXUSMEDIA™ · All rights reserved</footer>
+<footer><span class="fa"><img alt="" id="fl">Product Calculator<span class="fd">Cost, stock &amp; profit tracker</span></span><span class="fs"> · </span><span class="fb">© 2026 NEXUSMEDIA™</span><span class="fs"> · </span><span class="fc">All rights reserved</span></footer>
 </main>
 <div id="tip" role="tooltip"></div>
 <script>
@@ -356,11 +360,12 @@ function addRefund(){const p=gp($('#rfp').value),q=+$('#rfq').value;if(!p||!(q>0
 function fmtTs(t){const d=new Date(t);if(isNaN(d))return '';return d.toLocaleDateString('en-PH',{timeZone:'Asia/Manila',year:'numeric',month:'short',day:'numeric'})+', '+d.toLocaleTimeString('en-PH',{timeZone:'Asia/Manila',hour:'numeric',minute:'2-digit',second:'2-digit'})+' PHT'}
 function recSale(pid,q,date){const p=gp(pid);if(!p)return;const s={id:uid(),date,pid,qty:q,ts:new Date().toISOString(),amt:p.price*q};s.use=useOf(p,q);Object.keys(s.use).forEach(k=>{const v=S.inv.find(x=>x.id===k);if(v)v.qty=+(v.qty-s.use[k]).toFixed(3)});S.sales.push(s)}
 function rTotal(){return rLines.reduce((a,l)=>{const p=gp(l.pid);return a+(p?p.price*(l.qty||0):0)},0)}
-function receiptCard(){
+function receiptCard(nr){
  const rc=S.rcpt||[];
- if(rShow){const r=rc.find(x=>x.id===rShow);if(r)return rcView(r)}
+ if(rShow&&nr!=='only'){const r=rc.find(x=>x.id===rShow);if(r)return rcView(r)}
  const recent=rc.length?`<div class="card"><h2>Recent receipts</h2>${rc.slice(0,rcAll?rc.length:8).map(r=>`<div class="li"><span>${r.no} · ${r.date}<br><span class="note">${m(r.total)}${r.cust?' · '+esc(r.cust):''}</span></span><span><button class="btn" style="width:auto;padding:5px 10px;font-size:13px" onclick="rShow='${r.id}';render()">View</button></span></div>`).join('')}${rc.length>8?`<button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac);margin-top:8px" onclick="rcAll=!rcAll;render()">${rcAll?'Show fewer':'Show all ('+rc.length+')'}</button>`:''}<div class="note" style="margin-top:6px">Receipts cannot be deleted.</div></div>`:'';
- if(!rOpen)return `<div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><b>🧾 Receipt</b><div class="note">Optional. Make one only when a customer asks.</div></div><button class="btn" style="width:auto;padding:8px 14px;flex:0 0 auto" onclick="rOpen=true;rLines=[{pid:'',qty:1}];render()">Make a receipt</button></div>`+recent;
+ if(nr==='only')return recent;
+ if(!rOpen)return `<div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><b>🧾 Receipt</b><div class="note">Optional. Make one only when a customer asks.</div></div><button class="btn" style="width:auto;padding:8px 14px;flex:0 0 auto" onclick="rOpen=true;rLines=[{pid:'',qty:1}];render()">Make a receipt</button></div>`+(nr?'':recent);
  const opts=v=>S.products.map(p=>`<option value="${p.id}" ${p.id===v?'selected':''}>${esc(p.name)}</option>`).join('');
  return `<div class="card"><h2>🧾 Make a receipt</h2>${S.products.length?'':'<div class="note">Add a product first (Products tab).</div>'}
  ${rLines.map((l,i)=>`<div class="row" style="align-items:center"><select onchange="rLines[${i}].pid=this.value;render()"><option value="">Choose product</option>${opts(l.pid)}</select><input type="number" min="1" value="${l.qty}" inputmode="numeric" style="flex:0 0 70px" onchange="rLines[${i}].qty=+this.value||1;render()"><button class="x" onclick="rLines.splice(${i},1);if(!rLines.length)rLines=[{pid:'',qty:1}];render()">×</button></div>`).join('')}
@@ -370,7 +375,7 @@ function receiptCard(){
  <label class="t"><input type="checkbox" ${rRec?'checked':''} onchange="rRec=this.checked"> Also record these as sales and take the items out of stock</label>
  <div class="note" style="margin:-4px 0 8px">Leave this off if you already recorded this sale.</div>
  <div class="li"><b>Total</b><b>${m(rTotal())}</b></div>
- <div class="row" style="margin-top:8px"><button class="btn" onclick="makeReceipt()">Create receipt</button><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="rOpen=false;render()">Cancel</button></div></div>`+recent}
+ <div class="row" style="margin-top:8px"><button class="btn" onclick="makeReceipt()">Create receipt</button><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="rOpen=false;render()">Cancel</button></div></div>`+(nr?'':recent)}
 function makeReceipt(){const L=rLines.filter(l=>gp(l.pid)&&l.qty>0);if(!L.length){msg('Choose at least one product.');return}
  const ph=phParts(),date=ph.year+'-'+ph.month+'-'+ph.day,time=ph.hour+':'+ph.minute+':'+ph.second;
  S.rno=(S.rno||0)+1;
@@ -550,20 +555,31 @@ dash(){const c=calc(),pym=ymAdd(month,-1),pc=calcFor(pym),pn=mName(pym),d=daily(
  <div class="card s4">${chd('Top products','By sales')}<div class="fill">${tp}</div></div></div>
  ${tax?`<div class="s12">${tax}</div>`:''}
  <div class="card s12"><h2>Per product</h2>${rows?`<div class="ov"><table><tr><th>Product</th><th>Sold</th><th>Sales</th><th>Cost</th><th>Profit</th><th>Margin</th></tr>${rows}</table></div>`:'<div class="note">Add products first.</div>'}</div></div>`},
-sales(){const c=calc(),d=daily(),n=S.sales.filter(s=>inM(s.date)).length;
- return pHead('Sales','Record sales, shifts, refunds and receipts',1)+tiles([['Gross sales',m(c.soldTotal)],['Refunds',m(c.refunds),c.refunds?'neg':''],['Net sales',m(c.rev)],['Sale entries',String(n)]])
- +`<div class="two"><div>${salesForm()}${shiftCard()}${refundCard()}${receiptCard()}</div><div>${d.has?`<div class="card"><h2>Daily sales</h2>${dayChart(d,0)}</div>`:''}${salesList('Sales in '+mName(month,1))}</div></div>`},
+sales(){const c=calc(),d=daily(),n=S.sales.filter(s=>inM(s.date)).length,rc=receiptCard('only');
+ return pHead('Sales','Record sales, shifts, refunds and receipts',1)+tiles([['Gross sales',m(c.soldTotal)],['Refunds',m(c.refunds),c.refunds?'neg':''],['Net sales',m(c.rev)],['Sale entries',String(n)]])+`<div class="dg">`
+ +col(8,card('Daily sales',mName(month,1),d.has?dayChart(d,0):empty('No sales recorded in '+mName(month,1)+' yet.')))+col(4,salesForm())
+ +col(4,shiftCard(),'act')+col(4,refundCard(),'act')+col(4,receiptCard(1),'act')
+ +col(8,salesList('Sales in '+mName(month,1)),'lim')+col(4,rc||card('Recent receipts','',empty('No receipts yet.')),'lim')+`</div>`},
 inv(){const low=S.inv.filter(v=>v.qty>0&&v.low>0&&v.qty<=v.low).length,out=S.inv.filter(v=>v.qty<=0).length,val=S.inv.reduce((a,v)=>a+(v.pack>0?Math.max(0,v.qty)/v.pack*v.pc:0),0);
- return pHead('Inventory','Every sale takes ingredients out of stock, based on each product’s recipe')+tiles([['Ingredients',String(S.inv.length)],['Low stock',String(low),low?'neg':''],['Out of stock',String(out),out?'neg':''],['Stock value',m(val),'','Based on pack prices']])
- +`<div class="two"><div>${invAddCard()}</div><div>${invListCard()}</div></div>`},
-prod(){const P=S.products.filter(p=>p.price>0).map(p=>({p,g:(p.price-p.cost)/p.price*100})).sort((a,b)=>b.g-a.g),avg=P.length?P.reduce((a,x)=>a+x.g,0)/P.length:null;
- const ch=P.length?hbars(P.map(x=>({n:x.p.name,v:x.g,t:x.g.toFixed(1)+'%',k:x.g<0?'neg':'',c:x.g>=0?'var(--c1)':'var(--bad)',s:`Price ${m(x.p.price)} · Cost ${m(x.p.cost)}`}))):empty('Add a product to see its margin.');
- return pHead('Products','Prices, recipes and margins')+tiles([['Products',String(S.products.length)],['Average margin',avg==null?'–':avg.toFixed(1)+'%'],['Best margin',P.length?P[0].g.toFixed(1)+'%':'–','',P.length?esc(P[0].p.name):'']])
- +`<div class="two"><div>${prodForm()}<div class="card"><h2>Margin by product</h2>${ch}</div></div><div>${prodList('Your products')}</div></div>`},
+ const sv=S.inv.map(v=>({n:v.name,v:v.pack>0?Math.max(0,v.qty)/v.pack*v.pc:0})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v),need=S.inv.filter(v=>v.qty<=0||(v.low>0&&v.qty<=v.low));
+ return pHead('Inventory','Every sale takes ingredients out of stock, based on each product’s recipe')+tiles([['Ingredients',String(S.inv.length)],['Low stock',String(low),low?'neg':''],['Out of stock',String(out),out?'neg':''],['Stock value',m(val),'','Based on pack prices']])+`<div class="dg">`
+ +col(8,invListCard())+col(4,invAddCard())
+ +col(8,card('Stock value by ingredient','Based on pack prices',sv.length?`<div class="fill">${hbars(sv.map(x=>({n:x.n,v:x.v,t:m(x.v),s:pct(x.v,val)+' of stock value'})))}</div>`:empty('Add pack sizes and prices to see stock value.')))
+ +col(4,card('Needs restocking',need.length+' item'+(need.length===1?'':'s'),need.length?`<div class="fill">${need.map(v=>`<div class="li"><span>${esc(v.name)}<br><span class="note">Alert at ${+v.low||0} ${v.u}</span></span><b class="neg">${v.qty<=0?'Out':+(+v.qty).toFixed(1)+' '+v.u+' left'}</b></div>`).join('')}</div>`:empty('Everything is stocked.')))+`</div>`},
+prod(){const P=S.products.filter(p=>p.price>0).map(p=>({p,g:(p.price-p.cost)/p.price*100})).sort((a,b)=>b.g-a.g),avg=P.length?P.reduce((a,x)=>a+x.g,0)/P.length:null,lo=P[P.length-1];
+ const ch=P.length?`<div class="fill">${hbars(P.map(x=>({n:x.p.name,v:x.g,t:x.g.toFixed(1)+'%',k:x.g<0?'neg':'',c:x.g>=0?'var(--c1)':'var(--bad)',s:`Price ${m(x.p.price)} · Cost ${m(x.p.cost)}`})))}</div>`:empty('Add a product to see its margin.');
+ const U=S.products.map(p=>({p,u:p.price-p.cost})).sort((a,b)=>b.u-a.u),pp=U.length?`<div class="fill">${hbars(U.map(x=>({n:x.p.name,v:x.u,t:m(x.u),k:cls(x.u),c:x.u>=0?'var(--c2)':'var(--bad)'})))}</div>`:empty('No products yet.');
+ return pHead('Products','Prices, recipes and margins')+tiles([['Products',String(S.products.length)],['Average margin',avg==null?'–':avg.toFixed(1)+'%'],['Best margin',P.length?P[0].g.toFixed(1)+'%':'–','',P.length?esc(P[0].p.name):''],['Lowest margin',lo?lo.g.toFixed(1)+'%':'–',lo&&lo.g<0?'neg':'',lo?esc(lo.p.name):'']])+`<div class="dg">`
+ +col(8,prodList('Your products'))+col(4,prodForm())
+ +col(8,card('Margin by product','Share of the price you keep',ch))+col(4,card('Profit per piece','Price minus cost',pp))+`</div>`},
 exp(){const c=calc(),by={};S.expenses.filter(e=>inM(e.date)).forEach(e=>by[e.cat]=(by[e.cat]||0)+e.amt);const cats=Object.entries(by).sort((a,b)=>b[1]-a[1]),fx=c.rent+c.staff;
- return pHead('Expenses','Costs that come out of your profit',1)+tiles([['Other expenses',m(c.ops)],['Fixed costs',m(fx),'','Rent and staff'],['Total costs',m(c.ops+fx)],['Biggest category',cats.length?esc(cats[0][0]):'–','',cats.length?m(cats[0][1]):'']])
- +`<div class="two"><div>${expForm()}${fixedCard()}</div><div>${cats.length?`<div class="card"><h2>By category</h2>${hbars(cats.map(x=>({n:x[0],v:x[1],t:m(x[1]),s:pct(x[1],c.ops)+' of other expenses'})))}</div>`:''}${expList('Expenses in '+mName(month,1))}</div></div>`},
-set(){return pHead('Settings','Business profile, tax and appearance')+`<div class="set2">${brandCard()}${taxSet()}${palCard()}${acctCard()}</div>`}};
+ return pHead('Expenses','Costs that come out of your profit',1)+tiles([['Other expenses',m(c.ops)],['Fixed costs',m(fx),'','Rent and staff'],['Total costs',m(c.ops+fx)],['Biggest category',cats.length?esc(cats[0][0]):'–','',cats.length?m(cats[0][1]):'']])+`<div class="dg">`
+ +col(8,card('By category',mName(month,1),cats.length?`<div class="fill">${hbars(cats.map(x=>({n:x[0],v:x[1],t:m(x[1]),s:pct(x[1],c.ops)+' of other expenses'})))}</div>`:empty('No expenses in '+mName(month,1)+' yet.')))+col(4,expForm())
+ +col(8,expList('Expenses in '+mName(month,1)),'lim')+col(4,fixedCard())+`</div>`},
+set(){const ac=acctCard()||`<div class="card">${chd('Save your data','Guest mode')}<div class="note" style="font-size:14px">You are in guest mode, so nothing is saved. Sign up to keep your data online and use it on your phone, tablet and computer.</div><div class="row" style="margin:auto 0 0;padding-top:16px"><button class="btn" onclick="openPackage()">Sign up to save online</button><button class="btn ghost" onclick="leaveGuest()">Log in</button></div></div>`;
+ return pHead('Settings','Business profile, tax and appearance')+`<div class="dg">`+col(6,brandCard())+col(6,palCard())+col(6,taxSet())+col(6,ac)+`</div>`}};
+const col=(sp,h,x)=>`<div class="col s${sp}${x?' '+x:''}">${h}</div>`;
+const card=(t,sub,h)=>`<div class="card">${chd(t,sub)}${h}</div>`;
 document.addEventListener('mousemove',e=>{const tp=$('#tip'),t=e.target.closest&&e.target.closest('[data-tip]');if(!t){tp.style.display='none';return}
  const p=t.dataset.tip.split('|');tp.innerHTML='<b>'+esc(p[0])+'</b>'+p.slice(1).map(esc).join('<br>');tp.style.display='block';
  const r=tp.getBoundingClientRect();let x=e.clientX+14,y=e.clientY+14;if(x+r.width>innerWidth-8)x=e.clientX-r.width-14;if(y+r.height>innerHeight-8)y=e.clientY-r.height-14;tp.style.left=x+'px';tp.style.top=y+'px'});
