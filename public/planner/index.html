@@ -260,6 +260,82 @@ details summary { cursor: pointer; font-weight: 700; font-size: 14px; color: var
 .consent { display: grid; grid-template-columns: 24px 1fr; gap: 16px; align-items: start; font-size: 14px; color: var(--muted); }
 .consent input { width: 24px; height: 24px; margin: 0; accent-color: var(--accent); }
 .consent a { color: var(--accent); font-weight: 600; }
+
+/* ---------- Login stage: a committed night-kitchen look that ignores the app theme ---------- */
+.stage {
+  --st-bg: #06130E; --st-ink: #EAFBF4; --st-mute: rgba(234,251,244,0.68); --st-line: rgba(255,255,255,0.16);
+  --st-teal: #5EEAD4; --st-lime: #BEF264; --st-coral: #FF8A5C;
+  position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; overflow-x: hidden; overflow-y: auto; color-scheme: dark;
+  background: radial-gradient(120% 90% at 50% 0%, #0F2D24 0%, var(--st-bg) 62%); color: var(--st-ink);
+  padding: calc(24px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-left, 0px)) calc(32px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-right, 0px));
+}
+.stage .bg { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+.stage .orb { position: absolute; border-radius: 50%; filter: blur(70px); will-change: transform; }
+.stage .o-a { width: 380px; height: 380px; left: -140px; top: -90px; background: var(--st-teal); opacity: 0.5; animation: driftA 22s ease-in-out infinite alternate; }
+.stage .o-b { width: 330px; height: 330px; right: -120px; top: 32%; background: var(--st-coral); opacity: 0.32; animation: driftB 27s ease-in-out infinite alternate; }
+.stage .o-c { width: 320px; height: 320px; left: 12%; bottom: -140px; background: var(--st-lime); opacity: 0.28; animation: driftC 31s ease-in-out infinite alternate; }
+.stage .dots { position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.16) 1px, transparent 1.6px); background-size: 28px 28px;
+  -webkit-mask-image: radial-gradient(70% 60% at 50% 38%, #000, transparent); mask-image: radial-gradient(70% 60% at 50% 38%, #000, transparent); }
+.stage .login { position: relative; width: 100%; max-width: 400px; margin: auto; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+.stage .hero { position: relative; width: min(300px, 100%); aspect-ratio: 300 / 270; }
+.stage .plate-svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.stage .spin-slow { transform-origin: 150px 145px; animation: spin 46s linear infinite; }
+.stage .kring { animation: kring 4.2s ease-in-out infinite alternate; }
+.stage .orbit { transform-origin: 150px 145px; animation: spin 17s linear infinite; }
+.stage .orbit.rev { animation-duration: 23s; animation-direction: reverse; }
+.stage .orbit.slow { animation-duration: 31s; }
+.stage .bob { transform-origin: 150px 145px; animation: bob 5.5s ease-in-out infinite; }
+.stage .steam path { fill: none; stroke: #fff; stroke-opacity: 0.55; stroke-width: 3; stroke-linecap: round; opacity: 0; animation: steam 3.8s ease-in infinite; }
+.stage .steam path:nth-child(2) { animation-delay: 1.2s; }
+.stage .steam path:nth-child(3) { animation-delay: 2.4s; }
+.stage .chip { position: absolute; display: flex; flex-direction: column; align-items: flex-start; padding: 8px 12px; border-radius: 14px; text-align: left; font-size: 12px; line-height: 16px;
+  background: rgba(255,255,255,0.1); border: 1px solid var(--st-line); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); animation: floaty 6.5s ease-in-out infinite; }
+.stage .chip b { font-family: var(--font-display); font-size: 16px; line-height: 20px; }
+.stage .chip span { color: var(--st-mute); }
+.stage .c1 { left: 0; top: 12%; }
+.stage .c2 { right: 0; top: 46%; animation-delay: -2.2s; }
+.stage .c3 { left: 4px; bottom: 2%; animation-delay: -4.4s; }
+.stage .brand { font-size: 34px; line-height: 40px; font-weight: 700; background: linear-gradient(90deg, #fff 0%, var(--st-teal) 30%, var(--st-lime) 60%, #fff 100%); background-size: 250% 100%;
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; animation: shine 9s linear infinite; }
+.stage .tag { color: var(--st-mute); max-width: 32ch; }
+.stage .glass { width: 100%; display: flex; flex-direction: column; gap: 16px; padding: 24px; border-radius: 24px; text-align: left;
+  background: rgba(255,255,255,0.07); border: 1px solid var(--st-line); -webkit-backdrop-filter: blur(18px) saturate(140%); backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.12); }
+.stage .field > label { text-align: left; color: var(--st-mute); text-transform: uppercase; letter-spacing: 0.1em; font-size: 11px; }
+.stage .input { background: rgba(0,0,0,0.3); border: 1px solid var(--st-line); color: var(--st-ink); text-align: left; transition: border-color 0.2s, box-shadow 0.2s; }
+.stage .input::placeholder { color: rgba(234,251,244,0.4); }
+.stage .input:focus { outline: none; border-color: var(--st-teal); box-shadow: 0 0 0 4px rgba(94,234,212,0.18); }
+.stage .pw { position: relative; }
+.stage .pw .input { padding-right: 76px; }
+.stage .pwt { position: absolute; right: 8px; top: 8px; bottom: 8px; padding: 0 14px; border: 0; border-radius: 12px; background: rgba(255,255,255,0.1); color: var(--st-ink); font-weight: 600; font-size: 13px; }
+.stage .err { color: #FFB3A6; text-align: left; min-height: 24px; }
+.stage .go { position: relative; overflow: hidden; border: 0; border-radius: 16px; min-height: 56px; width: 100%; font-weight: 700; font-size: 16px; color: #04211A;
+  background: linear-gradient(90deg, var(--st-teal), var(--st-lime)); box-shadow: 0 12px 32px rgba(94,234,212,0.3); }
+.stage .go span { position: relative; }
+.stage .go::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.6) 50%, transparent 70%); transform: translateX(-120%); animation: sweep 4.2s ease-in-out infinite; }
+.stage .go:disabled { opacity: 0.6; }
+.stage .fine { color: var(--st-mute); font-size: 13px; line-height: 20px; }
+.stage .fine a { color: var(--st-teal); font-weight: 600; }
+.stage .loadbar { width: 160px; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.14); overflow: hidden; }
+.stage .loadbar i { display: block; width: 40%; height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--st-teal), var(--st-lime)); animation: load 1.3s ease-in-out infinite; }
+.stage .rise { animation: rise 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation-delay: var(--d, 0s); }
+.stage :focus-visible { outline: 3px solid var(--st-teal); outline-offset: 2px; }
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes kring { from { stroke-dasharray: 50 628; } to { stroke-dasharray: 520 628; } }
+@keyframes bob { 50% { transform: translateY(-3px) rotate(1.5deg); } }
+@keyframes steam { 0% { opacity: 0; transform: translateY(10px); } 30% { opacity: 0.8; } 100% { opacity: 0; transform: translateY(-14px); } }
+@keyframes floaty { 50% { transform: translateY(-8px); } }
+@keyframes shine { to { background-position: -250% 0; } }
+@keyframes sweep { 0%, 55% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+@keyframes load { 0% { transform: translateX(-100%); } 100% { transform: translateX(260%); } }
+@keyframes driftA { to { transform: translate(90px, 70px) scale(1.15); } }
+@keyframes driftB { to { transform: translate(-80px, -60px) scale(0.9); } }
+@keyframes driftC { to { transform: translate(70px, -50px) scale(1.2); } }
+@media (prefers-reduced-motion: reduce) {
+  .stage *, .stage *::before, .stage *::after { animation: none !important; transition: none !important; }
+  .stage .steam path { opacity: 0.4; }
+}
 </style>
 </head>
 <body>
@@ -894,35 +970,54 @@ details summary { cursor: pointer; font-weight: 700; font-size: 14px; color: var
     return m || 'Something went wrong. Try again.';
   }
 
+  var HERO_SVG = '<svg class="plate-svg" viewBox="0 0 300 270" aria-hidden="true" focusable="false">' +
+    '<defs>' +
+    '<linearGradient id="gRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5EEAD4"/><stop offset="1" stop-color="#BEF264"/></linearGradient>' +
+    '<radialGradient id="gPlate" cx=".38" cy=".3" r=".85"><stop offset="0" stop-color="#fff" stop-opacity=".26"/><stop offset="1" stop-color="#fff" stop-opacity=".04"/></radialGradient>' +
+    '<radialGradient id="gGlow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#5EEAD4" stop-opacity=".32"/><stop offset="1" stop-color="#5EEAD4" stop-opacity="0"/></radialGradient>' +
+    '</defs>' +
+    '<circle cx="150" cy="145" r="132" fill="url(#gGlow)"/>' +
+    '<g class="spin-slow"><circle cx="150" cy="145" r="124" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="1.6" stroke-dasharray="1.5 10" stroke-linecap="round"/></g>' +
+    '<circle cx="150" cy="145" r="100" fill="none" stroke="#fff" stroke-opacity=".1" stroke-width="7"/>' +
+    '<circle class="kring" cx="150" cy="145" r="100" fill="none" stroke="url(#gRing)" stroke-width="7" stroke-linecap="round" stroke-dasharray="380 628" transform="rotate(-90 150 145)"/>' +
+    '<circle cx="150" cy="145" r="80" fill="url(#gPlate)" stroke="#fff" stroke-opacity=".34" stroke-width="1.5"/>' +
+    '<circle cx="150" cy="145" r="58" fill="none" stroke="#fff" stroke-opacity=".16"/>' +
+    '<g class="bob">' +
+    '<ellipse cx="137" cy="141" rx="25" ry="20" fill="#FFF7E8"/><circle cx="137" cy="141" r="9.5" fill="#FFC53D"/><circle cx="134" cy="138" r="3" fill="#fff" fill-opacity=".55"/>' +
+    '<circle cx="174" cy="153" r="16" fill="#FF6B57"/><path d="M174 138c-3 3-8 3-11 1 4 1 7 0 11-1zm0 0c3 3 8 3 11 1-4 1-7 0-11-1z" fill="#5BD16B"/><circle cx="169" cy="148" r="3.4" fill="#fff" fill-opacity=".4"/>' +
+    '<path d="M126 118c8-14 26-14 34-2-9 2-14 8-16 15-9-1-16-5-18-13z" fill="#7EE787"/><path d="M130 119c8 1 14 5 18 11" stroke="#2F9E44" stroke-width="1.6" fill="none" stroke-linecap="round"/>' +
+    '</g>' +
+    '<g class="steam"><path d="M122 70q-7-9 0-18q7-9 0-18"/><path d="M150 64q-7-9 0-18q7-9 0-18"/><path d="M178 70q-7-9 0-18q7-9 0-18"/></g>' +
+    '<g class="orbit"><circle cx="150" cy="21" r="10" fill="#FF7A66"/><path d="M150 11c-3 3-7 3-10 1 3 1 6 0 10-1zm0 0c3 3 7 3 10 1-3 1-6 0-10-1z" fill="#5BD16B"/></g>' +
+    '<g class="orbit rev"><path d="M150 233c7-9 18-9 22 0-6 8-17 8-22 0z" fill="#7EE787"/></g>' +
+    '<g class="orbit slow"><path d="M268 145c-6-8-16-8-22 0 6 8 16 8 22 0zm0 0l9-7v14z" fill="#8FD3FF"/><circle cx="252" cy="143" r="1.8" fill="#06304A"/></g>' +
+    '</svg>';
+
+  function stageShell(inner, withHero) {
+    return '<div class="stage"><div class="bg" aria-hidden="true"><i class="orb o-a"></i><i class="orb o-b"></i><i class="orb o-c"></i><i class="dots"></i></div>' +
+      '<main class="login">' +
+      (withHero ? '<div class="hero rise" style="--d:0s" aria-hidden="true">' + HERO_SVG +
+        '<div class="chip c1"><b>520 kcal</b><span>Sinigang na tilapia</span></div>' +
+        '<div class="chip c2"><b>28 g</b><span>Fiber today</span></div>' +
+        '<div class="chip c3"><b>₱118</b><span>Groceries for the day</span></div></div>' : '') +
+      '<h1 class="brand rise" style="--d:.1s">Meal Plan Creator</h1>' + inner + '</main></div>';
+  }
+
   function viewCloudAuth() {
-    var sc = authScreen, brand = '<p class="eyebrow">Meal Plan Creator</p>';
-    if (sc === 'c-loading') return '<div class="intro">' + brand + '<h1>Loading your plan</h1><p>One moment.</p></div>';
-    if (sc === 'c-error') return '<div class="intro">' + brand + '<h1>Could not start</h1><p>The sign-in service did not load. Check your internet connection and reload the page.</p></div>';
-    if (sc === 'c-confirm') {
-      return '<div class="intro">' + brand + '<h1>Check your email</h1><p>' + esc(authNote) + '</p></div><button class="btn ghost" data-act="c-go" data-s="c-signin">Back to sign in</button>';
-    }
+    var sc = authScreen;
+    if (sc === 'c-loading') return stageShell('<p class="tag rise" style="--d:.18s">Loading your plan…</p><div class="loadbar rise" style="--d:.26s" aria-hidden="true"><i></i></div>', true);
+    if (sc === 'c-error') return stageShell('<p class="tag rise" style="--d:.18s">The sign-in service did not load. Check your internet connection and reload the page.</p>', true);
     if (sc === 'c-newpass') {
-      return '<div class="intro">' + brand + '<h1>Choose a new password</h1></div><form id="cloudNewPass" class="card stack" novalidate>' +
+      return stageShell('<p class="tag rise" style="--d:.18s">Choose a new password</p><form id="cloudNewPass" class="glass rise" style="--d:.26s" novalidate>' +
         textField('npPass', 'pass', 'New password (8+ characters)', 'password', 'new-password') + textField('npPass2', 'pass2', 'Confirm password', 'password', 'new-password') +
-        '<p class="err" role="alert">' + esc(authErr) + '</p><button class="btn" type="submit">Save password</button></form>';
+        '<p class="err" role="alert">' + esc(authErr) + '</p><button class="go" type="submit"><span>Save password</span></button></form>', false);
     }
-    if (sc === 'c-reset') {
-      return '<div class="intro">' + brand + '<h1>Reset your password</h1><p>We will email you a link to choose a new one.</p></div><form id="cloudReset" class="card stack" novalidate>' +
-        textField('rsEmail', 'email', 'Email', 'email', 'email', 'you@example.com', authDraft) +
-        '<p class="err" role="alert">' + esc(authErr) + '</p><button class="btn" type="submit">Send reset link</button><button class="btn ghost" type="button" data-act="c-go" data-s="c-signin">Back to sign in</button></form>';
-    }
-    if (sc === 'c-signup') {
-      return '<div class="intro">' + brand + '<h1>Create your account</h1><p>Your plan, grocery list and progress are saved to your account and follow you on any device.</p></div><form id="cloudSignUp" class="card stack" novalidate>' +
-        textField('suName', 'name', 'Name', 'text', 'name', 'Maria') + textField('suEmail', 'email', 'Email', 'email', 'email', 'you@example.com', authDraft) +
-        textField('suPass', 'pass', 'Password (8+ characters)', 'password', 'new-password') +
-        '<label class="consent"><input type="checkbox" name="agree" id="suAgree"><span>I have read the <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a> and understand this app gives general guidance, not medical advice.</span></label>' +
-        '<p class="err" role="alert">' + esc(authErr) + '</p><button class="btn" type="submit">Create account</button><button class="btn ghost" type="button" data-act="c-go" data-s="c-signin">I already have an account</button></form>';
-    }
-    return '<div class="intro">' + brand + '<h1>Welcome back</h1><p>Sign in to see your meal plan.</p></div><form id="cloudSignIn" class="card stack" novalidate>' +
-      textField('siEmail', 'email', 'Email', 'email', 'email', 'you@example.com', authDraft) + textField('siPass', 'pass', 'Password', 'password', 'current-password') +
-      '<p class="err" role="alert">' + esc(authErr) + '</p><button class="btn" type="submit">Sign in</button>' +
-      '<button class="link" type="button" data-act="c-go" data-s="c-reset" style="text-align:center">Forgot your password?</button></form>' +
-      '<button class="btn ghost" data-act="c-go" data-s="c-signup">Create an account</button>';
+    return stageShell('<p class="tag rise" style="--d:.18s">Eat well, spend smart. Filipino meals planned for you.</p>' +
+      '<form id="cloudSignIn" class="glass rise" style="--d:.26s" novalidate>' +
+      textField('siEmail', 'email', 'Email', 'email', 'email', 'you@example.com', authDraft) +
+      '<div class="field"><label for="siPass">Password</label><div class="pw"><input class="input" id="siPass" name="pass" type="password" autocomplete="current-password" placeholder="Your password"><button class="pwt" type="button" data-act="pwtoggle" aria-pressed="false">Show</button></div></div>' +
+      '<p class="err" role="alert">' + esc(authErr) + '</p><button class="go" type="submit"><span>Sign in</span></button></form>' +
+      '<p class="fine rise" style="--d:.4s">Accounts are created by invitation. Need access? Contact Nexus Media.<br><a href="privacy.html">Privacy policy</a></p>', true);
   }
 
   function syncNow() {
@@ -961,25 +1056,6 @@ details summary { cursor: pointer; font-weight: 700; font-size: 14px; color: var
       cloud.auth.signInWithPassword({ email: em, password: pw }).then(function (r) {
         if (r.error) { fail(friendlyAuthError(r.error)); return; }
         signInCloud(r.data.user);
-      }, function () { fail('No connection. Check your internet and try again.'); });
-    } else if (f.id === 'cloudSignUp') {
-      var nm = f.name.value.trim(), em2 = f.email.value.trim(), pw2 = f.pass.value; authDraft = em2;
-      if (!nm) { fail('Enter your name.'); return; }
-      if (!emailOk(em2)) { fail('Enter a valid email address.'); return; }
-      if (pw2.length < 8) { fail('Choose a password with at least 8 characters.'); return; }
-      if (!f.agree.checked) { fail('Please agree to the privacy policy to continue.'); return; }
-      busy(true);
-      cloud.auth.signUp({ email: em2, password: pw2, options: { data: { name: nm }, emailRedirectTo: back() } }).then(function (r) {
-        if (r.error) { fail(friendlyAuthError(r.error)); return; }
-        if (r.data && r.data.session) { signInCloud(r.data.user); return; }
-        authNote = 'We sent a confirmation link to ' + em2 + '. Open it, then come back here and sign in.'; authScreen = 'c-confirm'; authErr = ''; render();
-      }, function () { fail('No connection. Check your internet and try again.'); });
-    } else if (f.id === 'cloudReset') {
-      var em3 = f.email.value.trim(); authDraft = em3;
-      if (!emailOk(em3)) { fail('Enter a valid email address.'); return; }
-      busy(true);
-      cloud.auth.resetPasswordForEmail(em3, { redirectTo: back() }).then(function () {
-        authNote = 'If an account exists for ' + em3 + ', we sent a link to reset the password.'; authScreen = 'c-confirm'; authErr = ''; render();
       }, function () { fail('No connection. Check your internet and try again.'); });
     } else if (f.id === 'cloudNewPass' || f.id === 'passChangeForm') {
       var p1 = f.pass.value, p2 = f.pass2.value, inSettings = f.id === 'passChangeForm';
@@ -1549,6 +1625,7 @@ details summary { cursor: pointer; font-weight: 700; font-size: 14px; color: var
     }
     else if (act === 'rmex') { dayLog(dstr()).exercise.splice(+b.dataset.i, 1); save(); render(); }
     else if (act === 'acct-pick') { var pa = findAccount(b.dataset.id); authErr = ''; forgotArmed = false; if (pa && pa.hash) { authScreen = 'pin'; authId = pa.id; render(); } else if (pa) signIn(pa.id); }
+    else if (act === 'pwtoggle') { var pi = document.getElementById('siPass'); if (pi) { var show = pi.type === 'password'; pi.type = show ? 'text' : 'password'; b.textContent = show ? 'Hide' : 'Show'; b.setAttribute('aria-pressed', String(show)); } }
     else if (act === 'c-go') { authScreen = b.dataset.s; authErr = ''; render(); }
     else if (act === 'acct-new') { authScreen = 'create'; authErr = ''; authDraft = ''; render(); }
     else if (act === 'acct-back') { authScreen = 'pick'; authErr = ''; forgotArmed = false; render(); }
