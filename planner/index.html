@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Meal Plan Creator</title>
 <meta name="description" content="A 7-day Filipino meal planner that works out your daily calories, tracks exercise and builds a grocery list with a market budget.">
-<meta name="theme-color" content="#1239A8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0A1130" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F0F5F2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1814" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -20,20 +20,17 @@ html, body { margin: 0; }
 
 /* Layout: one centered column on an 8px grid. Centered headers, equal-width grids (7 days, 4 tabs, 3 macros, 2x2 tiles), full-width actions at the end of each view. */
 :root {
-  --page: #EDF1FB;
-  --bg: #F1F4FC;
+  --bg: #F0F5F2;
+  --wash: #DDEDE6;
   --surface: #FFFFFF;
-  --surface-2: #E4EAF8;
-  --ink: #0A0F2C;
-  --muted: #5C6785;
-  --line: #D9E0F2;
-  --accent: #1239A8;
+  --surface-2: #E7EFEB;
+  --ink: #17261F;
+  --muted: #5B6E65;
+  --line: #D9E4DE;
+  --accent: #2B7A68;
   --accent-ink: #FFFFFF;
-  --accent-soft: #DCE6FF;
-  --bar: #AEBDE6;
-  --hero: #1239A8;
-  --cta: #FFD23F;
-  --cta-ink: #0A0F2C;
+  --accent-soft: #DCEEE8;
+  --bar: #B7CEC4;
   --protein: #5563D6;
   --carb: #D9962A;
   --fat: #D9605A;
@@ -41,7 +38,7 @@ html, body { margin: 0; }
   --good-soft: #DDF3E8;
   --warn: #9A5B00;
   --warn-soft: #FBEBC9;
-  --shadow: 0 1px 2px rgba(10,15,44,0.06), 0 8px 24px rgba(10,15,44,0.06);
+  --shadow: 0 1px 2px rgba(23,38,31,0.06), 0 8px 24px rgba(23,38,31,0.05);
   --danger: #B5301F;
   --font-display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
   --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -50,16 +47,22 @@ html, body { margin: 0; }
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --page: #0A1130; --bg: #0E1845; --surface: #131F55; --surface-2: #1B2A6B; --ink: #E8ECFB; --muted: #9AA6D6; --line: #2A3A7A; --accent: #8FA8FF; --accent-ink: #0A0F2C; --accent-soft: #1F2F7A; --bar: #3A4DA0; --hero: #1239A8; --cta: #FFD23F; --cta-ink: #0A0F2C; --protein: #8D9BFF; --carb: #F0B954; --fat: #FF8D86; --good: #4BD08D; --good-soft: #14352A; --warn: #F0B72F; --warn-soft: #3A2E10; --shadow: 0 1px 2px rgba(0,0,0,0.4); --danger: #FF8D86; color-scheme: dark;
+    --bg: #0E1814; --wash: #14261F; --surface: #16231E; --surface-2: #1E2F28; --ink: #E6F0EA; --muted: #92A89D;
+    --line: #28392F; --accent: #5FCDB0; --accent-ink: #08201A; --accent-soft: #1A3A31; --bar: #35544A;
+    --protein: #8D9BFF; --carb: #F0B954; --fat: #FF8D86; --good: #4BD08D; --good-soft: #14352A;
+    --warn: #F0B72F; --warn-soft: #3A2E10; --shadow: 0 1px 2px rgba(0,0,0,0.4); --danger: #FF8D86; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --page: #0A1130; --bg: #0E1845; --surface: #131F55; --surface-2: #1B2A6B; --ink: #E8ECFB; --muted: #9AA6D6; --line: #2A3A7A; --accent: #8FA8FF; --accent-ink: #0A0F2C; --accent-soft: #1F2F7A; --bar: #3A4DA0; --hero: #1239A8; --cta: #FFD23F; --cta-ink: #0A0F2C; --protein: #8D9BFF; --carb: #F0B954; --fat: #FF8D86; --good: #4BD08D; --good-soft: #14352A; --warn: #F0B72F; --warn-soft: #3A2E10; --shadow: 0 1px 2px rgba(0,0,0,0.4); --danger: #FF8D86; color-scheme: dark;
+  --bg: #0E1814; --wash: #14261F; --surface: #16231E; --surface-2: #1E2F28; --ink: #E6F0EA; --muted: #92A89D;
+  --line: #28392F; --accent: #5FCDB0; --accent-ink: #08201A; --accent-soft: #1A3A31; --bar: #35544A;
+  --protein: #8D9BFF; --carb: #F0B954; --fat: #FF8D86; --good: #4BD08D; --good-soft: #14352A;
+  --warn: #F0B72F; --warn-soft: #3A2E10; --shadow: 0 1px 2px rgba(0,0,0,0.4); --danger: #FF8D86; color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
 body {
-  background: var(--page);
+  background: var(--bg); background-image: linear-gradient(var(--wash), var(--bg) 320px); background-repeat: no-repeat;
   color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.5;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
@@ -74,20 +77,15 @@ h1, h2, h3 { font-family: var(--font-display); margin: 0; letter-spacing: -0.01e
 p { margin: 0; }
 .num { font-variant-numeric: tabular-nums; }
 
-.top, .intro { position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 32px 16px; border-radius: var(--r-card); background: var(--hero); color: #fff; }
-.top::before, .intro::before { content: ""; position: absolute; z-index: -1; left: 50%; top: 50%; width: 300%; aspect-ratio: 1; margin: -150% 0 0 -150%;
-  background: repeating-conic-gradient(rgba(255,255,255,0.06) 0deg 6deg, transparent 6deg 12deg); animation: banner-spin 240s linear infinite; }
-@keyframes banner-spin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .top::before, .intro::before { animation: none; } }
+.top { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 8px 0 8px; }
 .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
-.top .eyebrow, .intro .eyebrow { color: rgba(255,255,255,0.78); }
-.top h1 { font-size: 32px; line-height: 40px; font-weight: 700; color: #fff; }
+.top h1 { font-size: 32px; line-height: 40px; font-weight: 700; }
 
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); box-shadow: var(--shadow); padding: 24px; min-width: 0; }
 .card > h2 { font-size: 20px; line-height: 24px; margin-bottom: 16px; text-align: center; }
 .stack { display: flex; flex-direction: column; gap: 16px; }
 
-.btn { background: var(--cta); color: var(--cta-ink); border: 0; border-radius: var(--r-ctl); padding: 0 24px; font-weight: 700; min-height: 56px; width: 100%; font-size: 16px; }
+.btn { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: var(--r-ctl); padding: 0 24px; font-weight: 700; min-height: 56px; width: 100%; font-size: 16px; }
 .btn.ghost { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
 .btn.small { min-height: 48px; font-size: 15px; }
 .btn:active { transform: translateY(1px); }
@@ -114,8 +112,9 @@ select.input { text-align-last: center; background-image: linear-gradient(45deg,
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .err { color: #FF8D86; } }
 .hint { color: var(--muted); font-size: 14px; text-align: center; }
 
-.intro h1 { font-size: 34px; line-height: 40px; color: #fff; }
-.intro p { color: rgba(255,255,255,0.8); max-width: 40ch; }
+.intro { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 24px 0 8px; }
+.intro h1 { font-size: 36px; line-height: 40px; }
+.intro p { color: var(--muted); max-width: 40ch; }
 
 /* tab bar */
 .tabbar {
@@ -262,50 +261,11 @@ details summary { cursor: pointer; font-weight: 700; font-size: 14px; color: var
 .consent input { width: 24px; height: 24px; margin: 0; accent-color: var(--accent); }
 .consent a { color: var(--accent); font-weight: 600; }
 
-/* ---------- Login stage: quiet and minimal. Committed look, ignores the app theme ---------- */
-.stage {
-  --ink: #0A0F2C; --blue: #1239A8; --blue2: #1034A0; --yel: #FFD23F; --muted: #5C6785;
-  position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; overflow-x: hidden; overflow-y: auto; color-scheme: light;
-  background: var(--blue); color: var(--ink);
-  padding: calc(24px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-left, 0px)) calc(32px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-right, 0px));
-}
-.stage .bg { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
-.stage .burst { position: absolute; left: 50%; top: 24%; width: 240vmax; height: 240vmax; margin: -120vmax 0 0 -120vmax;
-  background: repeating-conic-gradient(var(--blue) 0deg 6deg, var(--blue2) 6deg 12deg); animation: spin 240s linear infinite; will-change: transform; }
-.stage .login { width: 100%; max-width: 360px; margin: auto; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
-.stage .mark { width: 88px; height: 88px; margin-bottom: 8px; }
-.stage .mark-svg { width: 100%; height: 100%; display: block; }
-.stage .rays { transform-origin: 60px 60px; animation: spin 60s linear infinite; }
-.stage .rays path { stroke: var(--yel); stroke-width: 5; stroke-linecap: round; fill: none; }
-.stage .brand { font-family: var(--font-display); font-weight: 700; font-size: 30px; line-height: 36px; letter-spacing: -0.02em; color: #fff; }
-.stage .tagline { color: rgba(255,255,255,0.74); font-size: 15px; line-height: 24px; letter-spacing: 0.04em; margin-top: -8px; margin-bottom: 8px; }
-.stage .sign { width: 100%; display: flex; flex-direction: column; gap: 16px; padding: 28px 24px 24px; text-align: left; background: #fff; border-radius: 20px; box-shadow: 0 24px 60px rgba(4, 12, 60, 0.35); }
-.stage .field > label { text-align: left; color: var(--muted); font-weight: 600; font-size: 13px; letter-spacing: 0; text-transform: none; }
-.stage .input { background: #F1F4FC; border: 1.5px solid transparent; border-radius: 12px; color: var(--ink); text-align: left; font-size: 16px; transition: border-color 0.15s, background 0.15s; }
-.stage .input::placeholder { color: #9AA3BF; }
-.stage .input:focus { outline: none; background: #fff; border-color: var(--blue); }
-.stage .pw { position: relative; }
-.stage .pw .input { padding-right: 72px; }
-.stage .pwt { position: absolute; right: 6px; top: 6px; bottom: 6px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; color: var(--blue); font-weight: 700; font-size: 13px; }
-.stage .err { color: #B4141A; font-size: 14px; font-weight: 600; text-align: left; }
-.stage .err:empty { display: none; }
-.stage .go { border: 0; border-radius: 12px; min-height: 56px; width: 100%; background: var(--yel); color: var(--ink); font-weight: 700; font-size: 16px; letter-spacing: 0.01em; transition: background 0.15s, transform 0.1s; }
-.stage .go:hover { background: #FFC81A; }
-.stage .go:active { transform: scale(0.985); }
-.stage .go:disabled { opacity: 0.6; }
-.stage .note-w { color: #fff; font-weight: 600; }
-.stage .fine { color: rgba(255,255,255,0.68); font-size: 13px; line-height: 20px; }
-.stage .fine a { color: #fff; font-weight: 600; text-decoration-thickness: 1px; text-underline-offset: 3px; }
-.stage .loadbar { width: 140px; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.2); overflow: hidden; }
-.stage .loadbar i { display: block; width: 40%; height: 100%; border-radius: 2px; background: var(--yel); animation: load 1.2s ease-in-out infinite; }
-.stage .rise { animation: rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation-delay: var(--d, 0s); }
-.stage :focus-visible { outline: 3px solid var(--yel); outline-offset: 3px; }
-@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes load { 0% { transform: translateX(-100%); } 100% { transform: translateX(260%); } }
-@media (prefers-reduced-motion: reduce) {
-  .stage *, .stage *::before, .stage *::after { animation: none !important; transition: none !important; }
-}
+/* password field with a Show toggle */
+.pw { position: relative; }
+.pw .input { padding-right: 76px; }
+.pwt { position: absolute; right: 8px; top: 8px; bottom: 8px; padding: 0 12px; border: 0; border-radius: 12px; background: transparent; color: var(--accent); font-weight: 700; font-size: 13px; }
+.note a { color: var(--accent); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -778,7 +738,7 @@ details summary { cursor: pointer; font-weight: 700; font-size: 14px; color: var
   var EX_BY = {};
   EXERCISES.forEach(function (x) { EX_BY[x[0]] = x; });
   var PAL = {
-    sage: { name: 'Jeepney', l: { accent: '#1239A8', wash: '#FFD23F' }, d: { accent: '#8FA8FF', wash: '#1239A8' } },
+    sage: { name: 'Sage', l: { accent: '#2B7A68', wash: '#DDEDE6' }, d: { accent: '#5FCDB0', wash: '#14261F' } },
     ocean: { name: 'Ocean',
       l: { bg: '#EFF4F9', wash: '#D9E8F4', s2: '#E4ECF4', line: '#D3DFEA', ink: '#14233A', muted: '#566B84', accent: '#1F6AA5', soft: '#D9E8F5', bar: '#B3C9DE' },
       d: { bg: '#0C1622', wash: '#122538', surface: '#14212F', s2: '#1C2E41', line: '#26394D', ink: '#E5EEF8', muted: '#8FA5BC', accent: '#6CB8F0', aink: '#07192A', soft: '#17354F', bar: '#33516E' } },
@@ -940,38 +900,22 @@ details summary { cursor: pointer; font-weight: 700; font-size: 14px; color: var
     return m || 'Something went wrong. Try again.';
   }
 
-  /* Login look: quiet and minimal. One blue field, a small sun-and-plate mark, one white card, one yellow button. */
-  function markSvg() {
-    var rays = '';
-    for (var i = 0; i < 12; i++) rays += '<path d="M60 9v13" transform="rotate(' + (i * 30) + ' 60 60)"/>';
-    return '<svg class="mark-svg" viewBox="0 0 120 120" aria-hidden="true" focusable="false">' +
-      '<g class="rays">' + rays + '</g>' +
-      '<circle cx="60" cy="60" r="31" fill="#FFD23F"/><circle cx="60" cy="60" r="19" fill="#fff"/><circle cx="66" cy="57" r="4.5" fill="#E8392F"/>' +
-      '</svg>';
-  }
-
-  function stageShell(inner, withMark) {
-    return '<div class="stage"><div class="bg" aria-hidden="true"><i class="burst"></i></div>' +
-      '<main class="login">' +
-      (withMark ? '<div class="mark rise" aria-hidden="true">' + markSvg() + '</div>' : '') +
-      '<h1 class="brand rise" style="--d:.08s">Meal Plan Creator</h1>' +
-      '<p class="tagline rise" style="--d:.14s">Tipid. Busog. Masarap.</p>' + inner + '</main></div>';
-  }
-
+  /* The login is built from the same pieces as the rest of the app (intro, card, field, input, btn). */
   function viewCloudAuth() {
-    var sc = authScreen;
-    if (sc === 'c-loading') return stageShell('<p class="note-w rise" style="--d:.2s">Loading your plan</p><div class="loadbar rise" style="--d:.24s" aria-hidden="true"><i></i></div>', true);
-    if (sc === 'c-error') return stageShell('<p class="note-w rise" style="--d:.2s">The sign-in service did not load. Check your internet connection and reload the page.</p>', true);
+    var sc = authScreen, brand = '<p class="eyebrow">Meal Plan Creator</p>';
+    if (sc === 'c-loading') return '<div class="intro">' + brand + '<h1>Loading your plan</h1><p>One moment.</p></div>';
+    if (sc === 'c-error') return '<div class="intro">' + brand + '<h1>Could not start</h1><p>The sign-in service did not load. Check your internet connection and reload the page.</p></div>';
     if (sc === 'c-newpass') {
-      return stageShell('<p class="note-w rise" style="--d:.16s">Choose a new password</p><form id="cloudNewPass" class="sign rise" style="--d:.2s" novalidate>' +
+      return '<div class="intro">' + brand + '<h1>Choose a new password</h1></div><form id="cloudNewPass" class="card stack" novalidate>' +
         textField('npPass', 'pass', 'New password (8+ characters)', 'password', 'new-password') + textField('npPass2', 'pass2', 'Confirm password', 'password', 'new-password') +
-        '<p class="err" role="alert">' + esc(authErr) + '</p><button class="go" type="submit">Save password</button></form>', true);
+        '<p class="err" role="alert">' + esc(authErr) + '</p><button class="btn" type="submit">Save password</button></form>';
     }
-    return stageShell('<form id="cloudSignIn" class="sign rise" style="--d:.2s" novalidate>' +
+    return '<div class="intro">' + brand + '<h1>Welcome back</h1><p>Sign in to see your meal plan.</p></div>' +
+      '<form id="cloudSignIn" class="card stack" novalidate>' +
       textField('siEmail', 'email', 'Email', 'email', 'email', 'you@example.com', authDraft) +
       '<div class="field"><label for="siPass">Password</label><div class="pw"><input class="input" id="siPass" name="pass" type="password" autocomplete="current-password" placeholder="Your password"><button class="pwt" type="button" data-act="pwtoggle" aria-pressed="false">Show</button></div></div>' +
-      '<p class="err" role="alert">' + esc(authErr) + '</p><button class="go" type="submit">Sign in</button></form>' +
-      '<p class="fine rise" style="--d:.3s">Accounts are created by invitation. Need access? Contact Nexus Media.<br><a href="privacy.html">Privacy policy</a></p>', true);
+      '<p class="err" role="alert">' + esc(authErr) + '</p><button class="btn" type="submit">Sign in</button></form>' +
+      '<p class="note">Accounts are created by invitation. Need access? Contact Nexus Media. <a href="privacy.html">Privacy policy</a></p>';
   }
 
   function syncNow() {
@@ -1066,19 +1010,18 @@ details summary { cursor: pointer; font-weight: 700; font-size: 14px; color: var
     if (m === 'light') return false;
     try { return window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) { return false; }
   }
-  function tok(c, dark) {
+  function tok(c) {
     var map = { bg: '--bg', wash: '--wash', surface: '--surface', s2: '--surface-2', line: '--line', ink: '--ink', muted: '--muted', accent: '--accent', aink: '--accent-ink', soft: '--accent-soft', bar: '--bar' };
-    return Object.keys(c).filter(function (k) { return map[k]; }).map(function (k) { return map[k] + ':' + c[k] + ';'; }).join('') +
-      '--page:' + c.bg + ';--hero:' + (dark ? c.soft : c.accent) + ';--cta:' + c.accent + ';--cta-ink:' + (dark ? c.aink : '#fff') + ';';
+    return Object.keys(c).filter(function (k) { return map[k]; }).map(function (k) { return map[k] + ':' + c[k] + ';'; }).join('');
   }
   function injectPalettes() {
     var css = '';
     Object.keys(PAL).forEach(function (k) {
       if (k === 'sage') return;
       var p = PAL[k], sel = ':root[data-palette="' + k + '"]';
-      css += sel + '{' + tok(p.l, false) + '}' +
-        '@media (prefers-color-scheme: dark){' + sel + ':not([data-theme="light"]){' + tok(p.d, true) + 'color-scheme:dark}}' +
-        sel + '[data-theme="dark"]{' + tok(p.d, true) + 'color-scheme:dark}';
+      css += sel + '{' + tok(p.l) + '}' +
+        '@media (prefers-color-scheme: dark){' + sel + ':not([data-theme="light"]){' + tok(p.d) + 'color-scheme:dark}}' +
+        sel + '[data-theme="dark"]{' + tok(p.d) + 'color-scheme:dark}';
     });
     var el = document.createElement('style'); el.textContent = css; document.head.appendChild(el);
   }
