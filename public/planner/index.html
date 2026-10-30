@@ -14,7 +14,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Meal Planner">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Figtree:wght@400;500;600;700&family=Bowlby+One&family=DotGothic16&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Figtree:wght@400;500;600;700&display=swap">
 <style>:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); }
 html, body { margin: 0; }
 
@@ -261,75 +261,49 @@ details summary { cursor: pointer; font-weight: 700; font-size: 14px; color: var
 .consent input { width: 24px; height: 24px; margin: 0; accent-color: var(--accent); }
 .consent a { color: var(--accent); font-weight: 600; }
 
-/* ---------- Login stage: a hand-painted jeepney sign. Committed look, ignores the app theme ---------- */
+/* ---------- Login stage: quiet and minimal. Committed look, ignores the app theme ---------- */
 .stage {
-  --ink: #0A0F2C; --blue: #1239A8; --blue2: #0E2D86; --yel: #FFD23F; --amber: #FFB703; --red: #E8392F; --paper: #FFFFFF;
-  --disp: "Bowlby One", "Arial Black", Impact, sans-serif; --dot: "DotGothic16", ui-monospace, monospace;
+  --ink: #0A0F2C; --blue: #1239A8; --blue2: #1034A0; --yel: #FFD23F; --muted: #5C6785;
   position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; overflow-x: hidden; overflow-y: auto; color-scheme: light;
   background: var(--blue); color: var(--ink);
-  padding: calc(20px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-left, 0px)) calc(32px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-right, 0px));
+  padding: calc(24px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-left, 0px)) calc(32px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-right, 0px));
 }
 .stage .bg { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
-.stage .burst { position: absolute; left: 50%; top: 20%; width: 240vmax; height: 240vmax; margin: -120vmax 0 0 -120vmax;
-  background: repeating-conic-gradient(var(--blue) 0deg 6deg, var(--blue2) 6deg 12deg); animation: spin 140s linear infinite; will-change: transform; }
-.stage .dots { position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.16) 1.4px, transparent 1.8px); background-size: 16px 16px;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 40%, #000); mask-image: linear-gradient(to bottom, transparent 40%, #000); }
-.stage .login { position: relative; width: 100%; max-width: 400px; margin: auto; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
-.stage .hero { width: min(290px, 78%, 42vh); aspect-ratio: 300 / 240; }
-.stage .hero-svg { width: 100%; height: 100%; display: block; overflow: visible; }
-.stage .rays { transform-origin: 150px 120px; animation: spin 36s linear infinite; }
-.stage .rays path { fill: var(--amber); stroke: var(--ink); stroke-width: 4; stroke-linejoin: round; }
-.stage .bob { transform-origin: 150px 123px; animation: bob 4.6s ease-in-out infinite; }
-.stage .star { fill: #fff; stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; animation: twinkle 2.8s ease-in-out infinite; }
-.stage .star.s2 { animation-delay: -0.9s; }
-.stage .star.s3 { animation-delay: -1.8s; }
-.stage .brand { font-family: var(--disp); font-weight: 400; font-size: clamp(38px, 12.5vw, 56px); line-height: 1.04; color: #fff; letter-spacing: 0.01em;
-  text-shadow: 3px 3px 0 var(--ink), 6px 6px 0 var(--red); -webkit-text-stroke: 2px var(--ink); paint-order: stroke fill; }
-.stage .word { display: inline-block; white-space: nowrap; }
-.stage .ch { display: inline-block; animation: pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both, wave 3.6s ease-in-out infinite;
-  animation-delay: calc(var(--i) * 45ms + 0.15s), calc(1.6s + var(--i) * 110ms); }
-.stage .led { width: 100%; overflow: hidden; background: var(--ink); border: 3px solid var(--ink); border-radius: 10px; box-shadow: 0 0 0 3px var(--yel), 5px 5px 0 3px var(--ink); padding: 6px 0; }
-.stage .track { display: flex; width: max-content; animation: marquee 30s linear infinite; }
-.stage .track span { font-family: var(--dot); font-size: 18px; line-height: 24px; letter-spacing: 0.08em; color: var(--yel); white-space: pre; text-shadow: 0 0 6px rgba(255,210,63,0.55); }
-.stage .sign { position: relative; width: 100%; display: flex; flex-direction: column; gap: 16px; padding: 28px 24px 24px; margin-top: 8px; text-align: left; background: var(--paper);
-  border: 3px solid var(--ink); border-radius: 18px; box-shadow: 7px 7px 0 var(--ink); transform: rotate(-0.6deg); }
-.stage .stamp { position: absolute; top: -17px; left: 18px; transform: rotate(-3deg); background: var(--red); color: #fff; font-family: var(--disp); font-size: 14px; line-height: 20px; letter-spacing: 0.04em;
-  padding: 6px 12px; border: 3px solid var(--ink); border-radius: 8px; box-shadow: 3px 3px 0 var(--ink); text-transform: uppercase; }
-.stage .field > label { text-align: left; color: var(--blue2); font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; font-size: 12px; }
-.stage .input { background: #F1F5FF; border: 3px solid var(--ink); border-radius: 12px; color: var(--ink); text-align: left; font-weight: 600; transition: box-shadow 0.15s, background 0.15s; }
-.stage .input::placeholder { color: #8A94B8; font-weight: 500; }
-.stage .input:focus { outline: none; background: #fff; box-shadow: 4px 4px 0 var(--yel), 4px 4px 0 3px var(--ink); }
+.stage .burst { position: absolute; left: 50%; top: 24%; width: 240vmax; height: 240vmax; margin: -120vmax 0 0 -120vmax;
+  background: repeating-conic-gradient(var(--blue) 0deg 6deg, var(--blue2) 6deg 12deg); animation: spin 240s linear infinite; will-change: transform; }
+.stage .login { width: 100%; max-width: 360px; margin: auto; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+.stage .mark { width: 88px; height: 88px; margin-bottom: 8px; }
+.stage .mark-svg { width: 100%; height: 100%; display: block; }
+.stage .rays { transform-origin: 60px 60px; animation: spin 60s linear infinite; }
+.stage .rays path { stroke: var(--yel); stroke-width: 5; stroke-linecap: round; fill: none; }
+.stage .brand { font-family: var(--font-display); font-weight: 700; font-size: 30px; line-height: 36px; letter-spacing: -0.02em; color: #fff; }
+.stage .tagline { color: rgba(255,255,255,0.74); font-size: 15px; line-height: 24px; letter-spacing: 0.04em; margin-top: -8px; margin-bottom: 8px; }
+.stage .sign { width: 100%; display: flex; flex-direction: column; gap: 16px; padding: 28px 24px 24px; text-align: left; background: #fff; border-radius: 20px; box-shadow: 0 24px 60px rgba(4, 12, 60, 0.35); }
+.stage .field > label { text-align: left; color: var(--muted); font-weight: 600; font-size: 13px; letter-spacing: 0; text-transform: none; }
+.stage .input { background: #F1F4FC; border: 1.5px solid transparent; border-radius: 12px; color: var(--ink); text-align: left; font-size: 16px; transition: border-color 0.15s, background 0.15s; }
+.stage .input::placeholder { color: #9AA3BF; }
+.stage .input:focus { outline: none; background: #fff; border-color: var(--blue); }
 .stage .pw { position: relative; }
-.stage .pw .input { padding-right: 82px; }
-.stage .pwt { position: absolute; right: 8px; top: 8px; bottom: 8px; padding: 0 12px; border: 2px solid var(--ink); border-radius: 8px; background: var(--yel); color: var(--ink); font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
-.stage .err { color: #B4141A; font-weight: 700; text-align: left; min-height: 24px; }
-.stage .go { display: flex; align-items: center; justify-content: center; gap: 10px; border: 3px solid var(--ink); border-radius: 14px; min-height: 58px; width: 100%; background: var(--red); color: #fff;
-  font-family: var(--disp); font-size: 17px; letter-spacing: 0.04em; text-transform: uppercase; box-shadow: 5px 5px 0 var(--ink); transition: transform 0.1s, box-shadow 0.1s; }
-.stage .go span { display: inline-block; animation: nudge 1.8s ease-in-out infinite; }
-.stage .go:hover { transform: translate(-1px, -1px); box-shadow: 6px 6px 0 var(--ink); }
-.stage .go:active { transform: translate(4px, 4px); box-shadow: 1px 1px 0 var(--ink); }
-.stage .go:disabled { opacity: 0.65; }
-.stage .say { color: #fff; font-weight: 800; font-size: 18px; text-shadow: 2px 2px 0 var(--ink); }
-.stage .fine { color: #DCE6FF; font-size: 13px; line-height: 20px; }
-.stage .fine a { color: var(--yel); font-weight: 800; }
-.stage .loadbar { width: 180px; height: 14px; border: 3px solid var(--ink); border-radius: 8px; background: #fff; overflow: hidden; }
-.stage .loadbar i { display: block; width: 40%; height: 100%; background: var(--red); animation: load 1.2s ease-in-out infinite; }
+.stage .pw .input { padding-right: 72px; }
+.stage .pwt { position: absolute; right: 6px; top: 6px; bottom: 6px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; color: var(--blue); font-weight: 700; font-size: 13px; }
+.stage .err { color: #B4141A; font-size: 14px; font-weight: 600; text-align: left; }
+.stage .err:empty { display: none; }
+.stage .go { border: 0; border-radius: 12px; min-height: 56px; width: 100%; background: var(--yel); color: var(--ink); font-weight: 700; font-size: 16px; letter-spacing: 0.01em; transition: background 0.15s, transform 0.1s; }
+.stage .go:hover { background: #FFC81A; }
+.stage .go:active { transform: scale(0.985); }
+.stage .go:disabled { opacity: 0.6; }
+.stage .note-w { color: #fff; font-weight: 600; }
+.stage .fine { color: rgba(255,255,255,0.68); font-size: 13px; line-height: 20px; }
+.stage .fine a { color: #fff; font-weight: 600; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.stage .loadbar { width: 140px; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.2); overflow: hidden; }
+.stage .loadbar i { display: block; width: 40%; height: 100%; border-radius: 2px; background: var(--yel); animation: load 1.2s ease-in-out infinite; }
 .stage .rise { animation: rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation-delay: var(--d, 0s); }
-.stage .drop { animation: drop 0.9s cubic-bezier(0.34, 1.4, 0.64, 1) 0.65s both; }
 .stage :focus-visible { outline: 3px solid var(--yel); outline-offset: 3px; }
-@keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
-@keyframes drop { from { opacity: 0; transform: translateY(-48px) rotate(-6deg); } to { opacity: 1; transform: rotate(-0.6deg); } }
-@keyframes pop { from { opacity: 0; transform: translateY(26px) scale(0.5) rotate(-10deg); } to { opacity: 1; transform: none; } }
-@keyframes wave { 0%, 55%, 100% { transform: translateY(0); } 25% { transform: translateY(-5px); } }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 @keyframes spin { to { transform: rotate(360deg); } }
-@keyframes bob { 50% { transform: translateY(-4px) rotate(1.5deg); } }
-@keyframes twinkle { 50% { opacity: 0.3; } }
-@keyframes marquee { to { transform: translateX(-50%); } }
-@keyframes nudge { 50% { transform: translateX(5px); } }
 @keyframes load { 0% { transform: translateX(-100%); } 100% { transform: translateX(260%); } }
 @media (prefers-reduced-motion: reduce) {
   .stage *, .stage *::before, .stage *::after { animation: none !important; transition: none !important; }
-  .stage .sign { transform: rotate(-0.6deg); }
 }
 </style>
 </head>
@@ -965,55 +939,38 @@ details summary { cursor: pointer; font-weight: 700; font-size: 14px; color: var
     return m || 'Something went wrong. Try again.';
   }
 
-  /* Login look: a hand-painted jeepney sign. Flat color, thick ink outlines, hard shadows, a LED route board. */
-  function heroSvg() {
+  /* Login look: quiet and minimal. One blue field, a small sun-and-plate mark, one white card, one yellow button. */
+  function markSvg() {
     var rays = '';
-    for (var i = 0; i < 12; i++) rays += '<path d="M138 36L150 3L162 36Z" transform="rotate(' + (i * 30) + ' 150 120)"/>';
-    var star = function (cls, x, y, k) { return '<path class="star ' + cls + '" transform="translate(' + x + ' ' + y + ') scale(' + k + ')" d="M0 -16l4.5 11.5L16 0l-11.5 4.5L0 16l-4.5 -11.5L-16 0l11.5 -4.5z"/>'; };
-    return '<svg class="hero-svg" viewBox="0 0 300 240" aria-hidden="true" focusable="false">' +
+    for (var i = 0; i < 12; i++) rays += '<path d="M60 9v13" transform="rotate(' + (i * 30) + ' 60 60)"/>';
+    return '<svg class="mark-svg" viewBox="0 0 120 120" aria-hidden="true" focusable="false">' +
       '<g class="rays">' + rays + '</g>' +
-      '<circle cx="150" cy="120" r="88" fill="#FFD23F" stroke="#0A0F2C" stroke-width="5"/>' +
-      '<circle cx="150" cy="120" r="75" fill="none" stroke="#0A0F2C" stroke-width="3" stroke-dasharray="1 9" stroke-linecap="round"/>' +
-      '<g class="bob">' +
-      '<circle cx="150" cy="123" r="58" fill="#fff" stroke="#0A0F2C" stroke-width="5"/><circle cx="150" cy="123" r="43" fill="none" stroke="#BFD0FF" stroke-width="3"/>' +
-      '<path d="M117 118c0-12 12-20 26-18 14 2 24 12 20 24-4 11-18 16-31 12-10-3-15-10-15-18z" fill="#fff" stroke="#0A0F2C" stroke-width="4" stroke-linejoin="round"/>' +
-      '<circle cx="140" cy="119" r="9.5" fill="#FFB703" stroke="#0A0F2C" stroke-width="3"/>' +
-      '<circle cx="173" cy="136" r="15" fill="#E8392F" stroke="#0A0F2C" stroke-width="4"/><path d="M173 121c-4 4-9 4-13 1 5 0 9-1 13-1zm0 0c4 4 9 4 13 1-5 0-9-1-13-1z" fill="#3BB54A" stroke="#0A0F2C" stroke-width="2.5" stroke-linejoin="round"/>' +
-      '<path d="M127 99c8-12 25-12 33 0-8 3-14 9-16 16-9-2-15-7-17-16z" fill="#3BB54A" stroke="#0A0F2C" stroke-width="4" stroke-linejoin="round"/><path d="M132 101c7 1 12 5 16 10" stroke="#0A0F2C" stroke-width="2.5" fill="none" stroke-linecap="round"/>' +
-      '</g>' +
-      star('s1', 34, 52, 0.7) + star('s2', 268, 76, 0.55) + star('s3', 258, 206, 0.8) +
+      '<circle cx="60" cy="60" r="31" fill="#FFD23F"/><circle cx="60" cy="60" r="19" fill="#fff"/><circle cx="66" cy="57" r="4.5" fill="#E8392F"/>' +
       '</svg>';
   }
-  function wordSpans(text) {
-    var i = 0;
-    return text.split(' ').map(function (w) {
-      return '<span class="word">' + w.split('').map(function (c) { return '<span class="ch" style="--i:' + (i++) + '">' + c + '</span>'; }).join('') + '</span>';
-    }).join(' ');
-  }
-  var LED_TEXT = 'SINIGANG NA TILAPIA · 520 KCAL · PINAKBET · 280 KCAL · PALENGKE BUDGET · PHP 118 A DAY · TIPID · BUSOG · MASARAP · ';
 
-  function stageShell(inner, withHero) {
-    return '<div class="stage"><div class="bg" aria-hidden="true"><i class="burst"></i><i class="dots"></i></div>' +
+  function stageShell(inner, withMark) {
+    return '<div class="stage"><div class="bg" aria-hidden="true"><i class="burst"></i></div>' +
       '<main class="login">' +
-      (withHero ? '<div class="hero" aria-hidden="true">' + heroSvg() + '</div>' : '') +
-      '<h1 class="brand" aria-label="Meal Plan Creator"><span aria-hidden="true">' + wordSpans('Meal Plan') + '<br>' + wordSpans('Creator') + '</span></h1>' +
-      '<div class="led rise" style="--d:.5s" aria-hidden="true"><div class="track"><span>' + LED_TEXT + '</span><span>' + LED_TEXT + '</span></div></div>' + inner + '</main></div>';
+      (withMark ? '<div class="mark rise" aria-hidden="true">' + markSvg() + '</div>' : '') +
+      '<h1 class="brand rise" style="--d:.08s">Meal Plan Creator</h1>' +
+      '<p class="tagline rise" style="--d:.14s">Tipid. Busog. Masarap.</p>' + inner + '</main></div>';
   }
 
   function viewCloudAuth() {
     var sc = authScreen;
-    if (sc === 'c-loading') return stageShell('<p class="say rise" style="--d:.7s">Loading your plan</p><div class="loadbar rise" style="--d:.8s" aria-hidden="true"><i></i></div>', true);
-    if (sc === 'c-error') return stageShell('<p class="say rise" style="--d:.7s">The sign-in service did not load. Check your internet connection and reload the page.</p>', true);
+    if (sc === 'c-loading') return stageShell('<p class="note-w rise" style="--d:.2s">Loading your plan</p><div class="loadbar rise" style="--d:.24s" aria-hidden="true"><i></i></div>', true);
+    if (sc === 'c-error') return stageShell('<p class="note-w rise" style="--d:.2s">The sign-in service did not load. Check your internet connection and reload the page.</p>', true);
     if (sc === 'c-newpass') {
-      return stageShell('<form id="cloudNewPass" class="sign drop" novalidate><span class="stamp">New password</span>' +
+      return stageShell('<p class="note-w rise" style="--d:.16s">Choose a new password</p><form id="cloudNewPass" class="sign rise" style="--d:.2s" novalidate>' +
         textField('npPass', 'pass', 'New password (8+ characters)', 'password', 'new-password') + textField('npPass2', 'pass2', 'Confirm password', 'password', 'new-password') +
-        '<p class="err" role="alert">' + esc(authErr) + '</p><button class="go" type="submit">Save password</button></form>', false);
+        '<p class="err" role="alert">' + esc(authErr) + '</p><button class="go" type="submit">Save password</button></form>', true);
     }
-    return stageShell('<form id="cloudSignIn" class="sign drop" novalidate><span class="stamp">Sign in</span>' +
+    return stageShell('<form id="cloudSignIn" class="sign rise" style="--d:.2s" novalidate>' +
       textField('siEmail', 'email', 'Email', 'email', 'email', 'you@example.com', authDraft) +
       '<div class="field"><label for="siPass">Password</label><div class="pw"><input class="input" id="siPass" name="pass" type="password" autocomplete="current-password" placeholder="Your password"><button class="pwt" type="button" data-act="pwtoggle" aria-pressed="false">Show</button></div></div>' +
-      '<p class="err" role="alert">' + esc(authErr) + '</p><button class="go" type="submit">Sign in <span aria-hidden="true">→</span></button></form>' +
-      '<p class="fine rise" style="--d:.9s">Accounts are created by invitation. Need access? Contact Nexus Media.<br><a href="privacy.html">Privacy policy</a></p>', true);
+      '<p class="err" role="alert">' + esc(authErr) + '</p><button class="go" type="submit">Sign in</button></form>' +
+      '<p class="fine rise" style="--d:.3s">Accounts are created by invitation. Need access? Contact Nexus Media.<br><a href="privacy.html">Privacy policy</a></p>', true);
   }
 
   function syncNow() {
