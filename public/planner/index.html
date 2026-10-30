@@ -1,0 +1,1594 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Meal Plan Creator</title>
+<meta name="description" content="A 7-day Filipino meal planner that works out your daily calories, tracks exercise and builds a grocery list with a market budget.">
+<meta name="theme-color" content="#F0F5F2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1814" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Meal Planner">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Figtree:wght@400;500;600;700&display=swap">
+<style>:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); }
+html, body { margin: 0; }
+
+/* Layout: one centered column on an 8px grid. Centered headers, equal-width grids (7 days, 4 tabs, 3 macros, 2x2 tiles), full-width actions at the end of each view. */
+:root {
+  --bg: #F0F5F2;
+  --wash: #DDEDE6;
+  --surface: #FFFFFF;
+  --surface-2: #E7EFEB;
+  --ink: #17261F;
+  --muted: #5B6E65;
+  --line: #D9E4DE;
+  --accent: #2B7A68;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #DCEEE8;
+  --bar: #B7CEC4;
+  --protein: #5563D6;
+  --carb: #D9962A;
+  --fat: #D9605A;
+  --good: #1B8A55;
+  --good-soft: #DDF3E8;
+  --warn: #9A5B00;
+  --warn-soft: #FBEBC9;
+  --shadow: 0 1px 2px rgba(23,38,31,0.06), 0 8px 24px rgba(23,38,31,0.05);
+  --danger: #B5301F;
+  --font-display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --r-card: 24px;
+  --r-ctl: 16px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1814; --wash: #14261F; --surface: #16231E; --surface-2: #1E2F28; --ink: #E6F0EA; --muted: #92A89D;
+    --line: #28392F; --accent: #5FCDB0; --accent-ink: #08201A; --accent-soft: #1A3A31; --bar: #35544A;
+    --protein: #8D9BFF; --carb: #F0B954; --fat: #FF8D86; --good: #4BD08D; --good-soft: #14352A;
+    --warn: #F0B72F; --warn-soft: #3A2E10; --shadow: 0 1px 2px rgba(0,0,0,0.4); --danger: #FF8D86; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1814; --wash: #14261F; --surface: #16231E; --surface-2: #1E2F28; --ink: #E6F0EA; --muted: #92A89D;
+  --line: #28392F; --accent: #5FCDB0; --accent-ink: #08201A; --accent-soft: #1A3A31; --bar: #35544A;
+  --protein: #8D9BFF; --carb: #F0B954; --fat: #FF8D86; --good: #4BD08D; --good-soft: #14352A;
+  --warn: #F0B72F; --warn-soft: #3A2E10; --shadow: 0 1px 2px rgba(0,0,0,0.4); --danger: #FF8D86; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); background-image: linear-gradient(var(--wash), var(--bg) 320px); background-repeat: no-repeat;
+  color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 112px;
+  -webkit-text-size-adjust: 100%;
+}
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+h1, h2, h3 { font-family: var(--font-display); margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+p { margin: 0; }
+.num { font-variant-numeric: tabular-nums; }
+
+.top { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 8px 0 8px; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+.top h1 { font-size: 32px; line-height: 40px; font-weight: 700; }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); box-shadow: var(--shadow); padding: 24px; min-width: 0; }
+.card > h2 { font-size: 20px; line-height: 24px; margin-bottom: 16px; text-align: center; }
+.stack { display: flex; flex-direction: column; gap: 16px; }
+
+.btn { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: var(--r-ctl); padding: 0 24px; font-weight: 700; min-height: 56px; width: 100%; font-size: 16px; }
+.btn.ghost { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
+.btn.small { min-height: 48px; font-size: 15px; }
+.btn:active { transform: translateY(1px); }
+.link { background: none; border: 0; color: var(--accent); font-weight: 700; font-size: 14px; min-height: 32px; padding: 0; }
+
+/* form */
+.field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.field > label, .field > .lab { font-size: 13px; font-weight: 700; color: var(--muted); text-align: center; letter-spacing: 0.02em; }
+.input, select.input {
+  width: 100%; min-height: 56px; padding: 0 16px; background: var(--bg); border: 1px solid var(--line);
+  border-radius: var(--r-ctl); font-size: 18px; text-align: center; appearance: none; -webkit-appearance: none;
+}
+select.input { text-align-last: center; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 22px) 26px, calc(100% - 16px) 26px; background-size: 6px 6px; background-repeat: no-repeat; font-size: 16px; }
+.row, .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.pair.tight { gap: 8px; }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; background: var(--surface-2); border-radius: var(--r-ctl); padding: 4px; gap: 4px; }
+.seg label { text-align: center; position: relative; min-width: 0; }
+.seg input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.seg span { display: block; padding: 12px 4px; border-radius: 12px; font-weight: 600; font-size: 15px; color: var(--muted); }
+.seg input:checked + span { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,0.16); }
+.seg input:focus-visible + span { outline: 3px solid var(--accent); }
+.err { color: #C0392B; font-weight: 600; font-size: 14px; text-align: center; min-height: 24px; }
+:root[data-theme="dark"] .err { color: #FF8D86; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .err { color: #FF8D86; } }
+.hint { color: var(--muted); font-size: 14px; text-align: center; }
+
+.intro { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 24px 0 8px; }
+.intro h1 { font-size: 36px; line-height: 40px; }
+.intro p { color: var(--muted); max-width: 40ch; }
+
+/* tab bar */
+.tabbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--surface); border-top: 1px solid var(--line);
+  padding: 8px max(8px, env(safe-area-inset-right, 0px)) calc(8px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));
+}
+.tabbar > div { max-width: 560px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+.tab { background: none; border: 0; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 0; border-radius: var(--r-ctl); color: var(--muted); font-size: 11px; font-weight: 700; min-width: 0; min-height: 56px; padding-left: 0; padding-right: 0; }
+.tab svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tab[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+
+/* planner */
+.days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+.day { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; min-height: 56px; font-weight: 700; font-size: 13px; color: var(--muted); min-width: 0; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+.day svg { width: 14px; height: 14px; }
+.day.today { box-shadow: inset 0 0 0 2px var(--accent); color: var(--ink); }
+.day.locked { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+.day[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); box-shadow: none; }
+.how { color: var(--muted); font-size: 14px; line-height: 24px; }
+.center { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; }
+.big { font-family: var(--font-display); font-weight: 700; font-size: 48px; line-height: 48px; letter-spacing: -0.02em; }
+.big small { display: block; font-family: var(--font-body); font-size: 14px; line-height: 24px; font-weight: 600; color: var(--muted); letter-spacing: 0; margin-top: 8px; }
+.macrobar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; gap: 2px; width: 100%; }
+.macrobar i { display: block; height: 100%; }
+.cells { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; }
+.cells.four { grid-template-columns: repeat(4, 1fr); }
+.cell { background: var(--bg); border-radius: 14px; padding: 12px 4px; text-align: center; display: flex; flex-direction: column; gap: 0; min-width: 0; }
+.cell b { font-family: var(--font-display); font-size: 20px; line-height: 24px; }
+.cell span { font-size: 12px; line-height: 16px; font-weight: 600; color: var(--muted); }
+.cell.p b { color: var(--protein); } .cell.c b { color: var(--carb); } .cell.f b { color: var(--fat); }
+.dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.c-p { background: var(--protein); } .c-c { background: var(--carb); } .c-f { background: var(--fat); }
+.meal { display: flex; flex-direction: column; gap: 16px; }
+.meal-h { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; }
+.slot { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+.meal h3 { font-size: 22px; line-height: 28px; }
+details summary { cursor: pointer; font-weight: 700; font-size: 14px; color: var(--muted); min-height: 32px; display: flex; align-items: center; justify-content: center; }
+.ing { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; }
+.ing li { display: grid; grid-template-columns: 1fr auto; gap: 16px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 15px; }
+.ing li span:last-child { color: var(--muted); white-space: nowrap; text-align: right; }
+
+/* calories */
+.kv { display: flex; flex-direction: column; }
+.kv > div { display: grid; grid-template-columns: 1fr auto; gap: 16px; padding: 12px 0; border-top: 1px solid var(--line); }
+.kv > div:first-child { border-top: 0; padding-top: 0; }
+.kv > div > span:last-child { text-align: right; }
+.kv .tot { font-weight: 700; }
+.ringrow { display: grid; grid-template-columns: 120px 1fr; align-items: center; gap: 24px; }
+.ring { position: relative; width: 120px; height: 120px; }
+.ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring circle { fill: none; stroke-width: 12; }
+.ring .trk { stroke: var(--surface-2); }
+.ring .val { stroke: var(--accent); stroke-linecap: round; }
+.ring .mid { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.ring .mid b { font-family: var(--font-display); font-size: 24px; line-height: 24px; }
+.ring .mid span { font-size: 12px; line-height: 16px; color: var(--muted); }
+.ringrow .big { font-size: 32px; line-height: 40px; text-align: left; }
+.ringrow .big small { margin-top: 0; }
+.eats { margin-top: 16px; display: flex; flex-direction: column; }
+.eat { display: grid; grid-template-columns: 48px 1fr auto; align-items: center; gap: 16px; padding: 12px 0; border-top: 1px solid var(--line); }
+.eat:first-child { border-top: 0; }
+.eat.extra { grid-template-columns: 1fr auto 48px; }
+.eat .t { min-width: 0; }
+.eat .t b { display: block; font-weight: 600; overflow-wrap: anywhere; line-height: 24px; }
+.eat .t span { font-size: 13px; color: var(--muted); }
+.eat > .num { text-align: right; font-weight: 600; }
+.check { width: 48px; height: 48px; border-radius: 14px; border: 2px solid var(--line); background: var(--surface); display: grid; place-items: center; padding: 0; }
+.check svg { width: 22px; height: 22px; stroke: var(--accent-ink); fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+.check[aria-pressed="true"] { background: var(--good); border-color: var(--good); }
+.check[aria-pressed="true"] svg { opacity: 1; }
+:root[data-theme="dark"] .check svg { stroke: #08201A; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .check svg { stroke: #08201A; } }
+.check svg { stroke: #fff; }
+.x { background: none; border: 0; color: var(--muted); width: 48px; height: 48px; font-size: 24px; padding: 0; }
+.addgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: end; margin-top: 16px; }
+.addgrid .full { grid-column: 1 / -1; }
+
+/* dashboard */
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); box-shadow: var(--shadow); padding: 24px 16px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; min-width: 0; min-height: 136px; justify-content: center; }
+.tile span.k { font-size: 13px; line-height: 16px; color: var(--muted); font-weight: 700; }
+.tile b { font-family: var(--font-display); font-size: 28px; line-height: 32px; }
+.tile .pill { margin: 0; }
+.tile .spacer { height: 24px; }
+.pill { display: inline-flex; align-items: center; height: 24px; padding: 0 12px; border-radius: 12px; font-size: 12px; font-weight: 700; background: var(--good-soft); color: var(--good); }
+.pill.neutral { background: var(--surface-2); color: var(--muted); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.chart { width: 100%; height: auto; display: block; }
+.chart text { fill: var(--muted); font-family: var(--font-body); font-size: 12px; }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart .ln { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.chart .pt { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
+.chart .tgt { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.chart .bar { fill: var(--bar); }
+.chart .bar.now { fill: var(--accent); }
+.chart text.vl { fill: var(--ink); font-weight: 600; }
+.chart + .hint { margin-top: 16px; }
+
+/* grocery */
+.prog { height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; width: 100%; }
+.prog i { display: block; height: 100%; background: var(--good); border-radius: 4px; }
+.gcat > h2 { font-family: var(--font-body); font-size: 13px; line-height: 16px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 8px; text-align: left; }
+.gi { display: grid; grid-template-columns: 32px 1fr auto; align-items: center; gap: 16px; width: 100%; background: none; border: 0; border-top: 1px solid var(--line); padding: 8px 0; text-align: left; min-height: 56px; }
+.gcat > h2 + .gi { border-top: 0; }
+.gi .nm { min-width: 0; font-weight: 500; overflow-wrap: anywhere; }
+.gi .qt { color: var(--muted); font-size: 15px; white-space: nowrap; text-align: right; }
+.gi[aria-pressed="true"] .nm { text-decoration: line-through; color: var(--muted); }
+.gi[aria-pressed="true"] .check { background: var(--good); border-color: var(--good); }
+.gi[aria-pressed="true"] .check svg { opacity: 1; }
+.gi .check { width: 32px; height: 32px; border-radius: 10px; }
+.gi .check svg { width: 18px; height: 18px; }
+.btns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; }
+.note { font-size: 13px; color: var(--muted); text-align: center; padding: 0 16px; }
+
+.cells.five { grid-template-columns: repeat(5, 1fr); gap: 4px; }
+.cells.five .cell b { font-size: 17px; }
+.cells.five .cell span { font-size: 11px; }
+.cell.fi b { color: var(--good); }
+.steps { margin: 8px 0 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; font-size: 15px; }
+.gcat > h2 { display: flex; justify-content: space-between; align-items: baseline; }
+.gcat > h2 .num { color: var(--ink); letter-spacing: 0; font-size: 15px; }
+.gi .qt { display: flex; flex-direction: column; align-items: flex-end; line-height: 20px; }
+.gi .nm small { display: block; color: var(--muted); font-size: 13px; font-weight: 400; line-height: 20px; }
+.gi .qt b { color: var(--ink); font-weight: 700; }
+.gi .qt span { font-size: 13px; }
+.acct { display: grid; grid-template-columns: 48px 1fr 24px; align-items: center; gap: 16px; width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-ctl); padding: 12px 16px; text-align: left; min-height: 72px; }
+.acct.static { grid-template-columns: 48px 1fr; }
+.acct svg { width: 20px; height: 20px; stroke: var(--muted); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.avatar { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-family: var(--font-display); font-weight: 700; font-size: 18px; }
+.avatar.lg { width: 72px; height: 72px; font-size: 28px; }
+.who { min-width: 0; }
+.who b { display: block; line-height: 24px; overflow-wrap: anywhere; }
+.who small { color: var(--muted); font-size: 13px; }
+.themes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.theme { background: var(--bg); border: 2px solid var(--line); border-radius: var(--r-ctl); padding: 16px 8px; display: flex; flex-direction: column; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; min-width: 0; }
+.theme[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.swatch { width: 40px; height: 40px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.14); }
+.btn.danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+.preview { min-height: 56px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); border-radius: var(--r-ctl); font-family: var(--font-display); font-weight: 700; font-size: 20px; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(96px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 12px 24px; border-radius: var(--r-ctl); font-weight: 600; font-size: 14px; z-index: 30; max-width: calc(100% - 32px); text-align: center; }
+@media (prefers-reduced-motion: no-preference) { .btn, .tab, .day { transition: background 0.15s, color 0.15s; } }
+
+.consent { display: grid; grid-template-columns: 24px 1fr; gap: 16px; align-items: start; font-size: 14px; color: var(--muted); }
+.consent input { width: 24px; height: 24px; margin: 0; accent-color: var(--accent); }
+.consent a { color: var(--accent); font-weight: 600; }
+</style>
+</head>
+<body>
+<div id="app" class="wrap"></div>
+<nav id="tabbar" class="tabbar" hidden aria-label="Main"></nav>
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Food data (per base serving; scaled to your daily target) ---------- */
+  // ingredient: [name, quantity, unit, category]  categories: P produce, R protein, D dairy & eggs, G grains & bread, N pantry
+  var CATS = { M: 'Meat & poultry', S: 'Fish & seafood', V: 'Vegetables, root crops & herbs', F: 'Fruits', T: 'Eggs & tofu', G: 'Rice & dry goods', N: 'Oil, sauces & coconut milk' };
+  var CAT_ORDER = ['M', 'S', 'V', 'F', 'T', 'G', 'N'];
+  var GARLIC = 'Garlic (bawang) cloves', RICE = 'Rice (bigas)', EGGS = 'Eggs (itlog)', OIL = 'Cooking oil', TOM = 'Tomato (kamatis)', ONION = 'Onion (sibuyas)', SITAW = 'String beans (sitaw)', KANGKONG = 'Water spinach (kangkong)', SQUASH = 'Squash (kalabasa)', EGGPLANT = 'Eggplant (talong)', PORK = 'Pork kasim', CHICKEN = 'Chicken thigh (hita)', VINEGAR = 'Vinegar (suka)', RADISH = 'Radish (labanos)', TAMARIND = 'Tamarind (sampalok)', AMPALAYA = 'Bitter melon (ampalaya)', CARROT = 'Carrots', CAMOTE = 'Sweet potato (camote)', SABA = 'Banana (saging na saba)', TOFU = 'Tofu (tokwa)';
+  var MEALS = [
+    { id: 'b1', slot: 'breakfast', name: 'Sinangag with itlog and kamatis', how: 'Fried rice and fried egg', kcal: 480, p: 17, c: 64, f: 17, ing: [[RICE, 80, 'g', 'G'], [EGGS, 2, 'pcs', 'T'], [GARLIC, 2, 'pcs', 'V'], [TOM, 80, 'g', 'V'], [OIL, 8, 'ml', 'N']] },
+    { id: 'b2', slot: 'breakfast', name: 'Tortang talong with rice', how: 'Grilled eggplant, pan-fried omelet', kcal: 510, p: 17, c: 70, f: 19, ing: [[EGGPLANT, 200, 'g', 'V'], [EGGS, 2, 'pcs', 'T'], [RICE, 70, 'g', 'G'], [OIL, 8, 'ml', 'N']] },
+    { id: 'b3', slot: 'breakfast', name: 'Boiled saba, camote and itlog', how: 'Boiled', kcal: 490, p: 15, c: 90, f: 10, ing: [[SABA, 2, 'pcs', 'F'], [CAMOTE, 150, 'g', 'V'], [EGGS, 2, 'pcs', 'T']] },
+    { id: 'b4', slot: 'breakfast', name: 'Scrambled tokwa and itlog with rice', how: 'Pan-fried', kcal: 525, p: 28, c: 58, f: 21, ing: [[TOFU, 120, 'g', 'T'], [EGGS, 2, 'pcs', 'T'], [ONION, 40, 'g', 'V'], [RICE, 60, 'g', 'G'], [OIL, 5, 'ml', 'N']] },
+    { id: 'b5', slot: 'breakfast', name: 'Champorado', how: 'Simmered rice porridge', kcal: 400, p: 7, c: 76, f: 8, ing: [['Sticky rice (malagkit)', 70, 'g', 'G'], ['Tablea (cacao)', 20, 'g', 'G'], ['Sugar (asukal)', 10, 'g', 'G']] },
+    { id: 'b6', slot: 'breakfast', name: 'Daing na bangus with garlic rice', how: 'Pan-fried fish and fried rice', kcal: 520, p: 30, c: 56, f: 18, ing: [['Milkfish (bangus)', 120, 'g', 'S'], [RICE, 70, 'g', 'G'], [GARLIC, 2, 'pcs', 'V'], [VINEGAR, 10, 'ml', 'N'], [OIL, 8, 'ml', 'N']] },
+
+    { id: 'l1', slot: 'lunch', name: 'Chicken adobo with rice', how: 'Braised in soy sauce and vinegar', kcal: 590, p: 38, c: 58, f: 22, ing: [[CHICKEN, 150, 'g', 'M'], [RICE, 70, 'g', 'G'], [GARLIC, 3, 'pcs', 'V'], ['Soy sauce (toyo)', 20, 'ml', 'N'], [VINEGAR, 20, 'ml', 'N'], [OIL, 5, 'ml', 'N']] },
+    { id: 'l2', slot: 'lunch', name: 'Pinakbet with pork and rice', how: 'Stewed vegetables', kcal: 555, p: 24, c: 70, f: 20, ing: [[PORK, 80, 'g', 'M'], [SQUASH, 100, 'g', 'V'], [SITAW, 80, 'g', 'V'], [EGGPLANT, 80, 'g', 'V'], [AMPALAYA, 50, 'g', 'V'], ['Okra', 50, 'g', 'V'], ['Shrimp paste (bagoong)', 10, 'g', 'N'], [RICE, 70, 'g', 'G']] },
+    { id: 'l3', slot: 'lunch', name: 'Sinigang na tilapia with rice', how: 'Boiled in sour tamarind broth', kcal: 520, p: 42, c: 62, f: 8, ing: [['Tilapia', 150, 'g', 'S'], [KANGKONG, 80, 'g', 'V'], [RADISH, 60, 'g', 'V'], [SITAW, 60, 'g', 'V'], [TOM, 80, 'g', 'V'], [ONION, 40, 'g', 'V'], [TAMARIND, 40, 'g', 'F'], [RICE, 70, 'g', 'G']] },
+    { id: 'l4', slot: 'lunch', name: 'Ginisang monggo with rice', how: 'Sautéed and simmered', kcal: 565, p: 26, c: 78, f: 16, ing: [['Mung beans (monggo)', 60, 'g', 'G'], [PORK, 40, 'g', 'M'], ['Malunggay leaves', 30, 'g', 'V'], [GARLIC, 2, 'pcs', 'V'], [TOM, 60, 'g', 'V'], [ONION, 30, 'g', 'V'], [RICE, 50, 'g', 'G'], [OIL, 5, 'ml', 'N']] },
+    { id: 'l5', slot: 'lunch', name: 'Chicken tinola with rice', how: 'Simmered in ginger broth', kcal: 535, p: 40, c: 60, f: 14, ing: [[CHICKEN, 150, 'g', 'M'], ['Green papaya or sayote', 100, 'g', 'V'], ['Chili leaves (dahon ng sili)', 30, 'g', 'V'], ['Ginger (luya)', 10, 'g', 'V'], [ONION, 40, 'g', 'V'], [RICE, 70, 'g', 'G']] },
+    { id: 'l6', slot: 'lunch', name: 'Pritong galunggong with kamatis salad', how: 'Pan-fried fish, fresh tomato salad', kcal: 505, p: 30, c: 60, f: 15, ing: [['Mackerel scad (galunggong)', 150, 'g', 'S'], [TOM, 100, 'g', 'V'], [ONION, 30, 'g', 'V'], [RICE, 70, 'g', 'G'], [OIL, 8, 'ml', 'N']] },
+
+    { id: 'd1', slot: 'dinner', name: 'Tortang giniling with rice', how: 'Pan-fried', kcal: 590, p: 30, c: 52, f: 30, ing: [['Ground pork (giniling)', 80, 'g', 'M'], [EGGS, 2, 'pcs', 'T'], [CARROT, 40, 'g', 'V'], [ONION, 30, 'g', 'V'], [RICE, 50, 'g', 'G'], [OIL, 5, 'ml', 'N']] },
+    { id: 'd2', slot: 'dinner', name: 'Ginataang kalabasa, sitaw at hipon', how: 'Simmered in coconut milk', kcal: 545, p: 28, c: 72, f: 20, ing: [['Shrimp (hipon)', 120, 'g', 'S'], [SQUASH, 150, 'g', 'V'], [SITAW, 100, 'g', 'V'], ['Coconut milk (gata)', 80, 'ml', 'N'], [GARLIC, 2, 'pcs', 'V'], [RICE, 60, 'g', 'G']] },
+    { id: 'd3', slot: 'dinner', name: 'Pork sinigang with rice', how: 'Boiled in sour tamarind broth', kcal: 575, p: 30, c: 72, f: 18, ing: [[PORK, 100, 'g', 'M'], ['Taro (gabi)', 80, 'g', 'V'], [KANGKONG, 80, 'g', 'V'], [RADISH, 60, 'g', 'V'], [SITAW, 60, 'g', 'V'], [TOM, 80, 'g', 'V'], [TAMARIND, 40, 'g', 'F'], [RICE, 60, 'g', 'G']] },
+    { id: 'd4', slot: 'dinner', name: 'Inihaw na tilapia with ensaladang talong', how: 'Grilled fish and grilled eggplant', kcal: 550, p: 45, c: 62, f: 10, ing: [['Tilapia', 180, 'g', 'S'], [EGGPLANT, 150, 'g', 'V'], [TOM, 80, 'g', 'V'], [ONION, 30, 'g', 'V'], [VINEGAR, 10, 'ml', 'N'], [RICE, 70, 'g', 'G']] },
+    { id: 'd5', slot: 'dinner', name: 'Chicken afritada with rice', how: 'Stewed in tomato sauce', kcal: 585, p: 36, c: 62, f: 20, ing: [[CHICKEN, 130, 'g', 'M'], ['Potato (patatas)', 100, 'g', 'V'], [CARROT, 60, 'g', 'V'], ['Bell pepper', 50, 'g', 'V'], ['Tomato sauce', 50, 'g', 'N'], [RICE, 60, 'g', 'G']] },
+    { id: 'd6', slot: 'dinner', name: 'Ginisang ampalaya with itlog and rice', how: 'Sautéed', kcal: 510, p: 20, c: 66, f: 19, ing: [[AMPALAYA, 150, 'g', 'V'], [EGGS, 2, 'pcs', 'T'], [TOM, 60, 'g', 'V'], [ONION, 30, 'g', 'V'], [RICE, 70, 'g', 'G'], [OIL, 5, 'ml', 'N']] },
+
+    { id: 's1', slot: 'snack', name: 'Nilagang saging na saba', how: 'Boiled', kcal: 220, p: 2, c: 56, f: 0, ing: [[SABA, 2, 'pcs', 'F']] },
+    { id: 's2', slot: 'snack', name: 'Nilagang camote', how: 'Boiled', kcal: 175, p: 3, c: 40, f: 0, ing: [[CAMOTE, 200, 'g', 'V']] },
+    { id: 's3', slot: 'snack', name: 'Nilagang mais', how: 'Boiled', kcal: 150, p: 5, c: 32, f: 2, ing: [['Corn (mais) on the cob', 1, 'pcs', 'V']] },
+    { id: 's4', slot: 'snack', name: 'Nilagang itlog with kamatis', how: 'Hard-boiled', kcal: 160, p: 13, c: 5, f: 10, ing: [[EGGS, 2, 'pcs', 'T'], [TOM, 100, 'g', 'V']] },
+    { id: 's5', slot: 'snack', name: 'Pritong tokwa with suka', how: 'Pan-fried', kcal: 150, p: 10, c: 4, f: 11, ing: [[TOFU, 100, 'g', 'T'], [OIL, 5, 'ml', 'N'], [VINEGAR, 10, 'ml', 'N'], [ONION, 20, 'g', 'V']] },
+    { id: 's6', slot: 'snack', name: 'Nilagang mani', how: 'Boiled', kcal: 225, p: 10, c: 7, f: 20, ing: [['Peanuts (mani)', 40, 'g', 'G']] }
+  ];
+  var FIBER = { b1: 2, b2: 5, b3: 10, b4: 3, b5: 4, b6: 2, l1: 2, l2: 9, l3: 5, l4: 12, l5: 4, l6: 3, d1: 3, d2: 7, d3: 7, d4: 7, d5: 6, d6: 6, s1: 4, s2: 6, s3: 3, s4: 1, s5: 1, s6: 4 };
+  var PECHAY = 'Pechay', CABBAGE = 'Cabbage (repolyo)', MUSH = 'Mushrooms (kabute)', OKRA = 'Okra', MALUNGGAY = 'Malunggay leaves', TOYO = 'Soy sauce (toyo)', CALAMANSI = 'Calamansi', BEEF = 'Beef sirloin', CUC = 'Cucumber (pipino)', UPO = 'Bottle gourd (upo)', SAYOTE = 'Sayote', DSILI = 'Chili leaves (dahon ng sili)', GIN = 'Ginger (luya)', GATA = 'Coconut milk (gata)', BAGOONG = 'Shrimp paste (bagoong)', LUMPIA = 'Lumpia wrapper', BROWNSUG = 'Brown sugar (asukal)', TILAPIA = 'Tilapia', BANGUS = 'Milkfish (bangus)';
+  MEALS.push.apply(MEALS, [
+    /* Filling: more fiber, fewer carbs, lighter on calories, bigger plate */
+    { id: 'fb1', style: 'filling', slot: 'breakfast', name: 'Ginisang upo at itlog', how: 'Sautéed', kcal: 270, p: 16, c: 14, f: 17, fiber: 5, ing: [[UPO, 200, 'g', 'V'], [EGGS, 2, 'pcs', 'T'], [TOM, 60, 'g', 'V'], [ONION, 30, 'g', 'V'], [GARLIC, 1, 'pcs', 'V'], [OIL, 5, 'ml', 'N']] },
+    { id: 'fb2', style: 'filling', slot: 'breakfast', name: 'Ginisang pechay with tokwa and itlog', how: 'Pan-fried', kcal: 255, p: 20, c: 7, f: 17, fiber: 3, ing: [[PECHAY, 150, 'g', 'V'], [TOFU, 120, 'g', 'T'], [EGGS, 1, 'pcs', 'T'], [GARLIC, 1, 'pcs', 'V'], [OIL, 5, 'ml', 'N']] },
+    { id: 'fb3', style: 'filling', slot: 'breakfast', name: 'Mushroom scrambled eggs', how: 'Sautéed and scrambled', kcal: 240, p: 17, c: 8, f: 16, fiber: 3, ing: [[MUSH, 150, 'g', 'V'], [EGGS, 2, 'pcs', 'T'], [ONION, 30, 'g', 'V'], [GARLIC, 1, 'pcs', 'V'], [OIL, 5, 'ml', 'N']] },
+    { id: 'fb4', style: 'filling', slot: 'breakfast', name: 'Ginisang repolyo with giniling', how: 'Sautéed', kcal: 280, p: 17, c: 14, f: 17, fiber: 6, ing: [[CABBAGE, 200, 'g', 'V'], ['Ground pork (giniling)', 60, 'g', 'M'], [CARROT, 40, 'g', 'V'], [ONION, 30, 'g', 'V'], [GARLIC, 1, 'pcs', 'V'], [OIL, 5, 'ml', 'N']] },
+    { id: 'fb5', style: 'filling', slot: 'breakfast', name: 'Tortang togue', how: 'Pan-fried omelet', kcal: 260, p: 17, c: 9, f: 17, fiber: 3, ing: [['Bean sprouts (togue)', 150, 'g', 'V'], [EGGS, 2, 'pcs', 'T'], [CARROT, 30, 'g', 'V'], [ONION, 20, 'g', 'V'], [OIL, 5, 'ml', 'N']] },
+
+    { id: 'fl1', style: 'filling', slot: 'lunch', name: 'Tinolang manok with sayote', how: 'Simmered in ginger broth, no rice', kcal: 285, p: 44, c: 11, f: 7, fiber: 4, ing: [['Chicken breast (dibdib)', 140, 'g', 'M'], [SAYOTE, 150, 'g', 'V'], [DSILI, 40, 'g', 'V'], [GIN, 10, 'g', 'V'], [ONION, 30, 'g', 'V']] },
+    { id: 'fl2', style: 'filling', slot: 'lunch', name: 'Sinigang na bangus with gulay', how: 'Boiled in sour tamarind broth', kcal: 350, p: 33, c: 25, f: 14, fiber: 7, ing: [[BANGUS, 130, 'g', 'S'], [KANGKONG, 100, 'g', 'V'], [RADISH, 60, 'g', 'V'], [SITAW, 80, 'g', 'V'], [OKRA, 50, 'g', 'V'], [TOM, 60, 'g', 'V'], [TAMARIND, 20, 'g', 'F']] },
+    { id: 'fl3', style: 'filling', slot: 'lunch', name: 'Ginisang monggo with malunggay', how: 'Sautéed and simmered', kcal: 345, p: 20, c: 42, f: 11, fiber: 14, ing: [['Mung beans (monggo)', 50, 'g', 'G'], [MALUNGGAY, 50, 'g', 'V'], [PORK, 30, 'g', 'M'], [TOM, 60, 'g', 'V'], [ONION, 30, 'g', 'V'], [GARLIC, 2, 'pcs', 'V'], [OIL, 5, 'ml', 'N']] },
+    { id: 'fl4', style: 'filling', slot: 'lunch', name: 'Gulay-heavy pinakbet', how: 'Stewed vegetables', kcal: 280, p: 14, c: 28, f: 14, fiber: 10, ing: [[SQUASH, 100, 'g', 'V'], [SITAW, 100, 'g', 'V'], [EGGPLANT, 100, 'g', 'V'], [AMPALAYA, 80, 'g', 'V'], [OKRA, 60, 'g', 'V'], [PORK, 60, 'g', 'M'], [BAGOONG, 10, 'g', 'N']] },
+    { id: 'fl5', style: 'filling', slot: 'lunch', name: 'Inihaw na tilapia with pipino salad', how: 'Grilled fish, fresh salad', kcal: 280, p: 40, c: 9, f: 6, fiber: 3, ing: [[TILAPIA, 180, 'g', 'S'], [CUC, 100, 'g', 'V'], [TOM, 100, 'g', 'V'], [ONION, 30, 'g', 'V'], [VINEGAR, 10, 'ml', 'N']] },
+
+    { id: 'fd1', style: 'filling', slot: 'dinner', name: 'Pork sinigang with lots of gulay', how: 'Boiled in sour tamarind broth, no rice', kcal: 380, p: 26, c: 37, f: 14, fiber: 7, ing: [[PORK, 90, 'g', 'M'], [KANGKONG, 100, 'g', 'V'], [RADISH, 80, 'g', 'V'], [SITAW, 80, 'g', 'V'], [TOM, 80, 'g', 'V'], ['Taro (gabi)', 60, 'g', 'V'], [TAMARIND, 20, 'g', 'F']] },
+    { id: 'fd2', style: 'filling', slot: 'dinner', name: 'Light ginataang sitaw, kalabasa at hipon', how: 'Simmered in a little coconut milk', kcal: 245, p: 26, c: 20, f: 10, fiber: 5, ing: [['Shrimp (hipon)', 120, 'g', 'S'], [SITAW, 120, 'g', 'V'], [SQUASH, 100, 'g', 'V'], [GATA, 40, 'ml', 'N'], [GARLIC, 2, 'pcs', 'V']] },
+    { id: 'fd3', style: 'filling', slot: 'dinner', name: 'Ginisang ampalaya with giniling', how: 'Sautéed', kcal: 345, p: 24, c: 17, f: 22, fiber: 6, ing: [[AMPALAYA, 200, 'g', 'V'], ['Ground pork (giniling)', 60, 'g', 'M'], [EGGS, 1, 'pcs', 'T'], [TOM, 60, 'g', 'V'], [ONION, 30, 'g', 'V'], [GARLIC, 1, 'pcs', 'V'], [OIL, 5, 'ml', 'N']] },
+    { id: 'fd4', style: 'filling', slot: 'dinner', name: 'Adobong kangkong at tokwa', how: 'Braised in soy sauce and vinegar', kcal: 260, p: 22, c: 14, f: 14, fiber: 6, ing: [[KANGKONG, 200, 'g', 'V'], [TOFU, 150, 'g', 'T'], [MUSH, 100, 'g', 'V'], [GARLIC, 3, 'pcs', 'V'], [TOYO, 10, 'ml', 'N'], [VINEGAR, 15, 'ml', 'N'], [OIL, 5, 'ml', 'N']] },
+    { id: 'fd5', style: 'filling', slot: 'dinner', name: 'Inihaw na bangus with ensaladang talong', how: 'Grilled fish and eggplant', kcal: 335, p: 35, c: 18, f: 14, fiber: 7, ing: [[BANGUS, 150, 'g', 'S'], [EGGPLANT, 200, 'g', 'V'], [TOM, 80, 'g', 'V'], [ONION, 30, 'g', 'V'], [VINEGAR, 10, 'ml', 'N']] },
+
+    { id: 'fs1', style: 'filling', slot: 'snack', name: 'Nilagang itlog with pipino', how: 'Hard-boiled', kcal: 95, p: 7, c: 4, f: 5, fiber: 1, ing: [[EGGS, 1, 'pcs', 'T'], [CUC, 150, 'g', 'V']] },
+    { id: 'fs2', style: 'filling', slot: 'snack', name: 'Nilagang kalabasa', how: 'Boiled', kcal: 60, p: 2, c: 13, f: 0, fiber: 4, ing: [[SQUASH, 200, 'g', 'V']] },
+    { id: 'fs3', style: 'filling', slot: 'snack', name: 'Nilagang mani (small)', how: 'Boiled', kcal: 140, p: 6, c: 4, f: 12, fiber: 2, ing: [['Peanuts (mani)', 25, 'g', 'G']] },
+    { id: 'fs4', style: 'filling', slot: 'snack', name: 'Singkamas with suka', how: 'Fresh, with vinegar dip', kcal: 60, p: 1, c: 13, f: 0, fiber: 5, ing: [['Jicama (singkamas)', 150, 'g', 'V'], [VINEGAR, 10, 'ml', 'N']] },
+    { id: 'fs5', style: 'filling', slot: 'snack', name: 'Inihaw na tokwa', how: 'Grilled', kcal: 100, p: 10, c: 3, f: 6, fiber: 1, ing: [[TOFU, 100, 'g', 'T'], [TOYO, 5, 'ml', 'N']] },
+
+    /* Delicious: Filipino favorites, portioned sensibly */
+    { id: 'xb1', style: 'delicious', slot: 'breakfast', name: 'Longsilog', how: 'Fried longganisa, garlic rice and egg', kcal: 555, p: 22, c: 60, f: 24, fiber: 2, ing: [['Longganisa', 70, 'g', 'M'], [RICE, 60, 'g', 'G'], [EGGS, 1, 'pcs', 'T'], [TOM, 60, 'g', 'V'], [GARLIC, 1, 'pcs', 'V'], [OIL, 5, 'ml', 'N']] },
+    { id: 'xb2', style: 'delicious', slot: 'breakfast', name: 'Tapsilog', how: 'Pan-fried beef tapa, garlic rice and egg', kcal: 535, p: 32, c: 55, f: 22, fiber: 2, ing: [[BEEF, 80, 'g', 'M'], [RICE, 60, 'g', 'G'], [EGGS, 1, 'pcs', 'T'], [TOYO, 10, 'ml', 'N'], [CALAMANSI, 2, 'pcs', 'F'], [OIL, 5, 'ml', 'N']] },
+    { id: 'xb3', style: 'delicious', slot: 'breakfast', name: 'Arroz caldo with itlog', how: 'Simmered chicken rice porridge', kcal: 495, p: 25, c: 52, f: 18, fiber: 2, ing: [[RICE, 60, 'g', 'G'], [CHICKEN, 80, 'g', 'M'], [EGGS, 1, 'pcs', 'T'], [GIN, 10, 'g', 'V'], [GARLIC, 2, 'pcs', 'V'], [ONION, 30, 'g', 'V'], [OIL, 5, 'ml', 'N']] },
+    { id: 'xb4', style: 'delicious', slot: 'breakfast', name: 'Tocilog', how: 'Pan-fried tocino, garlic rice and egg', kcal: 505, p: 20, c: 55, f: 22, fiber: 2, ing: [['Pork tocino', 70, 'g', 'M'], [RICE, 60, 'g', 'G'], [EGGS, 1, 'pcs', 'T'], [TOM, 60, 'g', 'V'], [OIL, 5, 'ml', 'N']] },
+    { id: 'xb5', style: 'delicious', slot: 'breakfast', name: 'Champorado with tuyo', how: 'Simmered rice porridge, fried dried fish', kcal: 460, p: 14, c: 76, f: 11, fiber: 4, ing: [['Sticky rice (malagkit)', 70, 'g', 'G'], ['Tablea (cacao)', 20, 'g', 'G'], ['Sugar (asukal)', 10, 'g', 'G'], ['Dried fish (tuyo)', 20, 'g', 'S']] },
+
+    { id: 'xl1', style: 'delicious', slot: 'lunch', name: 'Pork sisig with rice', how: 'Chopped and pan-fried with onion and calamansi', kcal: 530, p: 30, c: 50, f: 28, fiber: 2, ing: [[PORK, 100, 'g', 'M'], [ONION, 40, 'g', 'V'], [EGGS, 1, 'pcs', 'T'], [CALAMANSI, 3, 'pcs', 'F'], [RICE, 60, 'g', 'G']] },
+    { id: 'xl2', style: 'delicious', slot: 'lunch', name: 'Bistek Tagalog with rice', how: 'Pan-seared beef in soy-calamansi sauce', kcal: 520, p: 36, c: 52, f: 18, fiber: 3, ing: [[BEEF, 120, 'g', 'M'], [ONION, 80, 'g', 'V'], [TOYO, 15, 'ml', 'N'], [CALAMANSI, 3, 'pcs', 'F'], [OIL, 5, 'ml', 'N'], [RICE, 60, 'g', 'G']] },
+    { id: 'xl3', style: 'delicious', slot: 'lunch', name: 'Kare-kare with gulay and rice', how: 'Stewed in peanut sauce', kcal: 560, p: 30, c: 52, f: 27, fiber: 8, ing: [[BEEF, 100, 'g', 'M'], [SQUASH, 80, 'g', 'V'], [SITAW, 80, 'g', 'V'], [EGGPLANT, 80, 'g', 'V'], [PECHAY, 60, 'g', 'V'], ['Peanuts (mani)', 20, 'g', 'G'], [BAGOONG, 10, 'g', 'N'], [RICE, 50, 'g', 'G']] },
+    { id: 'xl4', style: 'delicious', slot: 'lunch', name: 'Crispy pritong manok with rice', how: 'Deep-fried chicken', kcal: 585, p: 36, c: 55, f: 25, fiber: 1, ing: [[CHICKEN, 150, 'g', 'M'], [GARLIC, 2, 'pcs', 'V'], [RICE, 60, 'g', 'G'], [OIL, 10, 'ml', 'N']] },
+    { id: 'xl5', style: 'delicious', slot: 'lunch', name: 'Pancit bihon with manok at gulay', how: 'Stir-fried noodles', kcal: 490, p: 24, c: 66, f: 14, fiber: 4, ing: [['Rice noodles (bihon)', 60, 'g', 'G'], [CHICKEN, 80, 'g', 'M'], [CABBAGE, 80, 'g', 'V'], [CARROT, 40, 'g', 'V'], [ONION, 30, 'g', 'V'], [TOYO, 10, 'ml', 'N'], [OIL, 5, 'ml', 'N']] },
+
+    { id: 'xd1', style: 'delicious', slot: 'dinner', name: 'Pork adobo with itlog and rice', how: 'Braised in soy sauce and vinegar', kcal: 550, p: 32, c: 52, f: 24, fiber: 1, ing: [[PORK, 100, 'g', 'M'], [EGGS, 1, 'pcs', 'T'], [GARLIC, 3, 'pcs', 'V'], [TOYO, 20, 'ml', 'N'], [VINEGAR, 20, 'ml', 'N'], [RICE, 60, 'g', 'G']] },
+    { id: 'xd2', style: 'delicious', slot: 'dinner', name: 'Inihaw na manok with rice', how: 'Grilled marinated chicken', kcal: 530, p: 38, c: 52, f: 18, fiber: 1, ing: [[CHICKEN, 150, 'g', 'M'], [CALAMANSI, 3, 'pcs', 'F'], [VINEGAR, 10, 'ml', 'N'], [GARLIC, 2, 'pcs', 'V'], [RICE, 60, 'g', 'G'], [OIL, 5, 'ml', 'N']] },
+    { id: 'xd3', style: 'delicious', slot: 'dinner', name: 'Lumpiang shanghai with rice', how: 'Fried spring rolls', kcal: 535, p: 20, c: 62, f: 22, fiber: 2, ing: [['Ground pork (giniling)', 60, 'g', 'M'], [LUMPIA, 4, 'pcs', 'G'], [CARROT, 30, 'g', 'V'], [ONION, 20, 'g', 'V'], [RICE, 50, 'g', 'G'], [OIL, 10, 'ml', 'N']] },
+    { id: 'xd4', style: 'delicious', slot: 'dinner', name: 'Beef nilaga with rice', how: 'Simmered beef soup with vegetables', kcal: 520, p: 30, c: 58, f: 15, fiber: 6, ing: [[BEEF, 100, 'g', 'M'], ['Potato (patatas)', 100, 'g', 'V'], [CABBAGE, 100, 'g', 'V'], [PECHAY, 50, 'g', 'V'], [ONION, 30, 'g', 'V'], [RICE, 50, 'g', 'G']] },
+    { id: 'xd5', style: 'delicious', slot: 'dinner', name: 'Inihaw na liempo with kamatis and rice', how: 'Grilled pork belly', kcal: 540, p: 25, c: 40, f: 33, fiber: 2, ing: [['Pork liempo', 100, 'g', 'M'], [TOM, 80, 'g', 'V'], [ONION, 30, 'g', 'V'], [VINEGAR, 10, 'ml', 'N'], [RICE, 50, 'g', 'G']] },
+
+    { id: 'xs1', style: 'delicious', slot: 'snack', name: 'Turon', how: 'Fried banana spring roll', kcal: 290, p: 3, c: 50, f: 9, fiber: 3, ing: [[SABA, 1, 'pcs', 'F'], [LUMPIA, 2, 'pcs', 'G'], [BROWNSUG, 10, 'g', 'G'], [OIL, 10, 'ml', 'N']] },
+    { id: 'xs2', style: 'delicious', slot: 'snack', name: 'Ginataang bilo-bilo', how: 'Simmered in coconut milk', kcal: 330, p: 5, c: 60, f: 7, fiber: 4, ing: [['Sticky rice (malagkit)', 30, 'g', 'G'], [CAMOTE, 60, 'g', 'V'], [SABA, 1, 'pcs', 'F'], [GATA, 30, 'ml', 'N']] },
+    { id: 'xs3', style: 'delicious', slot: 'snack', name: 'Banana cue', how: 'Fried caramelized banana', kcal: 220, p: 1, c: 42, f: 6, fiber: 2, ing: [[SABA, 1, 'pcs', 'F'], [BROWNSUG, 10, 'g', 'G'], [OIL, 8, 'ml', 'N']] },
+    { id: 'xs4', style: 'delicious', slot: 'snack', name: 'Camote cue', how: 'Fried caramelized sweet potato', kcal: 210, p: 2, c: 40, f: 5, fiber: 3, ing: [[CAMOTE, 120, 'g', 'V'], [BROWNSUG, 10, 'g', 'G'], [OIL, 8, 'ml', 'N']] },
+    { id: 'xs5', style: 'delicious', slot: 'snack', name: 'Tokwa\'t baboy', how: 'Fried tofu and boiled pork in soy-vinegar dip', kcal: 225, p: 14, c: 5, f: 16, fiber: 1, ing: [[TOFU, 80, 'g', 'T'], [PORK, 40, 'g', 'M'], [VINEGAR, 10, 'ml', 'N'], [TOYO, 5, 'ml', 'N'], [ONION, 20, 'g', 'V'], [OIL, 5, 'ml', 'N']] }
+  ]);
+  MEALS.forEach(function (m) { if (!m.style) m.style = 'balanced'; if (m.fiber == null) m.fiber = FIBER[m.id] || 0; });
+  var STYLES = [
+    ['balanced', 'Balanced', 'A bit of everything, with rice at most meals.'],
+    ['filling', 'Filling', 'More fiber, fewer carbs. Big plates of gulay, fish and lean meat for fewer calories, so you feel full.'],
+    ['delicious', 'Delicious', 'Filipino favorites like silog, bistek, kare-kare and turon, portioned to fit your target.']
+  ];
+  /* ---------- Ingredient table: nutrition per 100 g and estimated wet-market price ---------- */
+  // [name, unit, grams per unit, category, kcal, protein, carbs, fat, fiber, price (PHP per kg, per liter, or per piece)]
+  var PRICE_AS_OF = 'Oct 2026';
+  var ING = {};
+  [
+    ['Rice (bigas)', 'g', 1, 'G', 360, 7, 80, 0.6, 1.3, 55], ['Sticky rice (malagkit)', 'g', 1, 'G', 370, 7, 81, 0.6, 1, 90], ['Eggs (itlog)', 'pcs', 50, 'T', 143, 12.6, 0.7, 9.5, 0, 9],
+    ['Garlic (bawang) cloves', 'pcs', 5, 'V', 149, 6.4, 33, 0.5, 2.1, 1.5], ['Tomato (kamatis)', 'g', 1, 'V', 18, 0.9, 3.9, 0.2, 1.2, 90], ['Onion (sibuyas)', 'g', 1, 'V', 40, 1.1, 9.3, 0.1, 1.7, 120],
+    ['Cooking oil', 'ml', 0.92, 'N', 884, 0, 0, 100, 0, 120], ['Eggplant (talong)', 'g', 1, 'V', 25, 1, 6, 0.2, 3, 100], ['Banana (saging na saba)', 'pcs', 100, 'F', 122, 1.3, 32, 0.4, 2.3, 6],
+    ['Sweet potato (camote)', 'g', 1, 'V', 86, 1.6, 20, 0.1, 3, 70], ['Tofu (tokwa)', 'g', 1, 'T', 76, 8, 2, 4.8, 0.3, 120], ['Tablea (cacao)', 'g', 1, 'G', 480, 12, 35, 35, 12, 350],
+    ['Sugar (asukal)', 'g', 1, 'G', 387, 0, 100, 0, 0, 85], ['Brown sugar (asukal)', 'g', 1, 'G', 380, 0, 98, 0, 0, 80], ['Milkfish (bangus)', 'g', 1, 'S', 190, 20, 0, 12, 0, 220],
+    ['Vinegar (suka)', 'ml', 1, 'N', 18, 0, 0.04, 0, 0, 40], ['Chicken thigh (hita)', 'g', 1, 'M', 209, 26, 0, 11, 0, 200], ['Soy sauce (toyo)', 'ml', 1.2, 'N', 53, 8, 5, 0, 0, 60],
+    ['Pork kasim', 'g', 1, 'M', 240, 18, 0, 18, 0, 330], ['Squash (kalabasa)', 'g', 1, 'V', 26, 1, 6.5, 0.1, 2, 50], ['String beans (sitaw)', 'g', 1, 'V', 31, 1.8, 7, 0.1, 3.4, 100],
+    ['Bitter melon (ampalaya)', 'g', 1, 'V', 17, 1, 3.7, 0.2, 2.8, 110], ['Okra', 'g', 1, 'V', 33, 1.9, 7.5, 0.2, 3.2, 80], ['Shrimp paste (bagoong)', 'g', 1, 'N', 120, 15, 5, 3, 0, 180],
+    ['Tilapia', 'g', 1, 'S', 128, 26, 0, 2.7, 0, 160], ['Water spinach (kangkong)', 'g', 1, 'V', 19, 2.6, 3.1, 0.2, 2.1, 50], ['Radish (labanos)', 'g', 1, 'V', 16, 0.7, 3.4, 0.1, 1.6, 60],
+    ['Tamarind (sampalok)', 'g', 1, 'F', 239, 2.8, 62, 0.6, 5.1, 150], ['Mung beans (monggo)', 'g', 1, 'G', 347, 24, 63, 1.2, 16, 160], ['Malunggay leaves', 'g', 1, 'V', 64, 9, 8, 1.4, 2, 100],
+    ['Green papaya or sayote', 'g', 1, 'V', 19, 0.8, 4.5, 0.1, 1.5, 60], ['Chili leaves (dahon ng sili)', 'g', 1, 'V', 30, 3, 5, 0.4, 2, 120], ['Ginger (luya)', 'g', 1, 'V', 80, 1.8, 18, 0.8, 2, 170],
+    ['Mackerel scad (galunggong)', 'g', 1, 'S', 140, 21, 0, 6, 0, 220], ['Ground pork (giniling)', 'g', 1, 'M', 250, 17, 0, 20, 0, 320], ['Carrots', 'g', 1, 'V', 41, 0.9, 10, 0.2, 2.8, 90],
+    ['Shrimp (hipon)', 'g', 1, 'S', 85, 20, 0, 0.5, 0, 400], ['Coconut milk (gata)', 'ml', 1, 'N', 197, 2, 3, 21, 1, 150], ['Taro (gabi)', 'g', 1, 'V', 112, 1.5, 26, 0.2, 4, 90],
+    ['Potato (patatas)', 'g', 1, 'V', 77, 2, 17, 0.1, 2.2, 100], ['Bell pepper', 'g', 1, 'V', 26, 1, 6, 0.3, 2, 180], ['Tomato sauce', 'g', 1, 'N', 29, 1.3, 6.5, 0.2, 1.5, 90],
+    ['Corn (mais) on the cob', 'pcs', 120, 'V', 96, 3.4, 21, 1.5, 2.4, 12], ['Peanuts (mani)', 'g', 1, 'G', 567, 26, 16, 49, 8.5, 200], ['Pechay', 'g', 1, 'V', 13, 1.5, 2.2, 0.2, 1, 70],
+    ['Cabbage (repolyo)', 'g', 1, 'V', 25, 1.3, 6, 0.1, 2.5, 70], ['Mushrooms (kabute)', 'g', 1, 'V', 22, 3.1, 3.3, 0.3, 1, 220], ['Chicken breast (dibdib)', 'g', 1, 'M', 165, 31, 0, 3.6, 0, 220],
+    ['Sayote', 'g', 1, 'V', 19, 0.8, 4.5, 0.1, 1.7, 60], ['Bottle gourd (upo)', 'g', 1, 'V', 14, 0.6, 3.4, 0.1, 1.2, 60], ['Bean sprouts (togue)', 'g', 1, 'V', 30, 3, 6, 0.2, 1.8, 60],
+    ['Jicama (singkamas)', 'g', 1, 'V', 38, 0.7, 9, 0.1, 4.9, 50], ['Cucumber (pipino)', 'g', 1, 'V', 15, 0.7, 3.6, 0.1, 0.5, 60], ['Longganisa', 'g', 1, 'M', 330, 14, 5, 28, 0, 300],
+    ['Beef sirloin', 'g', 1, 'M', 170, 22, 0, 9, 0, 480], ['Calamansi', 'pcs', 10, 'F', 25, 0.4, 8, 0.2, 2, 1], ['Dried fish (tuyo)', 'g', 1, 'S', 300, 52, 0, 10, 0, 480],
+    ['Pork tocino', 'g', 1, 'M', 250, 14, 18, 14, 0, 300], ['Pork liempo', 'g', 1, 'M', 390, 14, 0, 37, 0, 390], ['Rice noodles (bihon)', 'g', 1, 'G', 360, 6, 80, 0.6, 1.5, 130],
+    ['Lumpia wrapper', 'pcs', 12, 'G', 297, 9, 60, 2, 2, 2],
+    ['Squid (pusit)', 'g', 1, 'S', 92, 16, 3, 1.4, 0, 350], ['Mussels (tahong)', 'g', 1, 'S', 86, 12, 4, 2.2, 0, 160], ['Fresh sardines (tamban)', 'g', 1, 'S', 140, 20, 0, 6, 0, 130],
+    ['Dried anchovies (dilis)', 'g', 1, 'S', 300, 50, 0, 10, 0, 500], ['Beef shank', 'g', 1, 'M', 160, 25, 0, 6, 0, 420], ['Chicken drumstick', 'g', 1, 'M', 172, 28, 0, 6, 0, 190],
+    ['Chicken liver', 'g', 1, 'M', 119, 17, 1, 5, 0, 120], ['Young jackfruit (langka)', 'g', 1, 'V', 35, 2, 8, 0.3, 3, 90], ['Jute leaves (saluyot)', 'g', 1, 'V', 37, 4.7, 5.8, 0.3, 2, 60],
+    ['Sweet potato tops (kamote tops)', 'g', 1, 'V', 30, 3, 5, 0.3, 2, 40], ['Sponge gourd (patola)', 'g', 1, 'V', 20, 1, 4, 0.2, 1, 70], ['Banana blossom (puso ng saging)', 'g', 1, 'V', 30, 1.5, 6, 0.3, 3, 60],
+    ['Papaya, ripe', 'g', 1, 'F', 43, 0.5, 11, 0.3, 1.7, 60], ['Pineapple', 'g', 1, 'F', 50, 0.5, 13, 0.1, 1.4, 60], ['Banana (lakatan)', 'pcs', 100, 'F', 89, 1.1, 23, 0.3, 2.6, 7],
+    ['Quail eggs (itlog ng pugo)', 'pcs', 9, 'T', 158, 13, 0.4, 11, 0, 2], ['Salted egg (itlog na maalat)', 'pcs', 55, 'T', 160, 12, 1, 12, 0, 14], ['Green onion (dahon ng sibuyas)', 'g', 1, 'V', 32, 1.8, 7, 0.2, 2.6, 100],
+    ['Lemongrass (tanglad)', 'g', 1, 'V', 99, 1.8, 25, 0.5, 0, 100], ['Chili (siling labuyo)', 'g', 1, 'V', 40, 2, 9, 0.4, 1.5, 250], ['Fish sauce (patis)', 'ml', 1.2, 'N', 35, 5, 3.6, 0, 0, 60],
+    ['Cassava (kamoteng kahoy)', 'g', 1, 'V', 160, 1.4, 38, 0.3, 1.8, 50], ['Sotanghon noodles', 'g', 1, 'G', 350, 0.1, 86, 0.1, 0.5, 200], ['Pancit canton noodles', 'g', 1, 'G', 380, 12, 72, 3, 3, 150],
+    ['Flour (harina)', 'g', 1, 'G', 364, 10, 76, 1, 2.7, 55], ['Grated coconut (niyog)', 'g', 1, 'F', 354, 3.3, 15, 33, 9, 120], ['Alugbati leaves', 'g', 1, 'V', 19, 2.8, 3.4, 0.3, 2, 60],
+    ['Mustard greens (mustasa)', 'g', 1, 'V', 27, 2.9, 4.7, 0.4, 3, 60]
+  ].forEach(function (r) { ING[r[0]] = { unit: r[1], g: r[2], cat: r[3], k: r[4], p: r[5], c: r[6], f: r[7], fi: r[8], price: r[9] }; });
+
+  var RICE_N = 'Rice (bigas)', BREAST = 'Chicken breast (dibdib)', GIL = 'Ground pork (giniling)', GAL = 'Mackerel scad (galunggong)', HIPON = 'Shrimp (hipon)', POT = 'Potato (patatas)', PEPPER = 'Bell pepper', GREENON = 'Green onion (dahon ng sibuyas)', PATIS = 'Fish sauce (patis)', MONGGO = 'Mung beans (monggo)', TOGUE = 'Bean sprouts (togue)', PEANUT = 'Peanuts (mani)', STICKY = 'Sticky rice (malagkit)', TUYO = 'Dried fish (tuyo)', DILIS = 'Dried anchovies (dilis)', SQUID = 'Squid (pusit)', MUSSEL = 'Mussels (tahong)', LIEMPO = 'Pork liempo', SHANK = 'Beef shank', SILING = 'Chili (siling labuyo)', QUAIL = 'Quail eggs (itlog ng pugo)', FLOUR = 'Flour (harina)', TSAUCE = 'Tomato sauce', CORN = 'Corn (mais) on the cob', TABLEA = 'Tablea (cacao)', SUGAR = 'Sugar (asukal)', CASSAVA = 'Cassava (kamoteng kahoy)', KAMOTETOPS = 'Sweet potato tops (kamote tops)', LANGKA = 'Young jackfruit (langka)', NIYOG = 'Grated coconut (niyog)', SOTANGHON = 'Sotanghon noodles', CANTON = 'Pancit canton noodles', PINEAPPLE = 'Pineapple', PAPAYA = 'Papaya, ripe', LAKATAN = 'Banana (lakatan)', LEMONGRASS = 'Lemongrass (tanglad)', PATOLA = 'Sponge gourd (patola)', ALUGBATI = 'Alugbati leaves', MUSTASA = 'Mustard greens (mustasa)', BLOSSOM = 'Banana blossom (puso ng saging)', SARDINE = 'Fresh sardines (tamban)', LIVER = 'Chicken liver', DRUMSTICK = 'Chicken drumstick', SALTEDEGG = 'Salted egg (itlog na maalat)';
+
+  function mk(id, style, slot, name, how, mins, ing, steps) {
+    var k = 0, p = 0, c = 0, f = 0, fi = 0, list = [];
+    ing.forEach(function (g) {
+      var d = ING[g[0]];
+      if (!d) throw new Error('Unknown ingredient: ' + g[0]);
+      var grams = g[1] * d.g;
+      k += grams * d.k / 100; p += grams * d.p / 100; c += grams * d.c / 100; f += grams * d.f / 100; fi += grams * d.fi / 100;
+      list.push([g[0], g[1], d.unit, d.cat]);
+    });
+    return { id: id, style: style, slot: slot, name: name, how: how, mins: mins, steps: steps, kcal: Math.round(k), p: Math.round(p), c: Math.round(c), f: Math.round(f), fiber: Math.round(fi), ing: list };
+  }
+
+  MEALS.push.apply(MEALS, [
+    /* ===== Balanced breakfast ===== */
+    mk('ab1', 'balanced', 'breakfast', 'Sinangag with tuyo at kamatis', 'Fried rice and crispy dried fish', 15, [[RICE_N, 70], [TUYO, 20], [GARLIC, 3], [TOM, 80], [OIL, 8]],
+      ['Cook the rice ahead and let it cool, or spread it on a plate for 10 minutes.', 'Fry the tuyo in a little oil until crisp, then set aside.', 'Sauté the garlic until golden, add the rice and stir for 3 to 4 minutes until hot.', 'Serve with the tuyo and sliced tomato.']),
+    mk('ab2', 'balanced', 'breakfast', 'Lugaw na may itlog', 'Simmered rice porridge', 40, [[RICE_N, 60], [GIN, 10], [GARLIC, 2], [EGGS, 1], [ONION, 20], [GREENON, 10], [OIL, 5]],
+      ['Sauté garlic, onion and sliced ginger in oil until fragrant.', 'Add the rinsed rice and 4 cups of water. Simmer for 30 minutes, stirring now and then, until thick.', 'Boil the egg for 8 minutes, peel it and add it on top.', 'Season with salt and top with chopped green onion.']),
+    mk('ab3', 'balanced', 'breakfast', 'Nilagang camote with itlog na maalat salad', 'Boiled sweet potato, fresh salad', 25, [[CAMOTE, 150], [SALTEDEGG, 1], [TOM, 80], [ONION, 20]],
+      ['Boil the camote in water for 20 minutes until soft, then drain.', 'Slice the salted egg, tomato and onion.', 'Toss the salad with a splash of vinegar if you like.', 'Serve the camote with the salad.']),
+    mk('ab4', 'balanced', 'breakfast', 'Pritong tamban with sinangag', 'Pan-fried fish and garlic rice', 20, [[SARDINE, 120], [RICE_N, 70], [GARLIC, 2], [OIL, 10], [VINEGAR, 10]],
+      ['Pat the tamban dry and season with salt.', 'Fry in hot oil for 3 minutes per side until crisp.', 'In the same pan, sauté garlic and fry the cooked rice until hot.', 'Serve with a vinegar dip.']),
+    mk('ab5', 'balanced', 'breakfast', 'Ginisang togue with itlog and rice', 'Sautéed', 15, [[TOGUE, 100], [EGGS, 2], [RICE_N, 60], [CARROT, 30], [ONION, 20], [OIL, 5]],
+      ['Heat oil and sauté onion, then the carrot strips for 2 minutes.', 'Add the togue and cook for 2 minutes, keeping it crunchy. Season with salt.', 'Push the vegetables aside and scramble the eggs in the pan.', 'Mix together and serve with rice.']),
+    mk('ab6', 'balanced', 'breakfast', 'Nilagang kamoteng kahoy at itlog', 'Boiled', 30, [[CASSAVA, 150], [EGGS, 2]],
+      ['Peel the cassava, remove the hard center and cut into chunks.', 'Boil in salted water for 20 to 25 minutes until tender.', 'Boil the eggs for 8 minutes in a separate pot, then peel.', 'Serve warm together.']),
+    mk('ab7', 'balanced', 'breakfast', 'Tortang kalabasa with rice', 'Pan-fried squash fritters', 20, [[SQUASH, 150], [EGGS, 2], [FLOUR, 20], [ONION, 20], [OIL, 8], [RICE_N, 40]],
+      ['Grate the squash and mix with the eggs, flour, chopped onion and a pinch of salt.', 'Heat oil and spoon the mixture into the pan.', 'Cook for 3 minutes per side until golden.', 'Serve with rice.']),
+    mk('ab8', 'balanced', 'breakfast', 'Daing na dilis with sinangag', 'Crispy anchovies and garlic rice', 15, [[DILIS, 15], [RICE_N, 70], [GARLIC, 2], [TOM, 80], [OIL, 8], [VINEGAR, 10]],
+      ['Fry the dilis in 1 tablespoon of oil until crisp, then drain.', 'Sauté garlic and fry the cooked rice until hot.', 'Slice the tomato.', 'Serve the rice with the dilis, tomato and a vinegar dip.']),
+    mk('ab9', 'balanced', 'breakfast', 'Ginataang saba at camote', 'Simmered in coconut milk', 30, [[SABA, 2], [CAMOTE, 100], [GATA, 60], [SUGAR, 10]],
+      ['Peel and cut the saba and camote into chunks.', 'Simmer in 1 cup of water for 10 minutes until the camote starts to soften.', 'Add the coconut milk and sugar. Cook gently for 10 minutes.', 'Serve warm.']),
+
+    /* ===== Filling breakfast ===== */
+    mk('gb1', 'filling', 'breakfast', 'Ginisang alugbati with itlog', 'Sautéed', 12, [[ALUGBATI, 150], [EGGS, 2], [TOM, 60], [ONION, 20], [GARLIC, 1], [OIL, 5]],
+      ['Sauté garlic, onion and tomato in oil until soft.', 'Add the alugbati and cook for 2 minutes until wilted.', 'Crack in the eggs and stir until set.', 'Season with salt and pepper.']),
+    mk('gb2', 'filling', 'breakfast', 'Kamote tops at tokwa', 'Sautéed with soy sauce', 15, [[KAMOTETOPS, 150], [TOFU, 100], [GARLIC, 2], [ONION, 20], [OIL, 5], [TOYO, 5]],
+      ['Cube the tokwa and pan-fry in oil until golden on all sides.', 'Add garlic and onion and cook for 1 minute.', 'Add the kamote tops and soy sauce and stir for 2 minutes.', 'Serve hot.']),
+    mk('gb3', 'filling', 'breakfast', 'Tortang pechay', 'Pan-fried omelet', 12, [[PECHAY, 150], [EGGS, 2], [ONION, 20], [OIL, 5]],
+      ['Chop the pechay and onion finely.', 'Beat the eggs with salt and fold in the vegetables.', 'Pour into a hot oiled pan and cook for 3 minutes per side.', 'Serve warm.']),
+    mk('gb4', 'filling', 'breakfast', 'Ginisang sayote with itlog', 'Sautéed', 15, [[SAYOTE, 200], [EGGS, 2], [GARLIC, 1], [ONION, 20], [OIL, 5]],
+      ['Peel and slice the sayote into thin strips.', 'Sauté garlic and onion, then add the sayote with 2 tablespoons of water.', 'Cover and cook for 6 minutes until tender.', 'Stir in the beaten eggs until set.']),
+    mk('gb5', 'filling', 'breakfast', 'Ginisang mustasa at itlog', 'Sautéed', 12, [[MUSTASA, 150], [EGGS, 2], [TOM, 60], [GARLIC, 2], [OIL, 5]],
+      ['Sauté garlic and tomato in oil until the tomato breaks down.', 'Add the chopped mustasa and cook for 3 minutes.', 'Push aside, scramble the eggs, then mix everything.', 'Season with salt.']),
+    mk('gb6', 'filling', 'breakfast', 'Ginisang patola with itlog', 'Sautéed', 15, [[PATOLA, 200], [EGGS, 2], [GARLIC, 1], [ONION, 20], [OIL, 5]],
+      ['Peel the patola and slice into half-moons.', 'Sauté garlic and onion, add the patola and a splash of water.', 'Cover and cook for 5 minutes until soft.', 'Add the beaten eggs and stir until set.']),
+    mk('gb7', 'filling', 'breakfast', 'Itlog, pipino at kamatis plate', 'Hard-boiled eggs and fresh salad', 12, [[EGGS, 3], [CUC, 150], [TOM, 100], [VINEGAR, 10]],
+      ['Boil the eggs for 8 minutes, cool in cold water and peel.', 'Slice the cucumber and tomato.', 'Drizzle with vinegar and a pinch of salt.', 'Serve with the eggs.']),
+    mk('gb8', 'filling', 'breakfast', 'Tokwa at togue scramble', 'Pan-fried', 12, [[TOFU, 100], [TOGUE, 100], [EGGS, 1], [CARROT, 30], [ONION, 20], [OIL, 5]],
+      ['Crumble the tokwa and fry in oil for 3 minutes.', 'Add onion and carrot strips and cook for 2 minutes.', 'Add the togue and the beaten egg, stirring until the egg sets.', 'Season with salt and pepper.']),
+
+    /* ===== Delicious breakfast ===== */
+    mk('hb1', 'delicious', 'breakfast', 'Bangsilog', 'Fried daing na bangus, garlic rice and egg', 20, [[BANGUS, 120], [RICE_N, 60], [EGGS, 1], [GARLIC, 2], [VINEGAR, 10], [OIL, 10]],
+      ['Marinate the bangus in vinegar, garlic and salt for 15 minutes.', 'Fry in oil for 4 minutes per side until crisp.', 'Fry the garlic rice and the egg in the same pan.', 'Plate with a vinegar dip.']),
+    mk('hb2', 'delicious', 'breakfast', 'Adobo silog', 'Braised pork flakes, garlic rice and egg', 35, [[PORK, 80], [RICE_N, 60], [EGGS, 1], [GARLIC, 3], [TOYO, 15], [VINEGAR, 15], [OIL, 5]],
+      ['Simmer the pork with soy sauce, vinegar, garlic and a little water for 25 minutes.', 'Shred the meat and fry in a little oil until the edges crisp.', 'Fry the egg and serve with the garlic rice.', 'Spoon over any leftover sauce.']),
+    mk('hb3', 'delicious', 'breakfast', 'Champorado with daing na dilis', 'Simmered rice porridge, crisp anchovies', 30, [[STICKY, 70], [TABLEA, 20], [SUGAR, 10], [DILIS, 10]],
+      ['Simmer the sticky rice in 3 cups of water for 20 minutes.', 'Add the tablea and sugar and stir until the chocolate melts and the porridge thickens.', 'Fry the dilis in a dry pan until crisp.', 'Serve the champorado with the dilis on top.']),
+    mk('hb4', 'delicious', 'breakfast', 'Lugaw with tokwa at baboy', 'Rice porridge with fried tofu and pork', 45, [[RICE_N, 60], [PORK, 40], [TOFU, 60], [EGGS, 1], [GIN, 10], [GARLIC, 2], [ONION, 20], [OIL, 5], [TOYO, 5], [VINEGAR, 5]],
+      ['Sauté garlic, onion and ginger, add the rice and 4 cups of water, and simmer for 30 minutes.', 'Boil the pork for 20 minutes and slice. Fry the cubed tokwa until golden.', 'Top the lugaw with the pork, tokwa and a boiled egg.', 'Mix soy sauce and vinegar as a dip.']),
+    mk('hb5', 'delicious', 'breakfast', 'Tortang giniling at sinangag', 'Pan-fried pork omelet and garlic rice', 25, [[GIL, 60], [EGGS, 2], [ONION, 20], [CARROT, 20], [RICE_N, 60], [GARLIC, 2], [OIL, 8]],
+      ['Sauté the ground pork with onion and carrot until cooked through.', 'Cool slightly, mix with the beaten eggs and salt.', 'Fry in oil as one big patty, 3 minutes per side.', 'Serve with garlic fried rice.']),
+    mk('hb6', 'delicious', 'breakfast', 'Maruya', 'Fried banana fritters', 20, [[SABA, 1], [FLOUR, 40], [SUGAR, 10], [OIL, 15]],
+      ['Mash the saba and mix with the flour, a little water and half the sugar into a thick batter.', 'Heat the oil and drop in spoonfuls.', 'Fry for 2 to 3 minutes per side until golden.', 'Roll in the remaining sugar.']),
+    mk('hb7', 'delicious', 'breakfast', 'Galunggong silog', 'Fried galunggong, garlic rice and egg', 20, [[GAL, 120], [RICE_N, 60], [EGGS, 1], [TOM, 60], [GARLIC, 2], [OIL, 10]],
+      ['Season the galunggong with salt.', 'Fry in hot oil for 4 minutes per side until crisp.', 'Fry the egg and the garlic rice.', 'Serve with sliced tomato.']),
+    mk('hb8', 'delicious', 'breakfast', 'Biko', 'Steamed sticky rice with coconut caramel', 50, [[STICKY, 70], [GATA, 60], [BROWNSUG, 25]],
+      ['Cook the sticky rice with 3/4 cup of water until nearly done, about 15 minutes.', 'In a separate pan, simmer the coconut milk and brown sugar until thick and syrupy.', 'Fold the rice into the syrup and cook on low for 10 minutes, stirring.', 'Press into a dish and let cool before slicing.']),
+
+    /* ===== Balanced lunch ===== */
+    mk('al1', 'balanced', 'lunch', 'Nilagang baboy with rice', 'Simmered pork and vegetable soup', 60, [[PORK, 100], [POT, 80], [CABBAGE, 80], [PECHAY, 50], [CORN, 0.5], [ONION, 30], [RICE_N, 60]],
+      ['Boil the pork in 4 cups of water with onion for 40 minutes until tender.', 'Add the potato and corn and cook for 10 minutes.', 'Add the cabbage and pechay and cook for 3 minutes.', 'Season with salt and pepper and serve with rice.']),
+    mk('al2', 'balanced', 'lunch', 'Adobong sitaw with pork', 'Braised', 30, [[PORK, 60], [SITAW, 150], [GARLIC, 3], [TOYO, 15], [VINEGAR, 15], [OIL, 5], [RICE_N, 60]],
+      ['Sauté garlic and the sliced pork in oil until browned.', 'Add soy sauce, vinegar and 1/2 cup of water. Simmer for 15 minutes.', 'Add the sitaw cut into 2-inch pieces and cook for 6 minutes.', 'Serve with rice.']),
+    mk('al3', 'balanced', 'lunch', 'Ginisang sayote with hipon and rice', 'Sautéed', 20, [[HIPON, 100], [SAYOTE, 150], [GARLIC, 2], [ONION, 20], [OIL, 5], [RICE_N, 60]],
+      ['Sauté garlic and onion in oil, then add the shrimp until pink.', 'Add the sliced sayote and 1/4 cup of water.', 'Cover and cook for 6 minutes until tender.', 'Season with salt and serve with rice.']),
+    mk('al4', 'balanced', 'lunch', 'Paksiw na bangus with rice', 'Simmered in vinegar', 30, [[BANGUS, 150], [AMPALAYA, 50], [GIN, 10], [VINEGAR, 40], [GARLIC, 2], [RICE_N, 60]],
+      ['Layer the ginger, garlic and bangus pieces in a pot.', 'Add the vinegar, 1/2 cup of water, salt and pepper. Do not stir until it boils.', 'Add the ampalaya slices and simmer for 15 minutes.', 'Serve with rice.']),
+    mk('al5', 'balanced', 'lunch', 'Escabeche na tilapia', 'Fried fish in sweet-sour sauce', 30, [[TILAPIA, 150], [CARROT, 40], [PEPPER, 40], [ONION, 30], [GIN, 10], [VINEGAR, 30], [BROWNSUG, 10], [OIL, 15], [RICE_N, 60]],
+      ['Season the tilapia with salt and fry in oil until golden. Set aside.', 'In the same pan, sauté ginger, onion, carrot and bell pepper for 2 minutes.', 'Add the vinegar, brown sugar and 1/4 cup of water. Simmer for 3 minutes.', 'Pour over the fish and serve with rice.']),
+    mk('al6', 'balanced', 'lunch', 'Chicken curry with rice', 'Simmered in coconut milk', 40, [[CHICKEN, 140], [POT, 80], [CARROT, 50], [PEPPER, 40], [GATA, 50], [ONION, 30], [GARLIC, 2], [RICE_N, 50]],
+      ['Sauté garlic and onion, add the chicken and brown for 5 minutes.', 'Add the potato, carrot and 1 cup of water. Simmer for 15 minutes.', 'Stir in the coconut milk and bell pepper and cook for 8 minutes.', 'Season and serve with rice.']),
+    mk('al7', 'balanced', 'lunch', 'Ginisang monggo with dilis', 'Sautéed and simmered', 50, [[MONGGO, 60], [DILIS, 10], [MALUNGGAY, 40], [TOM, 60], [GARLIC, 2], [ONION, 20], [OIL, 5], [RICE_N, 40]],
+      ['Boil the monggo in 3 cups of water for 30 minutes until soft.', 'Sauté garlic, onion and tomato, add the dilis and fry for 2 minutes.', 'Pour in the cooked monggo and simmer for 5 minutes.', 'Add the malunggay, cook for 1 minute and serve with rice.']),
+    mk('al8', 'balanced', 'lunch', 'Pancit sotanghon with manok', 'Stir-fried noodles', 25, [[SOTANGHON, 50], [BREAST, 80], [CARROT, 40], [CABBAGE, 80], [ONION, 20], [GARLIC, 2], [TOYO, 10], [OIL, 5]],
+      ['Soak the sotanghon in warm water for 10 minutes and drain.', 'Sauté garlic, onion and sliced chicken until cooked.', 'Add the carrot, cabbage, soy sauce and 1/2 cup of water. Cook for 3 minutes.', 'Toss in the noodles until they absorb the sauce.']),
+    mk('al9', 'balanced', 'lunch', 'Pritong tilapia with ginisang talong', 'Pan-fried fish and sautéed eggplant', 25, [[TILAPIA, 150], [EGGPLANT, 100], [TOM, 60], [RICE_N, 60], [OIL, 12]],
+      ['Season the tilapia with salt and fry in oil for 4 minutes per side.', 'Grill or fry the eggplant, peel and mash lightly.', 'Sauté the tomato and mix with the eggplant.', 'Serve with rice.']),
+
+    /* ===== Filling lunch ===== */
+    mk('gl1', 'filling', 'lunch', 'Ginisang sayote with hipon', 'Sautéed, no rice', 15, [[HIPON, 120], [SAYOTE, 200], [GARLIC, 2], [ONION, 20], [OIL, 5]],
+      ['Sauté garlic and onion in oil.', 'Add the shrimp and cook until pink.', 'Add the sayote strips and 1/4 cup of water, cover and cook for 6 minutes.', 'Season with salt and pepper.']),
+    mk('gl2', 'filling', 'lunch', 'Tinolang manok with upo', 'Simmered in ginger broth', 35, [[BREAST, 140], [UPO, 200], [DSILI, 30], [GIN, 10], [ONION, 30]],
+      ['Simmer ginger, onion and chicken in 3 cups of water for 20 minutes.', 'Add the sliced upo and cook for 8 minutes.', 'Add the dahon ng sili and turn off the heat.', 'Season with salt and serve hot.']),
+    mk('gl3', 'filling', 'lunch', 'Sinigang na hipon', 'Boiled in sour tamarind broth', 25, [[HIPON, 130], [KANGKONG, 100], [RADISH, 60], [SITAW, 60], [TOM, 80], [TAMARIND, 20], [OKRA, 40]],
+      ['Boil the tamarind in 3 cups of water for 10 minutes, mash and strain.', 'Add the tomato, radish and sitaw. Simmer for 6 minutes.', 'Add the okra and shrimp and cook for 3 minutes.', 'Add the kangkong, season with salt and serve.']),
+    mk('gl4', 'filling', 'lunch', 'Ginataang langka with tokwa', 'Simmered in coconut milk', 35, [[LANGKA, 150], [TOFU, 80], [GATA, 60], [GARLIC, 2], [ONION, 20], [SILING, 3]],
+      ['Boil the langka for 10 minutes and drain.', 'Sauté garlic and onion, add the langka and the coconut milk.', 'Add the cubed tokwa and chili and simmer for 12 minutes.', 'Season with salt.']),
+    mk('gl5', 'filling', 'lunch', 'Tinolang tahong', 'Steamed mussels in ginger broth', 15, [[MUSSEL, 150], [GIN, 15], [LEMONGRASS, 10], [DSILI, 30], [ONION, 20]],
+      ['Scrub the mussels and discard any that stay open.', 'Boil ginger, onion and lemongrass in 2 cups of water for 3 minutes.', 'Add the mussels, cover and cook until the shells open, about 5 minutes.', 'Add the dahon ng sili and serve.']),
+    mk('gl6', 'filling', 'lunch', 'Steamed tilapia with luya at kamatis', 'Steamed', 25, [[TILAPIA, 180], [GIN, 15], [ONION, 30], [TOM, 60], [GREENON, 10], [TOYO, 10]],
+      ['Stuff the cleaned tilapia with ginger, onion and tomato slices.', 'Steam in a covered pan with a little water for 12 to 15 minutes.', 'Drizzle with soy sauce.', 'Top with chopped green onion.']),
+    mk('gl7', 'filling', 'lunch', 'Ginisang pechay with manok at kabute', 'Sautéed', 20, [[BREAST, 120], [PECHAY, 200], [MUSH, 80], [GARLIC, 2], [ONION, 20], [TOYO, 10], [OIL, 5]],
+      ['Sauté garlic and onion, add the sliced chicken and cook for 5 minutes.', 'Add the mushrooms and soy sauce and cook for 2 minutes.', 'Add the pechay, cover and cook for 2 minutes.', 'Serve hot.']),
+    mk('gl8', 'filling', 'lunch', 'Chopsuey', 'Stir-fried mixed vegetables', 25, [[BREAST, 70], [HIPON, 60], [CABBAGE, 80], [CARROT, 40], [MUSH, 60], [PECHAY, 60], [PEPPER, 40], [GARLIC, 2], [OIL, 5]],
+      ['Sauté garlic, then cook the chicken and shrimp until done.', 'Add the carrot and mushrooms and stir-fry for 3 minutes.', 'Add the cabbage, pechay and bell pepper with 1/4 cup of water. Cook for 3 minutes.', 'Season with salt and pepper.']),
+
+    /* ===== Delicious lunch ===== */
+    mk('hl1', 'delicious', 'lunch', 'Pork menudo with rice', 'Stewed in tomato sauce', 45, [[PORK, 100], [POT, 80], [CARROT, 40], [PEPPER, 30], [TSAUCE, 40], [GARLIC, 2], [ONION, 30], [OIL, 5], [RICE_N, 60], [TOYO, 10]],
+      ['Brown the diced pork in oil with garlic and onion.', 'Add the tomato sauce, soy sauce and 1 cup of water. Simmer for 25 minutes.', 'Add the potato and carrot and cook for 10 minutes.', 'Add the bell pepper, cook for 2 minutes and serve with rice.']),
+    mk('hl2', 'delicious', 'lunch', 'Adobo sa gata with rice', 'Braised in coconut milk', 45, [[CHICKEN, 150], [GATA, 60], [GARLIC, 3], [TOYO, 15], [VINEGAR, 20], [RICE_N, 60]],
+      ['Simmer the chicken with soy sauce, vinegar and garlic for 20 minutes.', 'Pour in the coconut milk and simmer for 10 minutes until the sauce thickens.', 'Add pepper to taste.', 'Serve with rice.']),
+    mk('hl3', 'delicious', 'lunch', 'Bicol express with rice', 'Simmered pork in spicy coconut milk', 50, [[PORK, 100], [GATA, 100], [SILING, 10], [ONION, 30], [GARLIC, 2], [GIN, 10], [BAGOONG, 10], [RICE_N, 50]],
+      ['Sauté garlic, onion and ginger, add the pork and bagoong and cook for 5 minutes.', 'Pour in the coconut milk and 1/2 cup of water. Simmer for 25 minutes.', 'Add the sliced chili and cook until the oil separates and the sauce thickens.', 'Serve with rice.']),
+    mk('hl4', 'delicious', 'lunch', 'Pork humba with rice', 'Braised sweet-savory pork belly', 70, [[LIEMPO, 100], [TOYO, 20], [VINEGAR, 20], [BROWNSUG, 15], [GARLIC, 3], [RICE_N, 50]],
+      ['Combine the pork belly, soy sauce, vinegar, brown sugar, garlic and 1 cup of water in a pot.', 'Simmer, covered, for 50 minutes until very tender.', 'Uncover and reduce the sauce until glossy.', 'Serve with rice.']),
+    mk('hl5', 'delicious', 'lunch', 'Pancit canton with baboy at gulay', 'Stir-fried noodles', 25, [[CANTON, 70], [PORK, 50], [CABBAGE, 80], [CARROT, 40], [ONION, 20], [GARLIC, 2], [TOYO, 10], [OIL, 8]],
+      ['Boil the pancit canton for 3 minutes and drain.', 'Sauté garlic, onion and sliced pork until cooked.', 'Add the carrot, cabbage, soy sauce and 1/2 cup of water. Cook for 3 minutes.', 'Toss in the noodles until coated.']),
+    mk('hl6', 'delicious', 'lunch', 'Adobong atay ng manok with rice', 'Braised chicken liver', 25, [[LIVER, 100], [ONION, 30], [GARLIC, 3], [TOYO, 10], [VINEGAR, 15], [OIL, 5], [RICE_N, 60]],
+      ['Sauté garlic and onion in oil.', 'Add the liver and cook for 3 minutes.', 'Add the soy sauce, vinegar and 1/4 cup of water. Simmer for 8 minutes.', 'Serve with rice.']),
+    mk('hl7', 'delicious', 'lunch', 'Beef kaldereta with rice', 'Slow-stewed beef in tomato sauce', 80, [[SHANK, 100], [POT, 70], [CARROT, 40], [PEPPER, 40], [TSAUCE, 50], [ONION, 30], [GARLIC, 2], [OIL, 8], [RICE_N, 50]],
+      ['Simmer the beef in water for 45 minutes until nearly tender.', 'Sauté garlic and onion in oil, add the tomato sauce and the beef with some broth.', 'Add the potato and carrot and cook for 15 minutes.', 'Add the bell pepper, cook for 2 minutes and serve with rice.']),
+    mk('hl8', 'delicious', 'lunch', 'Adobong pusit with rice', 'Braised squid', 20, [[SQUID, 150], [GARLIC, 3], [TOYO, 10], [VINEGAR, 20], [ONION, 20], [OIL, 5], [RICE_N, 60]],
+      ['Clean the squid and cut into rings.', 'Sauté garlic and onion, add the squid and cook for 2 minutes.', 'Add the soy sauce, vinegar and 1/4 cup of water. Simmer for 8 minutes only, so the squid stays tender.', 'Serve with rice.']),
+
+    /* ===== Balanced dinner ===== */
+    mk('ad1', 'balanced', 'dinner', 'Pritong manok with ginisang sayote', 'Fried chicken and sautéed sayote', 35, [[DRUMSTICK, 150], [OIL, 10], [SAYOTE, 150], [GARLIC, 2], [ONION, 20], [RICE_N, 50]],
+      ['Season the chicken with salt and pepper and fry in oil for 8 minutes per side until cooked.', 'Sauté garlic and onion, then the sayote with a splash of water for 6 minutes.', 'Season the sayote with salt.', 'Serve with rice.']),
+    mk('ad2', 'balanced', 'dinner', 'Adobong kangkong with pork', 'Braised', 25, [[KANGKONG, 150], [PORK, 60], [GARLIC, 3], [TOYO, 15], [VINEGAR, 15], [OIL, 5], [RICE_N, 60]],
+      ['Sauté garlic and the sliced pork in oil until browned.', 'Add the soy sauce and vinegar and simmer for 8 minutes.', 'Add the kangkong and cook for 2 minutes.', 'Serve with rice.']),
+    mk('ad3', 'balanced', 'dinner', 'Ginataang tilapia with sitaw', 'Simmered in coconut milk', 30, [[TILAPIA, 150], [GATA, 70], [SITAW, 100], [GIN, 10], [ONION, 30], [GARLIC, 2], [RICE_N, 50]],
+      ['Layer ginger, onion, garlic and the sitaw in a pan and add the coconut milk.', 'Bring to a simmer and add the tilapia.', 'Cook for 12 minutes without stirring too much.', 'Season with salt and serve with rice.']),
+    mk('ad4', 'balanced', 'dinner', 'Sopas na sotanghon with manok', 'Simmered noodle soup', 30, [[BREAST, 100], [SOTANGHON, 40], [CARROT, 40], [MUSH, 50], [GREENON, 10], [GARLIC, 2], [ONION, 20]],
+      ['Boil the chicken in 3 cups of water for 15 minutes, shred and return to the broth.', 'Sauté garlic and onion and add to the broth with the carrot and mushrooms.', 'Add the soaked sotanghon and cook for 3 minutes.', 'Season with salt and top with green onion.']),
+    mk('ad5', 'balanced', 'dinner', 'Ginisang giniling with sayote', 'Sautéed', 25, [[GIL, 80], [SAYOTE, 100], [CARROT, 30], [TOM, 60], [ONION, 20], [GARLIC, 2], [RICE_N, 60], [OIL, 5]],
+      ['Sauté garlic, onion and tomato in oil.', 'Add the ground pork and cook for 6 minutes, breaking it up.', 'Add the sayote and carrot cubes with 1/4 cup of water. Cook for 8 minutes.', 'Season and serve with rice.']),
+    mk('ad6', 'balanced', 'dinner', 'Inihaw na pusit with kamatis-sibuyas salad', 'Grilled squid', 20, [[SQUID, 150], [TOM, 80], [ONION, 30], [VINEGAR, 10], [RICE_N, 60]],
+      ['Marinate the squid in a little vinegar and salt for 10 minutes.', 'Grill over hot coals or a hot pan for 2 to 3 minutes per side.', 'Mix tomato, onion and vinegar for the salad.', 'Serve with rice.']),
+    mk('ad7', 'balanced', 'dinner', 'Pesang isda', 'Simmered fish in ginger broth', 30, [[TILAPIA, 150], [GIN, 20], [PECHAY, 80], [CABBAGE, 80], [POT, 60], [GREENON, 10], [RICE_N, 50]],
+      ['Boil the ginger and potato in 3 cups of water for 10 minutes.', 'Add the tilapia and simmer for 8 minutes.', 'Add the cabbage and pechay and cook for 2 minutes.', 'Season with salt, top with green onion and serve with rice.']),
+    mk('ad8', 'balanced', 'dinner', 'Sarciadong tilapia with rice', 'Fried fish in egg-tomato sauce', 30, [[TILAPIA, 150], [EGGS, 1], [TOM, 100], [ONION, 30], [GARLIC, 2], [OIL, 8], [RICE_N, 60]],
+      ['Fry the tilapia in oil until golden on both sides.', 'Sauté garlic, onion and tomato until saucy.', 'Add 1/4 cup of water and the fish. Simmer for 3 minutes.', 'Pour in the beaten egg and let it set. Serve with rice.']),
+    mk('ad9', 'balanced', 'dinner', 'Chicken pochero', 'Stewed with saba and vegetables', 50, [[CHICKEN, 130], [SABA, 1], [POT, 70], [CABBAGE, 80], [PECHAY, 50], [TSAUCE, 40], [ONION, 20], [GARLIC, 2], [RICE_N, 50]],
+      ['Sauté garlic and onion, add the chicken and brown for 5 minutes.', 'Add the tomato sauce and 2 cups of water. Simmer for 20 minutes.', 'Add the sliced saba and potato and cook for 10 minutes.', 'Add the cabbage and pechay, cook for 3 minutes and serve with rice.']),
+
+    /* ===== Filling dinner ===== */
+    mk('gd1', 'filling', 'dinner', 'Sinigang na tilapia sa gulay', 'Boiled in sour tamarind broth', 30, [[TILAPIA, 170], [KANGKONG, 100], [SITAW, 80], [RADISH, 60], [TOM, 80], [TAMARIND, 20], [ONION, 20]],
+      ['Boil tamarind in 3 cups of water for 10 minutes, mash and strain.', 'Add the onion, tomato, radish and sitaw. Simmer for 6 minutes.', 'Add the tilapia and cook for 8 minutes.', 'Add the kangkong, season with salt and serve.']),
+    mk('gd2', 'filling', 'dinner', 'Ginisang pechay at tahong', 'Sautéed', 15, [[MUSSEL, 150], [PECHAY, 150], [GARLIC, 2], [GIN, 10], [ONION, 20], [OIL, 5]],
+      ['Sauté garlic, ginger and onion in oil.', 'Add the cleaned mussels and cook until the shells open.', 'Add the pechay and cook for 2 minutes.', 'Season with pepper and serve.']),
+    mk('gd3', 'filling', 'dinner', 'Inihaw na pusit with pipino salad', 'Grilled squid, fresh salad', 20, [[SQUID, 150], [TOM, 100], [ONION, 30], [CUC, 100], [VINEGAR, 10]],
+      ['Marinate the squid in vinegar and salt for 10 minutes.', 'Grill for 2 to 3 minutes per side.', 'Slice the tomato, onion and cucumber and dress with vinegar.', 'Serve together.']),
+    mk('gd4', 'filling', 'dinner', 'Tinolang manok with sayote at malunggay', 'Simmered in ginger broth', 35, [[BREAST, 140], [SAYOTE, 150], [MALUNGGAY, 40], [GIN, 10], [ONION, 20]],
+      ['Simmer ginger, onion and chicken in 3 cups of water for 20 minutes.', 'Add the sayote wedges and cook for 8 minutes.', 'Add the malunggay and turn off the heat.', 'Season with salt.']),
+    mk('gd5', 'filling', 'dinner', 'Ginataang puso ng saging with hipon', 'Simmered in coconut milk', 35, [[BLOSSOM, 150], [HIPON, 80], [GATA, 40], [GARLIC, 2], [ONION, 20]],
+      ['Slice the banana blossom, squeeze with salt and rinse to remove bitterness.', 'Sauté garlic and onion and add the blossom with 1/2 cup of water. Cook for 10 minutes.', 'Add the coconut milk and shrimp. Simmer for 6 minutes.', 'Season with salt.']),
+    mk('gd6', 'filling', 'dinner', 'Steamed bangus with luya at kamatis', 'Steamed', 25, [[BANGUS, 150], [GIN, 15], [TOM, 80], [ONION, 30], [GREENON, 10], [TOYO, 10]],
+      ['Top the bangus with ginger, tomato and onion slices.', 'Steam in a covered pan for 15 minutes.', 'Drizzle with soy sauce.', 'Garnish with green onion.']),
+    mk('gd7', 'filling', 'dinner', 'Adobong sitaw at tokwa', 'Braised', 25, [[SITAW, 200], [TOFU, 150], [GARLIC, 3], [TOYO, 10], [VINEGAR, 15], [OIL, 5]],
+      ['Fry the cubed tokwa in oil until golden and set aside.', 'Sauté garlic, add the sitaw, soy sauce, vinegar and 1/4 cup of water.', 'Cover and cook for 8 minutes.', 'Return the tokwa, cook for 2 minutes and serve.']),
+    mk('gd8', 'filling', 'dinner', 'Ginisang upo with giniling', 'Sautéed', 20, [[UPO, 250], [GIL, 50], [TOM, 60], [ONION, 20], [GARLIC, 2], [OIL, 5]],
+      ['Sauté garlic, onion and tomato in oil.', 'Add the ground pork and cook for 5 minutes.', 'Add the sliced upo and 1/4 cup of water. Cover and cook for 8 minutes.', 'Season with salt and pepper.']),
+
+    /* ===== Delicious dinner ===== */
+    mk('hd1', 'delicious', 'dinner', 'Lechon kawali with kamatis and rice', 'Boiled then deep-fried pork belly', 70, [[LIEMPO, 80], [GARLIC, 2], [OIL, 20], [TOM, 80], [VINEGAR, 15], [RICE_N, 40]],
+      ['Boil the pork belly with garlic and salt for 40 minutes until tender, then dry it very well.', 'Deep-fry in hot oil for 8 minutes until the skin blisters and turns crisp.', 'Chop into pieces.', 'Serve with sliced tomato, a vinegar dip and rice.']),
+    mk('hd2', 'delicious', 'dinner', 'Pork binagoongan with rice', 'Stewed in shrimp paste', 50, [[PORK, 100], [BAGOONG, 20], [EGGPLANT, 100], [TOM, 60], [ONION, 30], [GARLIC, 2], [VINEGAR, 10], [RICE_N, 50]],
+      ['Boil the pork for 25 minutes and cut into cubes.', 'Sauté garlic, onion and tomato, add the pork and bagoong.', 'Add the vinegar and fried eggplant slices and simmer for 10 minutes.', 'Serve with rice.']),
+    mk('hd3', 'delicious', 'dinner', 'Beef mechado with rice', 'Stewed beef in tomato sauce', 85, [[BEEF, 110], [POT, 70], [TSAUCE, 50], [TOYO, 10], [CALAMANSI, 2], [ONION, 30], [GARLIC, 2], [OIL, 8], [RICE_N, 50]],
+      ['Marinate the beef in soy sauce and calamansi for 15 minutes.', 'Brown in oil with garlic and onion, add the tomato sauce and 1.5 cups of water.', 'Simmer for 50 minutes until tender, adding the potato for the last 15 minutes.', 'Serve with rice.']),
+    mk('hd4', 'delicious', 'dinner', 'Pritong tilapia with toyo-calamansi', 'Pan-fried fish', 20, [[TILAPIA, 170], [OIL, 12], [RICE_N, 70], [CALAMANSI, 3], [TOYO, 10]],
+      ['Season the tilapia with salt and fry in oil for 5 minutes per side until crisp.', 'Squeeze the calamansi into the soy sauce for a dip.', 'Add sliced chili if you like heat.', 'Serve with rice.']),
+    mk('hd5', 'delicious', 'dinner', 'Ginataang pusit with rice', 'Simmered in coconut milk', 30, [[SQUID, 150], [GATA, 80], [SILING, 5], [ONION, 30], [GARLIC, 2], [GIN, 10], [RICE_N, 50]],
+      ['Sauté garlic, onion and ginger.', 'Add the cleaned squid and the coconut milk with the chili.', 'Simmer gently for 10 minutes, no longer, so the squid stays tender.', 'Season with salt and serve with rice.']),
+    mk('hd6', 'delicious', 'dinner', 'Sweet and sour pork with rice', 'Fried pork in pineapple sauce', 35, [[PORK, 80], [PEPPER, 40], [CARROT, 40], [PINEAPPLE, 60], [ONION, 20], [FLOUR, 15], [OIL, 15], [VINEGAR, 20], [BROWNSUG, 10], [RICE_N, 50]],
+      ['Cube the pork, coat in flour and fry in oil until golden.', 'In another pan, sauté onion, carrot and bell pepper for 3 minutes.', 'Add the vinegar, brown sugar, pineapple and 1/4 cup of water. Simmer for 3 minutes.', 'Toss in the pork and serve with rice.']),
+    mk('hd7', 'delicious', 'dinner', 'Pritong porkchop with kamatis', 'Pan-fried pork', 25, [[PORK, 130], [GARLIC, 2], [TOYO, 10], [CALAMANSI, 2], [OIL, 10], [TOM, 60], [RICE_N, 60]],
+      ['Marinate the pork in soy sauce, calamansi, garlic and pepper for 20 minutes.', 'Pan-fry in oil for 5 minutes per side until cooked through.', 'Slice the tomato.', 'Serve with rice.']),
+    mk('hd8', 'delicious', 'dinner', 'Beef sinigang sa sampalok', 'Boiled in sour tamarind broth', 80, [[SHANK, 100], [KANGKONG, 80], [RADISH, 60], [SITAW, 60], ['Taro (gabi)', 60], [TOM, 80], [TAMARIND, 25], [RICE_N, 50]],
+      ['Boil the beef in 4 cups of water for 50 minutes until tender.', 'Add the gabi, tomato and tamarind and simmer for 10 minutes. Mash the tamarind in the pot.', 'Add the radish and sitaw and cook for 6 minutes.', 'Add the kangkong, season with salt and serve with rice.']),
+
+    /* ===== Balanced snacks ===== */
+    mk('as1', 'balanced', 'snack', 'Nilagang kamoteng kahoy', 'Boiled', 25, [[CASSAVA, 150]],
+      ['Peel the cassava and remove the woody center.', 'Boil in salted water for 20 to 25 minutes until tender.', 'Drain and serve warm.']),
+    mk('as2', 'balanced', 'snack', 'Lakatan banana', 'Fresh fruit', 2, [[LAKATAN, 2]],
+      ['Peel and eat, no cooking needed.']),
+    mk('as3', 'balanced', 'snack', 'Fresh pineapple', 'Fresh fruit', 5, [[PINEAPPLE, 250]],
+      ['Peel, core and cut the pineapple into wedges.', 'Chill and serve.']),
+    mk('as4', 'balanced', 'snack', 'Nilagang itlog ng pugo at kamatis', 'Boiled', 10, [[QUAIL, 8], [TOM, 80]],
+      ['Boil the quail eggs for 4 minutes, cool and peel.', 'Slice the tomato and sprinkle with salt.', 'Serve together.']),
+    mk('as5', 'balanced', 'snack', 'Nilagang saba with niyog', 'Boiled banana with grated coconut', 20, [[SABA, 2], [NIYOG, 20]],
+      ['Boil the saba in their skins for 20 minutes.', 'Peel and serve topped with the grated coconut.']),
+    mk('as6', 'balanced', 'snack', 'Hinog na papaya', 'Fresh fruit', 3, [[PAPAYA, 300]],
+      ['Halve the papaya, scoop out the seeds and cut into cubes.', 'Serve chilled.']),
+    mk('as7', 'balanced', 'snack', 'Nilagang mais at mani', 'Boiled corn with peanuts', 25, [[CORN, 1], [PEANUT, 15]],
+      ['Boil the corn in salted water for 15 to 20 minutes.', 'Serve with the peanuts on the side.']),
+    mk('as8', 'balanced', 'snack', 'Inihaw na camote', 'Grilled sweet potato', 35, [[CAMOTE, 200]],
+      ['Wash the camote and grill over coals or bake at 200 C for 30 minutes until soft.', 'Peel and eat warm.']),
+    mk('as9', 'balanced', 'snack', 'Toasted dilis at mani', 'Dry-toasted', 8, [[DILIS, 10], [PEANUT, 20]],
+      ['Toast the dilis in a dry pan for 3 minutes until crisp.', 'Add the peanuts and toast for 2 minutes more.', 'Cool and serve.']),
+
+    /* ===== Filling snacks ===== */
+    mk('gs1', 'filling', 'snack', 'Papaya with calamansi', 'Fresh fruit', 3, [[PAPAYA, 250], [CALAMANSI, 2]],
+      ['Cube the papaya and squeeze calamansi over it.', 'Serve chilled.']),
+    mk('gs2', 'filling', 'snack', 'Nilagang sitaw with suka', 'Boiled', 10, [[SITAW, 150], [VINEGAR, 10]],
+      ['Boil the sitaw in salted water for 5 minutes and drain.', 'Dress with the vinegar.']),
+    mk('gs3', 'filling', 'snack', 'Steamed okra with bagoong', 'Steamed', 10, [[OKRA, 150], [BAGOONG, 5]],
+      ['Steam the whole okra for 5 minutes.', 'Serve with a little bagoong on the side.']),
+    mk('gs4', 'filling', 'snack', 'Pipino at kamatis with suka', 'Fresh', 5, [[CUC, 150], [TOM, 100], [VINEGAR, 10]],
+      ['Slice the cucumber and tomato.', 'Dress with vinegar and a pinch of salt.']),
+    mk('gs5', 'filling', 'snack', 'Nilagang itlog ng pugo', 'Boiled', 8, [[QUAIL, 6], [CALAMANSI, 1]],
+      ['Boil the quail eggs for 4 minutes, cool and peel.', 'Squeeze calamansi on top.']),
+    mk('gs6', 'filling', 'snack', 'Fresh pinya', 'Fresh fruit', 5, [[PINEAPPLE, 150]],
+      ['Peel, core and slice the pineapple. Serve chilled.']),
+    mk('gs7', 'filling', 'snack', 'Inihaw na kabute', 'Grilled mushrooms', 12, [[MUSH, 150], [TOYO, 5], [CALAMANSI, 1]],
+      ['Skewer or place the mushrooms on a hot grill pan.', 'Cook for 4 minutes per side.', 'Drizzle with soy sauce and calamansi.']),
+    mk('gs8', 'filling', 'snack', 'Inihaw na talong with suka', 'Grilled eggplant', 20, [[EGGPLANT, 200], [VINEGAR, 10], [GARLIC, 1]],
+      ['Grill the whole eggplant over a flame or hot pan until the skin chars and the flesh is soft.', 'Peel and slice.', 'Dress with vinegar and minced garlic.']),
+
+    /* ===== Delicious snacks ===== */
+    mk('hs1', 'delicious', 'snack', 'Lumpiang togue', 'Fried spring rolls', 25, [[TOGUE, 80], [CARROT, 30], [TOFU, 30], [LUMPIA, 3], [OIL, 15]],
+      ['Sauté the togue, shredded carrot and crumbled tokwa for 2 minutes and season with salt.', 'Roll the filling in the wrappers and seal with water.', 'Fry in hot oil for 3 minutes until golden.', 'Serve with vinegar.']),
+    mk('hs2', 'delicious', 'snack', 'Pritong camote', 'Fried sweet potato', 15, [[CAMOTE, 150], [OIL, 10]],
+      ['Cut the camote into sticks.', 'Fry in hot oil for 5 to 6 minutes until golden and tender.', 'Drain and sprinkle with a pinch of salt.']),
+    mk('hs3', 'delicious', 'snack', 'Ginataang mais', 'Simmered sweet corn porridge', 30, [[CORN, 1], [STICKY, 25], [GATA, 40], [SUGAR, 10]],
+      ['Cut the corn kernels off the cob.', 'Simmer the sticky rice in 1 cup of water for 15 minutes.', 'Add the corn, coconut milk and sugar and cook for 8 minutes.', 'Serve warm.']),
+    mk('hs4', 'delicious', 'snack', 'Bibingka', 'Baked rice cake', 45, [[STICKY, 50], [GATA, 50], [EGGS, 1], [SUGAR, 15]],
+      ['Soak and grind the sticky rice with a little water into a thick batter.', 'Mix with the coconut milk, egg and sugar.', 'Pour into a greased pan and bake at 190 C for 25 minutes until golden.', 'Serve warm.']),
+    mk('hs5', 'delicious', 'snack', 'Kwek-kwek', 'Deep-fried battered quail eggs', 25, [[QUAIL, 6], [FLOUR, 20], [OIL, 12], [VINEGAR, 10]],
+      ['Boil the quail eggs for 4 minutes and peel.', 'Mix the flour with water and salt into a thin batter.', 'Dip the eggs and deep-fry for 2 to 3 minutes until golden.', 'Serve with a vinegar dip.']),
+    mk('hs6', 'delicious', 'snack', 'Ukoy', 'Fried shrimp and bean sprout fritters', 25, [[HIPON, 40], [FLOUR, 30], [TOGUE, 40], [EGGS, 1], [OIL, 20], [VINEGAR, 10]],
+      ['Mix the flour, egg, a little water and salt into a batter.', 'Fold in the shrimp and togue.', 'Fry spoonfuls in hot oil for 3 minutes per side until crisp.', 'Serve with a vinegar dip.']),
+    mk('hs7', 'delicious', 'snack', 'Turon na may langka', 'Fried banana spring roll', 20, [[SABA, 1], [LANGKA, 30], [LUMPIA, 2], [BROWNSUG, 10], [OIL, 10]],
+      ['Slice the saba lengthwise and roll in brown sugar with the langka strips.', 'Wrap in the lumpia wrappers and seal with water.', 'Fry in hot oil for 3 to 4 minutes until golden and the sugar caramelizes.', 'Serve warm.']),
+    mk('hs8', 'delicious', 'snack', 'Suman', 'Steamed sticky rice in coconut milk', 60, [[STICKY, 60], [GATA, 40], [SUGAR, 10]],
+      ['Mix the sticky rice with the coconut milk, sugar and a pinch of salt.', 'Wrap tightly in banana leaves or foil.', 'Steam for 45 minutes until firm.', 'Serve warm or cooled.'])
+  ]);
+
+  function recipeFor(m) {
+    if (m.steps && m.steps.length) return m.steps;
+    var steps = ['Wash and cut the vegetables, and portion the meat, fish or tofu as listed.'];
+    steps.push('Cook it (' + m.how.toLowerCase() + '), seasoning with garlic, onion, salt and pepper as needed.');
+    if (m.ing.some(function (g) { return g[0].indexOf('Rice') === 0 || g[0].indexOf('rice') >= 0; })) steps.push('Cook the rice separately with 1 1/2 parts water to 1 part rice and serve alongside.');
+    steps.push('Serve hot.');
+    return steps;
+  }
+  function priceOf(name, q, unit, exact) {
+    var d = ING[name];
+    if (!d) return 0;
+    var per = d.price * (state.settings && state.settings.priceAdj ? state.settings.priceAdj : 1);
+    if (unit === 'pcs') return (exact ? q : Math.ceil(q - 0.01)) * per;
+    return q / 1000 * per;
+  }
+  /* Pack sizes the wet market actually sells. Needs are rounded up to these. */
+  var PACK_OVERRIDE = {
+    'Garlic (bawang) cloves': [10], 'Calamansi': [10], 'Lumpia wrapper': [25], 'Quail eggs (itlog ng pugo)': [12],
+    'Tofu (tokwa)': [200], 'Tablea (cacao)': [100, 250], 'Sotanghon noodles': [100, 250], 'Rice noodles (bihon)': [250], 'Pancit canton noodles': [250],
+    'Mushrooms (kabute)': [100, 200, 500], 'Ginger (luya)': [50, 100, 250], 'Chili (siling labuyo)': [50, 100], 'Lemongrass (tanglad)': [50, 100],
+    'Green onion (dahon ng sibuyas)': [50, 100, 250], 'Chili leaves (dahon ng sili)': [50, 100, 250], 'Malunggay leaves': [50, 100, 250],
+    'Tomato sauce': [100, 250], 'Shrimp paste (bagoong)': [100, 250], 'Coconut milk (gata)': [250, 500], 'Rice (bigas)': [500, 1000],
+    'Sticky rice (malagkit)': [250, 500, 1000], 'Flour (harina)': [250, 500], 'Mung beans (monggo)': [250, 500], 'Peanuts (mani)': [100, 250, 500],
+    'Tamarind (sampalok)': [100, 250], 'Grated coconut (niyog)': [100, 250], 'Dried fish (tuyo)': [100, 250], 'Dried anchovies (dilis)': [100, 250, 500],
+    'Chicken liver': [250, 500]
+  };
+  function packsFor(name) {
+    var d = ING[name];
+    if (PACK_OVERRIDE[name]) return PACK_OVERRIDE[name];
+    if (d.unit === 'pcs') return [1];
+    if (d.unit === 'ml') return [500, 1000];
+    return { M: [500, 1000], S: [250, 500, 1000], V: [100, 250, 500, 1000], F: [250, 500, 1000], T: [200], G: [250, 500, 1000], N: [100, 250] }[d.cat] || [500, 1000];
+  }
+  function gcd(a, b) { return b ? gcd(b, a % b) : a; }
+  // Smallest purchasable total that covers q, using the fewest packs.
+  function buyPlan(name, q) {
+    var sizes = packsFor(name).slice().sort(function (a, b) { return b - a; });
+    var step = sizes.reduce(gcd), need = Math.max(1, Math.ceil((q - 1e-6) / step)), cap = need + sizes[0] / step;
+    var dp = [0], from = [0], t, i;
+    for (t = 1; t <= cap; t++) {
+      dp[t] = Infinity; from[t] = 0;
+      for (i = 0; i < sizes.length; i++) {
+        var k = sizes[i] / step;
+        if (t >= k && dp[t - k] + 1 < dp[t]) { dp[t] = dp[t - k] + 1; from[t] = sizes[i]; }
+      }
+    }
+    for (t = need; t <= cap && dp[t] === Infinity; t++);
+    var counts = {}, cur = t;
+    while (cur > 0) { var sz = from[cur]; counts[sz] = (counts[sz] || 0) + 1; cur -= sz / step; }
+    return { bought: t * step, leftover: t * step - q, counts: Object.keys(counts).map(Number).sort(function (a, b) { return b - a; }).map(function (z) { return { size: z, n: counts[z] }; }) };
+  }
+  function sizeText(sz, u) {
+    if (u === 'pcs') return sz + (sz === 1 ? ' pc' : ' pcs');
+    if (sz >= 1000) return (sz / 1000) + (u === 'g' ? ' kg' : ' L');
+    return sz + ' ' + u;
+  }
+  function buyText(plan, u) {
+    if (u === 'pcs' && plan.counts.length === 1 && plan.counts[0].size === 1) return plan.counts[0].n + (plan.counts[0].n === 1 ? ' pc' : ' pcs');
+    return plan.counts.map(function (c) { return (c.n > 1 ? c.n + ' \u00D7 ' : '') + sizeText(c.size, u); }).join(' + ');
+  }
+  function peso(n) { return '₱' + Math.round(n).toLocaleString('en-US'); }
+  var BY_ID = {};
+  MEALS.forEach(function (m) { BY_ID[m.id] = m; });
+  var SLOT_LABEL = { breakfast: 'Breakfast', lunch: 'Lunch', dinner: 'Dinner', snack: 'Snack' };
+  var SLOT_ORDER = ['breakfast', 'lunch', 'dinner', 'snack', 'snack'];
+  var DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  var DAYS_FULL = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  var ACTIVITY = {
+    sedentary: { m: 1.2, t: 'Mostly sitting, little exercise' },
+    light: { m: 1.375, t: 'Light exercise, 1 to 3 days a week' },
+    moderate: { m: 1.55, t: 'Moderate exercise, 3 to 5 days a week' },
+    active: { m: 1.725, t: 'Hard exercise, 6 to 7 days a week' },
+    athlete: { m: 1.9, t: 'Very hard exercise or a physical job' }
+  };
+  var GOALS = { lose: { adj: -500, t: 'Lose weight', d: 'about 0.45 kg (1 lb) a week' }, maintain: { adj: 0, t: 'Maintain weight', d: 'stay where you are' }, gain: { adj: 300, t: 'Gain weight', d: 'a slow, steady gain' } };
+
+  var LEVELS = ['Light', 'Moderate', 'Hard'];
+  // [id, label, MET light, MET moderate, MET hard]
+  var EXERCISES = [
+    ['walk', 'Walking', 2.8, 3.8, 5], ['run', 'Jogging / running', 6, 8.3, 11.5], ['bike', 'Cycling', 4, 6.8, 10],
+    ['swim', 'Swimming', 4.5, 5.8, 9.8], ['dance', 'Zumba / dancing', 3.5, 5.5, 7.8], ['strength', 'Strength training', 3, 4.5, 6],
+    ['yoga', 'Yoga / stretching', 2, 2.8, 4], ['hiit', 'HIIT workout', 6, 8, 12], ['ball', 'Basketball', 4.5, 6.5, 8],
+    ['bad', 'Badminton', 4, 5.5, 7], ['rope', 'Jump rope', 8, 10, 12.3], ['hike', 'Hiking / stairs', 5, 6.5, 8],
+    ['chores', 'Household chores', 2.3, 3.3, 4.5], ['other', 'Other exercise', 3, 5, 7.5]
+  ];
+  var EX_BY = {};
+  EXERCISES.forEach(function (x) { EX_BY[x[0]] = x; });
+  var PAL = {
+    sage: { name: 'Sage', l: { accent: '#2B7A68', wash: '#DDEDE6' }, d: { accent: '#5FCDB0', wash: '#14261F' } },
+    ocean: { name: 'Ocean',
+      l: { bg: '#EFF4F9', wash: '#D9E8F4', s2: '#E4ECF4', line: '#D3DFEA', ink: '#14233A', muted: '#566B84', accent: '#1F6AA5', soft: '#D9E8F5', bar: '#B3C9DE' },
+      d: { bg: '#0C1622', wash: '#122538', surface: '#14212F', s2: '#1C2E41', line: '#26394D', ink: '#E5EEF8', muted: '#8FA5BC', accent: '#6CB8F0', aink: '#07192A', soft: '#17354F', bar: '#33516E' } },
+    lavender: { name: 'Lavender',
+      l: { bg: '#F4F1F9', wash: '#E6DEF4', s2: '#ECE7F4', line: '#DDD5EA', ink: '#231B3A', muted: '#6A5F82', accent: '#6D4FC2', soft: '#E8E0F7', bar: '#C7BCE0' },
+      d: { bg: '#141022', wash: '#1E1838', surface: '#1B1630', s2: '#272043', line: '#352D52', ink: '#EEE9FA', muted: '#A196BC', accent: '#B49CFF', aink: '#1A0F3A', soft: '#2E2552', bar: '#4A3F75' } },
+    rose: { name: 'Rose',
+      l: { bg: '#FAF1F3', wash: '#F5DDE4', s2: '#F3E6E9', line: '#EBD6DC', ink: '#3A1722', muted: '#85606C', accent: '#BE3A6B', soft: '#F8DFE8', bar: '#E5BCC9' },
+      d: { bg: '#1C0F14', wash: '#2D1520', surface: '#24151B', s2: '#331E27', line: '#4A2B37', ink: '#FAE9EE', muted: '#BC95A2', accent: '#FF8FB1', aink: '#3A0A1A', soft: '#4A1F2F', bar: '#6E3A4C' } },
+    sunset: { name: 'Sunset',
+      l: { bg: '#FAF3EC', wash: '#F8E2CE', s2: '#F3E9DE', line: '#EBDCCB', ink: '#33200F', muted: '#7C6550', accent: '#C2570C', soft: '#FBE4D0', bar: '#E8C6A6' },
+      d: { bg: '#1A120B', wash: '#2B1B0E', surface: '#231810', s2: '#32231A', line: '#4A3425', ink: '#FBEEDF', muted: '#BDA389', accent: '#FF9A57', aink: '#2B1100', soft: '#4A2A14', bar: '#6E4A2A' } },
+    graphite: { name: 'Graphite',
+      l: { bg: '#F1F2F5', wash: '#E0E3EB', s2: '#E8EAF0', line: '#D8DBE4', ink: '#1B1F2E', muted: '#5F667D', accent: '#3F4FA0', soft: '#E0E4F5', bar: '#BCC2D9' },
+      d: { bg: '#0F1118', wash: '#181B28', surface: '#171A25', s2: '#21253A', line: '#2E3350', ink: '#E8EAF5', muted: '#9097B5', accent: '#9AA8FF', aink: '#0B0F2A', soft: '#262C55', bar: '#3F466F' } }
+  };
+
+  /* ---------- State ---------- */
+  var KEY = null, state = null;
+  var selDay = todayIdx();
+  var formH = 'cm', formW = 'kg', exSel = 'walk', resetArmed = false;
+
+  /* ---------- Accounts: separate profiles on this device, optional PIN ---------- */
+  var META_KEY = 'mealplancreator.users', V1_KEY = 'mealplancreator.v1';
+  var meta = { profiles: [], theme: null }, account = null;
+  var authScreen = 'pick', authId = null, authErr = '', authDraft = '', forgotArmed = false, delArmed = false, fails = 0, lockUntil = 0;
+  var canPin = typeof crypto !== 'undefined' && !!crypto.subtle && !!crypto.getRandomValues;
+
+  function loadMeta() { try { var m = JSON.parse(localStorage.getItem(META_KEY)); if (m && m.profiles) return m; } catch (e) { /* none yet */ } return { profiles: [], theme: null }; }
+  function saveMeta() { try { localStorage.setItem(META_KEY, JSON.stringify(meta)); } catch (e) { /* storage unavailable */ } }
+  function findAccount(id) { return meta.profiles.filter(function (p) { return p.id === id; })[0] || null; }
+  function userKey(id) { return 'mealplancreator.u.' + id; }
+  function rndHex(n) { var a = new Uint8Array(n); crypto.getRandomValues(a); return Array.prototype.map.call(a, function (b) { return ('0' + b.toString(16)).slice(-2); }).join(''); }
+  function sha(str) {
+    return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str)).then(function (buf) {
+      return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+    });
+  }
+  function initials(name) { var p = name.trim().split(/\s+/); return ((p[0] || '?').charAt(0) + (p.length > 1 ? p[p.length - 1].charAt(0) : '')).toUpperCase(); }
+  function hueOf(id) { var h = 0; for (var i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 360; return h; }
+  function avatar(p, big) { return '<span class="avatar' + (big ? ' lg' : '') + '" style="background:hsl(' + hueOf(p.id) + ',48%,36%)" aria-hidden="true">' + esc(initials(p.name)) + '</span>'; }
+
+  function freshState() {
+    var t = meta.theme || { palette: 'sage', mode: 'auto' };
+    return { profile: null, weights: [], plan: null, seed: 0, checked: {}, log: {}, locked: {}, settings: { palette: t.palette, mode: t.mode }, style: 'balanced', tab: 'planner' };
+  }
+  function initState(remote) {
+    state = remote || load() || freshState();
+    if (!state.locked) state.locked = {};
+    if (!state.style) state.style = 'balanced';
+    if (!state.settings) state.settings = { palette: 'sage', mode: 'auto' };
+    if (state.profile && !state.profile.weightUnit) {
+      state.profile.weightUnit = state.profile.units === 'imperial' ? 'lb' : 'kg';
+      state.profile.heightUnit = state.profile.units === 'imperial' ? 'ft' : 'cm';
+    }
+    if (state.profile && !state.plan) { state.seed = Math.floor(Math.random() * 2147483647); state.plan = genPlan(state.seed); }
+  }
+  function signIn(id) {
+    account = findAccount(id); KEY = userKey(id);
+    initState(); selDay = todayIdx(); resetArmed = false; delArmed = false;
+    applyTheme();
+    try { sessionStorage.setItem('mpc.active', id); } catch (e) { /* session storage unavailable */ }
+    render(); window.scrollTo(0, 0);
+  }
+  function finishSignOut() {
+    try { sessionStorage.removeItem('mpc.active'); } catch (e) { /* ignore */ }
+    account = null; state = null; KEY = null; authErr = ''; forgotArmed = false;
+    authScreen = cloud ? 'c-signin' : (meta.profiles.length ? 'pick' : 'create');
+    applyTheme(meta.theme || { palette: 'sage', mode: 'auto' }); render(); window.scrollTo(0, 0);
+  }
+  function signOut() {
+    if (cloud && account && account.cloud) syncNow().then(function () { return cloud.auth.signOut(); }).then(finishSignOut, finishSignOut);
+    else finishSignOut();
+  }
+  function removeAccount(id) {
+    meta.profiles = meta.profiles.filter(function (p) { return p.id !== id; });
+    saveMeta();
+    try { localStorage.removeItem(userKey(id)); } catch (e) { /* ignore */ }
+  }
+  function pinField(id, name, label) {
+    return '<div class="field"><label for="' + id + '">' + label + '</label><input class="input num" id="' + id + '" name="' + name + '" type="password" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="••••"></div>';
+  }
+
+  function viewAuth() {
+    if (cloud) return viewCloudAuth();
+    var chev = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+    if (authScreen === 'create') {
+      return (meta.profiles.length ? header('New person', 'Add a profile') :
+        '<div class="intro"><p class="eyebrow">Meal Plan Creator</p><h1>Welcome. Who are you?</h1><p>Create a profile to get your own meal plan, grocery list and progress. More people can add their own later.</p></div>') +
+        '<form id="createForm" class="card stack" novalidate>' +
+        '<div class="field"><label for="cName">Name</label><input class="input" id="cName" name="name" type="text" maxlength="24" autocomplete="off" value="' + esc(authDraft) + '" placeholder="Maria"></div>' +
+        (canPin ? pinField('cPin', 'pin', 'PIN, optional (4 to 6 digits)') + pinField('cPin2', 'pin2', 'Confirm PIN') : '') +
+        '<p class="err" role="alert">' + esc(authErr) + '</p>' +
+        '<button class="btn" type="submit">Create profile</button>' +
+        (meta.profiles.length ? '<button class="btn ghost" type="button" data-act="acct-back">Cancel</button>' : '') +
+        '<p class="hint">A PIN keeps other people from opening your profile in this app. It is not encryption, so use it to keep family members out, not to protect secrets. Profiles are stored on this device only.</p></form>';
+    }
+    if (authScreen === 'pin' && findAccount(authId)) {
+      var p = findAccount(authId);
+      return '<div class="intro">' + avatar(p, true) + '<h1>' + esc(p.name) + '</h1><p>Enter your PIN to continue.</p></div>' +
+        '<form id="pinForm" class="card stack" novalidate>' + pinField('lPin', 'pin', 'PIN') +
+        '<p class="err" role="alert">' + esc(authErr) + '</p>' +
+        '<button class="btn" type="submit">Sign in</button><button class="btn ghost" type="button" data-act="acct-back">Choose someone else</button>' +
+        (forgotArmed ? '<p class="hint">This erases ' + esc(p.name) + '\'s profile and all its data from this device. It cannot be undone.</p><div class="btns"><button class="btn danger" type="button" data-act="forgot">Erase profile</button><button class="btn ghost" type="button" data-act="forgotcancel">Keep it</button></div>' :
+          '<button class="link" type="button" data-act="forgotask" style="text-align:center">Forgot your PIN?</button>') + '</form>';
+    }
+    return '<div class="intro"><p class="eyebrow">Meal Plan Creator</p><h1>Who is using the app?</h1><p>Each person has their own plan, grocery list and progress.</p></div>' +
+      '<div class="card stack">' + meta.profiles.map(function (p) {
+        return '<button class="acct" data-act="acct-pick" data-id="' + p.id + '">' + avatar(p) + '<span class="who"><b>' + esc(p.name) + '</b><small>' + (p.hash ? 'PIN protected' : 'No PIN') + '</small></span>' + chev + '</button>';
+      }).join('') + '</div><button class="btn ghost" data-act="acct-new">Add a person</button>';
+  }
+
+  function handleAuthForm(f) {
+    if (f.id === 'createForm') {
+      var name = f.name.value.trim(), pin = f.pin ? f.pin.value : '', pin2 = f.pin2 ? f.pin2.value : '';
+      authDraft = name;
+      if (!name) { authErr = 'Enter a name.'; render(); return; }
+      if (meta.profiles.some(function (p) { return p.name.toLowerCase() === name.toLowerCase(); })) { authErr = 'Someone already uses that name. Pick another.'; render(); return; }
+      if (pin && !/^\d{4,6}$/.test(pin)) { authErr = 'The PIN must be 4 to 6 digits.'; render(); return; }
+      if (pin !== pin2) { authErr = 'The two PINs do not match.'; render(); return; }
+      var p = { id: 'u' + Date.now().toString(36), name: name };
+      var finish = function () { meta.profiles.push(p); saveMeta(); authErr = ''; authDraft = ''; signIn(p.id); };
+      if (pin) { p.salt = rndHex(8); sha(p.salt + pin).then(function (h) { p.hash = h; finish(); }); } else finish();
+    } else if (f.id === 'pinForm') {
+      var acc = findAccount(authId);
+      if (!acc) { authScreen = 'pick'; render(); return; }
+      if (Date.now() < lockUntil) { authErr = 'Too many wrong PINs. Try again in a few seconds.'; render(); return; }
+      sha(acc.salt + f.pin.value).then(function (h) {
+        if (h === acc.hash) { fails = 0; authErr = ''; signIn(acc.id); return; }
+        fails++;
+        if (fails >= 5) { lockUntil = Date.now() + 30000; fails = 0; authErr = 'Too many wrong PINs. Try again in 30 seconds.'; } else authErr = 'That PIN is not right.';
+        render();
+      });
+    } else if (f.id === 'pinChangeForm') {
+      var neu = f.neu.value, conf = f.conf.value, cur = f.cur ? f.cur.value : '';
+      if (!account.hash && !neu) { toast('Enter a new PIN'); return; }
+      if (neu && !/^\d{4,6}$/.test(neu)) { toast('The PIN must be 4 to 6 digits'); return; }
+      if (neu !== conf) { toast('The two PINs do not match'); return; }
+      var apply = function () {
+        if (neu) { account.salt = rndHex(8); sha(account.salt + neu).then(function (h) { account.hash = h; saveMeta(); render(); toast('PIN saved'); }); }
+        else { delete account.hash; delete account.salt; saveMeta(); render(); toast('PIN removed'); }
+      };
+      if (account.hash) sha(account.salt + cur).then(function (h) { if (h !== account.hash) { toast('Your current PIN is not right'); return; } apply(); }); else apply();
+    }
+  }
+
+  /* ---------- Cloud accounts (Supabase): email + password, data synced per user ---------- */
+  var cloud = null, cfg = window.APP_CONFIG || {}, syncTimer = null, recovering = false, authNote = '';
+
+  function textField(id, name, label, type, ac, ph, val) {
+    return '<div class="field"><label for="' + id + '">' + label + '</label><input class="input" id="' + id + '" name="' + name + '" type="' + type + '" autocomplete="' + ac + '" placeholder="' + (ph || '') + '" value="' + esc(val || '') + '"></div>';
+  }
+  function friendlyAuthError(e) {
+    var m = (e && e.message) || '';
+    if (/invalid login/i.test(m)) return 'Wrong email or password.';
+    if (/not confirmed/i.test(m)) return 'Confirm your email first. Check your inbox for the link.';
+    if (/rate limit|too many/i.test(m)) return 'Too many tries. Wait a few minutes and try again.';
+    if (/password/i.test(m) && /(short|least|weak)/i.test(m)) return 'Choose a longer password, at least 8 characters.';
+    return m || 'Something went wrong. Try again.';
+  }
+
+  function viewCloudAuth() {
+    var sc = authScreen, brand = '<p class="eyebrow">Meal Plan Creator</p>';
+    if (sc === 'c-loading') return '<div class="intro">' + brand + '<h1>Loading your plan</h1><p>One moment.</p></div>';
+    if (sc === 'c-error') return '<div class="intro">' + brand + '<h1>Could not start</h1><p>The sign-in service did not load. Check your internet connection and reload the page.</p></div>';
+    if (sc === 'c-confirm') {
+      return '<div class="intro">' + brand + '<h1>Check your email</h1><p>' + esc(authNote) + '</p></div><button class="btn ghost" data-act="c-go" data-s="c-signin">Back to sign in</button>';
+    }
+    if (sc === 'c-newpass') {
+      return '<div class="intro">' + brand + '<h1>Choose a new password</h1></div><form id="cloudNewPass" class="card stack" novalidate>' +
+        textField('npPass', 'pass', 'New password (8+ characters)', 'password', 'new-password') + textField('npPass2', 'pass2', 'Confirm password', 'password', 'new-password') +
+        '<p class="err" role="alert">' + esc(authErr) + '</p><button class="btn" type="submit">Save password</button></form>';
+    }
+    if (sc === 'c-reset') {
+      return '<div class="intro">' + brand + '<h1>Reset your password</h1><p>We will email you a link to choose a new one.</p></div><form id="cloudReset" class="card stack" novalidate>' +
+        textField('rsEmail', 'email', 'Email', 'email', 'email', 'you@example.com', authDraft) +
+        '<p class="err" role="alert">' + esc(authErr) + '</p><button class="btn" type="submit">Send reset link</button><button class="btn ghost" type="button" data-act="c-go" data-s="c-signin">Back to sign in</button></form>';
+    }
+    if (sc === 'c-signup') {
+      return '<div class="intro">' + brand + '<h1>Create your account</h1><p>Your plan, grocery list and progress are saved to your account and follow you on any device.</p></div><form id="cloudSignUp" class="card stack" novalidate>' +
+        textField('suName', 'name', 'Name', 'text', 'name', 'Maria') + textField('suEmail', 'email', 'Email', 'email', 'email', 'you@example.com', authDraft) +
+        textField('suPass', 'pass', 'Password (8+ characters)', 'password', 'new-password') +
+        '<label class="consent"><input type="checkbox" name="agree" id="suAgree"><span>I have read the <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a> and understand this app gives general guidance, not medical advice.</span></label>' +
+        '<p class="err" role="alert">' + esc(authErr) + '</p><button class="btn" type="submit">Create account</button><button class="btn ghost" type="button" data-act="c-go" data-s="c-signin">I already have an account</button></form>';
+    }
+    return '<div class="intro">' + brand + '<h1>Welcome back</h1><p>Sign in to see your meal plan.</p></div><form id="cloudSignIn" class="card stack" novalidate>' +
+      textField('siEmail', 'email', 'Email', 'email', 'email', 'you@example.com', authDraft) + textField('siPass', 'pass', 'Password', 'password', 'current-password') +
+      '<p class="err" role="alert">' + esc(authErr) + '</p><button class="btn" type="submit">Sign in</button>' +
+      '<button class="link" type="button" data-act="c-go" data-s="c-reset" style="text-align:center">Forgot your password?</button></form>' +
+      '<button class="btn ghost" data-act="c-go" data-s="c-signup">Create an account</button>';
+  }
+
+  function syncNow() {
+    clearTimeout(syncTimer); syncTimer = null;
+    if (!cloud || !account || !account.cloud || !state) return Promise.resolve();
+    var fail = function () { toast('Could not sync. Your changes are saved on this device.'); };
+    return cloud.from('app_state').upsert({ user_id: account.id, data: state }).then(function (r) { if (r.error) fail(); }, fail);
+  }
+  function queueSync() { clearTimeout(syncTimer); syncTimer = setTimeout(syncNow, 900); }
+
+  function signInCloud(user) {
+    if (account && account.id === user.id) return;
+    authScreen = 'c-loading'; render();
+    cloud.from('app_state').select('data').eq('user_id', user.id).maybeSingle().then(function (r) {
+      var remote = !r.error && r.data && r.data.data && Object.keys(r.data.data).length ? r.data.data : null;
+      account = { id: user.id, name: (user.user_metadata && user.user_metadata.name) || (user.email || 'You').split('@')[0], email: user.email, cloud: true };
+      KEY = 'mealplancreator.cache.' + user.id;
+      if (r.error) toast('You seem to be offline. Showing the copy saved on this device.');
+      initState(remote); selDay = todayIdx(); resetArmed = false; applyTheme();
+      if (!remote && state.profile) queueSync();
+      authErr = ''; authDraft = '';
+      render(); window.scrollTo(0, 0);
+    });
+  }
+
+  function handleCloudForm(f) {
+    var btn = f.querySelector('button[type=submit]');
+    var busy = function (on) { if (btn) btn.disabled = on; };
+    var fail = function (msg) { authErr = msg; busy(false); render(); };
+    var emailOk = function (v) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v); };
+    var back = function () { return window.location.origin + window.location.pathname; };
+    if (f.id === 'cloudSignIn') {
+      var em = f.email.value.trim(), pw = f.pass.value; authDraft = em;
+      if (!emailOk(em) || !pw) { fail('Enter your email and password.'); return; }
+      busy(true);
+      cloud.auth.signInWithPassword({ email: em, password: pw }).then(function (r) {
+        if (r.error) { fail(friendlyAuthError(r.error)); return; }
+        signInCloud(r.data.user);
+      }, function () { fail('No connection. Check your internet and try again.'); });
+    } else if (f.id === 'cloudSignUp') {
+      var nm = f.name.value.trim(), em2 = f.email.value.trim(), pw2 = f.pass.value; authDraft = em2;
+      if (!nm) { fail('Enter your name.'); return; }
+      if (!emailOk(em2)) { fail('Enter a valid email address.'); return; }
+      if (pw2.length < 8) { fail('Choose a password with at least 8 characters.'); return; }
+      if (!f.agree.checked) { fail('Please agree to the privacy policy to continue.'); return; }
+      busy(true);
+      cloud.auth.signUp({ email: em2, password: pw2, options: { data: { name: nm }, emailRedirectTo: back() } }).then(function (r) {
+        if (r.error) { fail(friendlyAuthError(r.error)); return; }
+        if (r.data && r.data.session) { signInCloud(r.data.user); return; }
+        authNote = 'We sent a confirmation link to ' + em2 + '. Open it, then come back here and sign in.'; authScreen = 'c-confirm'; authErr = ''; render();
+      }, function () { fail('No connection. Check your internet and try again.'); });
+    } else if (f.id === 'cloudReset') {
+      var em3 = f.email.value.trim(); authDraft = em3;
+      if (!emailOk(em3)) { fail('Enter a valid email address.'); return; }
+      busy(true);
+      cloud.auth.resetPasswordForEmail(em3, { redirectTo: back() }).then(function () {
+        authNote = 'If an account exists for ' + em3 + ', we sent a link to reset the password.'; authScreen = 'c-confirm'; authErr = ''; render();
+      }, function () { fail('No connection. Check your internet and try again.'); });
+    } else if (f.id === 'cloudNewPass' || f.id === 'passChangeForm') {
+      var p1 = f.pass.value, p2 = f.pass2.value, inSettings = f.id === 'passChangeForm';
+      var bad = function (msg) { if (inSettings) toast(msg); else fail(msg); };
+      if (p1.length < 8) { bad('Choose a password with at least 8 characters.'); return; }
+      if (p1 !== p2) { bad('The two passwords do not match.'); return; }
+      busy(true);
+      cloud.auth.updateUser({ password: p1 }).then(function (r) {
+        busy(false);
+        if (r.error) { bad(friendlyAuthError(r.error)); return; }
+        if (inSettings) { f.reset(); toast('Password changed'); return; }
+        recovering = false; account = null; signInCloud(r.data.user);
+      }, function () { busy(false); bad('No connection. Check your internet and try again.'); });
+    }
+  }
+
+  function bootCloud() {
+    applyTheme({ palette: 'sage', mode: 'auto' });
+    if (!window.supabase || !window.supabase.createClient) { authScreen = 'c-error'; render(); return; }
+    cloud = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+    cloud.auth.onAuthStateChange(function (event) {
+      if (event === 'PASSWORD_RECOVERY') { recovering = true; account = null; state = null; KEY = null; authScreen = 'c-newpass'; render(); }
+      else if (event === 'SIGNED_OUT' && account && account.cloud) finishSignOut();
+    });
+    cloud.auth.getSession().then(function (r) {
+      if (recovering) return;
+      if (r.data && r.data.session) signInCloud(r.data.session.user); else { authScreen = 'c-signin'; render(); }
+    }, function () { authScreen = 'c-signin'; render(); });
+  }
+
+  function boot() {
+    injectPalettes();
+    meta = loadMeta();
+    if (cfg.SUPABASE_URL && cfg.SUPABASE_ANON_KEY) { bootCloud(); return; }
+    if (!meta.profiles.length) {
+      var old = null;
+      try { old = localStorage.getItem(V1_KEY); } catch (e) { /* none */ }
+      if (old) {
+        try { localStorage.setItem(userKey('u1'), old); } catch (e) { /* ignore */ }
+        meta.profiles.push({ id: 'u1', name: 'Me' }); saveMeta();
+      }
+    }
+    applyTheme(meta.theme);
+    var act = null;
+    try { act = sessionStorage.getItem('mpc.active'); } catch (e) { /* none */ }
+    if (act && findAccount(act)) { signIn(act); return; }
+    authScreen = meta.profiles.length ? 'pick' : 'create';
+    render();
+  }
+
+  function isDark() {
+    var m = state.settings.mode;
+    if (m === 'dark') return true;
+    if (m === 'light') return false;
+    try { return window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) { return false; }
+  }
+  function tok(c) {
+    var map = { bg: '--bg', wash: '--wash', surface: '--surface', s2: '--surface-2', line: '--line', ink: '--ink', muted: '--muted', accent: '--accent', aink: '--accent-ink', soft: '--accent-soft', bar: '--bar' };
+    return Object.keys(c).filter(function (k) { return map[k]; }).map(function (k) { return map[k] + ':' + c[k] + ';'; }).join('');
+  }
+  function injectPalettes() {
+    var css = '';
+    Object.keys(PAL).forEach(function (k) {
+      if (k === 'sage') return;
+      var p = PAL[k], sel = ':root[data-palette="' + k + '"]';
+      css += sel + '{' + tok(p.l) + '}' +
+        '@media (prefers-color-scheme: dark){' + sel + ':not([data-theme="light"]){' + tok(p.d) + 'color-scheme:dark}}' +
+        sel + '[data-theme="dark"]{' + tok(p.d) + 'color-scheme:dark}';
+    });
+    var el = document.createElement('style'); el.textContent = css; document.head.appendChild(el);
+  }
+  function applyTheme(st) {
+    var r = document.documentElement;
+    st = st || (state && state.settings) || meta.theme || { palette: 'sage', mode: 'auto' };
+    if (st.palette === 'sage' || !PAL[st.palette]) r.removeAttribute('data-palette'); else r.setAttribute('data-palette', st.palette);
+    if (st.mode === 'light' || st.mode === 'dark') r.setAttribute('data-theme', st.mode); else r.removeAttribute('data-theme');
+    if (account && state && st === state.settings) { meta.theme = { palette: st.palette, mode: st.mode }; saveMeta(); }
+  }
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; } }
+  function save() { if (!KEY || !state) return; try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* storage unavailable */ } if (account && account.cloud) queueSync(); }
+
+  /* ---------- Helpers ---------- */
+  var $app = document.getElementById('app');
+  var $tabbar = document.getElementById('tabbar');
+  var $toast = document.getElementById('toast');
+  var toastTimer;
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function fmt(n) { return Math.round(n).toLocaleString('en-US'); }
+  function todayIdx() { return (new Date().getDay() + 6) % 7; }
+  function dstr(d) { d = d || new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function toDate(s) { var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function shortDate(s) { return toDate(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
+  function toast(msg) { $toast.textContent = msg; $toast.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(function () { $toast.hidden = true; }, 2200); }
+  function mulberry32(a) { return function () { a |= 0; a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  function kgToUnit(kg) { return state.profile.weightUnit === 'kg' ? kg : kg * 2.20462; }
+  function unitToKg(v) { return state.profile.weightUnit === 'kg' ? v : v / 2.20462; }
+  function wUnit() { return state.profile.weightUnit; }
+  function dispW(kg) { return kgToUnit(kg).toFixed(1) + ' ' + wUnit(); }
+  function latestKg() { return state.weights[state.weights.length - 1].kg; }
+
+  /* ---------- Calculations ---------- */
+  function calc() {
+    var p = state.profile, kg = latestKg();
+    var bmr = 10 * kg + 6.25 * p.heightCm - 5 * p.age + (p.sex === 'male' ? 5 : -161);
+    var mult = ACTIVITY[p.activity].m;
+    var tdee = bmr * mult;
+    var adj = GOALS[p.goal].adj;
+    var floor = p.sex === 'male' ? 1500 : 1200;
+    var target = clamp(Math.round((tdee + adj) / 10) * 10, floor, 4000);
+    var pg = Math.round(1.6 * kg);
+    var fg = Math.round(target * 0.27 / 9);
+    var cg = Math.max(0, Math.round((target - pg * 4 - fg * 9) / 4));
+    var bmi = kg / Math.pow(p.heightCm / 100, 2);
+    return { bmr: bmr, mult: mult, tdee: tdee, adj: adj, target: target, floored: Math.round((tdee + adj) / 10) * 10 < floor, p: pg, c: cg, f: fg, bmi: bmi };
+  }
+
+  function genPlan(seed, style) {
+    style = style || state.style || 'balanced';
+    var rnd = mulberry32(seed);
+    function shuf(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+    var pools = {};
+    ['breakfast', 'lunch', 'dinner', 'snack'].forEach(function (s) { pools[s] = shuf(MEALS.filter(function (m) { return m.slot === s && m.style === style; }).map(function (m) { return m.id; })); });
+    var plan = [];
+    for (var d = 0; d < 7; d++) plan.push([pools.breakfast[d % pools.breakfast.length], pools.lunch[d % pools.lunch.length], pools.dinner[d % pools.dinner.length], pools.snack[d % pools.snack.length], pools.snack[(d + 2) % pools.snack.length]]);
+    return plan;
+  }
+
+  function dayInfo(d) {
+    var cal = calc(), lk = state.locked[d], ids, f;
+    if (lk) { ids = lk.ids; f = lk.f; }
+    else {
+      ids = state.plan[d].slice(0, cal.target > 2600 ? 5 : 4);
+      f = clamp(cal.target / ids.reduce(function (s, id) { return s + BY_ID[id].kcal; }, 0), 0.55, 2.4);
+    }
+    var meals = ids.map(function (id) { return BY_ID[id]; });
+    var items = meals.map(function (m, i) {
+      return { idx: i, m: m, f: f, kcal: Math.round(m.kcal * f), p: Math.round(m.p * f), c: Math.round(m.c * f), fat: Math.round(m.f * f), fiber: Math.round(m.fiber * f) };
+    });
+    return { items: items, kcal: items.reduce(function (s, x) { return s + x.kcal; }, 0), p: items.reduce(function (s, x) { return s + x.p; }, 0), c: items.reduce(function (s, x) { return s + x.c; }, 0), fat: items.reduce(function (s, x) { return s + x.fat; }, 0), fiber: items.reduce(function (s, x) { return s + x.fiber; }, 0), target: cal.target };
+  }
+
+  function fmtQty(q, unit) {
+    if (unit === 'pcs') {
+      var r = Math.max(0.5, Math.round(q * 2) / 2), w = Math.floor(r), h = r - w;
+      return (w ? w : '') + (h ? '½' : '');
+    }
+    var v = q < 20 ? Math.round(q) : Math.round(q / 5) * 5;
+    return v + ' ' + unit;
+  }
+  function fmtBuy(q, unit) {
+    if (unit === 'pcs') return String(Math.ceil(q - 0.01));
+    if (q >= 1000) return (q / 1000).toFixed(1).replace('.0', '') + (unit === 'g' ? ' kg' : ' L');
+    return (q > 100 ? Math.round(q / 10) * 10 : Math.round(q / 5) * 5) + ' ' + unit;
+  }
+
+  function dayCost(info) {
+    var t = 0;
+    info.items.forEach(function (it) { it.m.ing.forEach(function (g) { t += priceOf(g[0], g[1] * it.f, g[2], true); }); });
+    return t;
+  }
+
+  function groceries() {
+    var map = {};
+    for (var d = 0; d < 7; d++) {
+      if (!state.locked[d]) continue;
+      dayInfo(d).items.forEach(function (it) {
+        it.m.ing.forEach(function (g) {
+          var k = g[0] + '|' + g[2];
+          if (!map[k]) map[k] = { key: k, name: g[0], unit: g[2], cat: g[3], q: 0 };
+          map[k].q += g[1] * it.f;
+        });
+      });
+    }
+    var out = {};
+    Object.keys(map).forEach(function (k) { (out[map[k].cat] = out[map[k].cat] || []).push(map[k]); });
+    CAT_ORDER.forEach(function (c) { if (out[c]) out[c].sort(function (a, b) { return a.name.localeCompare(b.name); }); });
+    return out;
+  }
+
+  function dayLog(ds) { var l = state.log[ds] || (state.log[ds] = { eaten: {}, extras: [], exercise: [] }); if (!l.exercise) l.exercise = []; return l; }
+  function burnedTotal(ds) { var l = state.log[ds]; return l && l.exercise ? l.exercise.reduce(function (t, x) { return t + x.kcal; }, 0) : 0; }
+  function exKcal(type, level, min) { return Math.round(EX_BY[type][2 + level] * latestKg() * min / 60); }
+  function eatenTotal(ds) {
+    var l = state.log[ds]; if (!l) return 0;
+    var t = 0; Object.keys(l.eaten).forEach(function (k) { t += l.eaten[k]; });
+    l.extras.forEach(function (e) { t += e.kcal; });
+    return t;
+  }
+
+  /* ---------- Rendering ---------- */
+  var ICONS = {
+    planner: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+    calories: '<path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 .3 1.2 1 2 2 2 0-3-1-5 1-8z"/>',
+    dashboard: '<rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/>',
+    grocery: '<path d="M3 5h2l2.2 10.5h10.3L19.5 8H6.2"/><circle cx="9" cy="19.5" r="1.2"/><circle cx="17" cy="19.5" r="1.2"/>',
+    settings: '<path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.5"/><circle cx="8" cy="17" r="2.5"/>'
+  };
+  var TABS = [['planner', 'Meal Planner'], ['calories', 'Calories'], ['dashboard', 'Dashboard'], ['grocery', 'Grocery'], ['settings', 'Settings']];
+  var LOCK = '<rect x="5" y="11" width="14" height="10" rx="2.5" fill="currentColor" stroke="none"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>';
+  var CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+
+  function render() {
+    if (!account) { $tabbar.hidden = true; $app.innerHTML = viewAuth(); return; }
+    if (!state.profile) { $tabbar.hidden = true; $app.innerHTML = onboarding(false); return; }
+    $tabbar.hidden = false;
+    $tabbar.innerHTML = '<div>' + TABS.map(function (t) {
+      return '<button class="tab" data-act="tab" data-tab="' + t[0] + '"' + (state.tab === t[0] ? ' aria-current="page"' : '') + '><svg viewBox="0 0 24 24" aria-hidden="true">' + ICONS[t[0]] + '</svg>' + (t[0] === 'planner' ? 'Planner' : t[1]) + '</button>';
+    }).join('') + '</div>';
+    var v = { planner: viewPlanner, calories: viewCalories, dashboard: viewDashboard, grocery: viewGrocery, settings: viewSettings, profile: function () { return onboarding(true); } }[state.tab] || viewPlanner;
+    $app.innerHTML = v();
+    if (state.tab === 'calories') updatePreview(document.getElementById('exerciseForm'));
+  }
+
+  function header(eyebrow, title) {
+    return '<header class="top"><p class="eyebrow">' + eyebrow + '</p><h1>' + title + '</h1></header>';
+  }
+
+  /* Onboarding / profile form */
+  function onboarding(editing) {
+    var p = state.profile || { sex: 'female', age: 28, heightUnit: 'ft', weightUnit: 'kg', heightCm: 165, activity: 'light', goal: 'lose' };
+    var kg = editing ? latestKg() : 62;
+    formH = p.heightUnit; formW = p.weightUnit;
+    var inch = Math.round(p.heightCm / 2.54);
+    function seg(name, opts, cur) {
+      return '<div class="seg" role="radiogroup">' + opts.map(function (o) {
+        return '<label><input type="radio" name="' + name + '" value="' + o[0] + '"' + (cur === o[0] ? ' checked' : '') + '><span>' + o[1] + '</span></label>';
+      }).join('') + '</div>';
+    }
+    return (editing ? header('Your details', 'Edit profile') :
+      '<div class="intro"><p class="eyebrow">Weekly meal planner</p><h1>Let\'s work out your daily calories</h1><p>Answer a few questions to get a 7-day meal plan sized to your body and goal, plus a grocery list. Everything stays on this device.</p></div>') +
+      '<form id="profileForm" class="card stack" novalidate data-editing="' + (editing ? '1' : '') + '">' +
+      '<div class="field"><span class="lab">Sex</span>' + seg('sex', [['female', 'Girl'], ['male', 'Boy']], p.sex) + '</div>' +
+      '<div class="field"><label for="age">Age</label><input class="input num" id="age" name="age" type="number" inputmode="numeric" min="14" max="90" value="' + p.age + '"></div>' +
+      '<div class="pair">' +
+      '<div class="field"><span class="lab">Height</span>' + seg('hUnit', [['ft', 'ft'], ['cm', 'cm']], p.heightUnit) +
+      '<div class="h-cm" ' + (p.heightUnit === 'cm' ? '' : 'hidden') + '><input class="input num" id="hCm" name="hCm" type="number" inputmode="decimal" aria-label="Height in centimetres" placeholder="cm" value="' + Math.round(p.heightCm) + '"></div>' +
+      '<div class="pair tight h-ft" ' + (p.heightUnit === 'ft' ? '' : 'hidden') + '><input class="input num" id="hFt" name="hFt" type="number" inputmode="numeric" aria-label="Height, feet" placeholder="ft" value="' + Math.floor(inch / 12) + '"><input class="input num" id="hIn" name="hIn" type="number" inputmode="numeric" aria-label="Height, inches" placeholder="in" value="' + (inch % 12) + '"></div></div>' +
+      '<div class="field"><span class="lab">Weight</span>' + seg('wUnit', [['kg', 'kg'], ['lb', 'lb']], p.weightUnit) +
+      '<div class="w-kg" ' + (p.weightUnit === 'kg' ? '' : 'hidden') + '><input class="input num" id="wKg" name="wKg" type="number" inputmode="decimal" step="0.1" aria-label="Weight in kilograms" placeholder="kg" value="' + kg.toFixed(1) + '"></div>' +
+      '<div class="w-lb" ' + (p.weightUnit === 'lb' ? '' : 'hidden') + '><input class="input num" id="wLb" name="wLb" type="number" inputmode="decimal" step="0.1" aria-label="Weight in pounds" placeholder="lb" value="' + (kg * 2.20462).toFixed(1) + '"></div></div>' +
+      '</div>' +
+      '<div class="field"><label for="activity">How active are you?</label><select class="input" id="activity" name="activity">' +
+      Object.keys(ACTIVITY).map(function (k) { return '<option value="' + k + '"' + (p.activity === k ? ' selected' : '') + '>' + ACTIVITY[k].t + '</option>'; }).join('') + '</select></div>' +
+      '<div class="field"><span class="lab">Your goal</span>' + seg('goal', Object.keys(GOALS).map(function (k) { return [k, GOALS[k].t.split(' ')[0]]; }), p.goal) + '</div>' +
+      '<p class="err" id="formErr" role="alert"></p>' +
+      '<button class="btn" type="submit">' + (editing ? 'Save and recalculate' : 'Calculate my plan') + '</button>' +
+      (editing ? '<button class="btn ghost" type="button" data-act="tab" data-tab="dashboard">Cancel</button>' : '<p class="hint">The values above are an example. Replace them with yours.</p>') +
+      '</form>';
+  }
+
+  function macroBar(p, c, f, fi) {
+    var a = p * 4, b = c * 4, d = f * 9, t = a + b + d || 1;
+    return '<div class="macrobar" role="img" aria-label="Protein ' + p + ' g, carbs ' + c + ' g, fat ' + f + ' g"><i class="c-p" style="width:' + (a / t * 100) + '%"></i><i class="c-c" style="width:' + (b / t * 100) + '%"></i><i class="c-f" style="width:' + (d / t * 100) + '%"></i></div>' +
+      '<div class="cells four num"><div class="cell p"><b>' + p + ' g</b><span>Protein</span></div><div class="cell c"><b>' + c + ' g</b><span>Carbs</span></div><div class="cell f"><b>' + f + ' g</b><span>Fat</span></div><div class="cell fi"><b>' + fi + ' g</b><span>Fiber</span></div></div>';
+  }
+
+  /* Tab: Meal Planner */
+  function viewPlanner() {
+    var t = todayIdx(), info = dayInfo(selDay), locked = !!state.locked[selDay];
+    var cur = STYLES.filter(function (x) { return x[0] === state.style; })[0] || STYLES[0];
+    return header('7-day plan', 'Meal Planner') +
+      '<div class="stack" style="gap:8px"><div class="seg" role="radiogroup" aria-label="Meal style">' + STYLES.map(function (x) {
+        return '<label><input type="radio" name="mstyle" value="' + x[0] + '"' + (x[0] === state.style ? ' checked' : '') + '><span>' + x[1] + '</span></label>';
+      }).join('') + '</div><p class="hint">' + cur[2] + '</p></div>' +
+      '<div class="days" role="group" aria-label="Day of the week">' + DAYS.map(function (d, i) {
+        var lk = !!state.locked[i];
+        return '<button class="day' + (i === t ? ' today' : '') + (lk ? ' locked' : '') + '" data-act="day" data-day="' + i + '" aria-pressed="' + (i === selDay) + '" aria-label="' + DAYS_FULL[i] + (i === t ? ' (today)' : '') + (lk ? ', locked in' : '') + '"><span>' + d + '</span><svg viewBox="0 0 24 24" aria-hidden="true">' + (lk ? LOCK : '') + '</svg></button>';
+      }).join('') + '</div>' +
+      '<section class="card center"><p class="eyebrow">' + DAYS_FULL[selDay] + (selDay === t ? ' · today' : '') + '</p><p class="big num">' + fmt(info.kcal) + '<small>kcal ' + (locked ? 'locked in' : 'planned') + '</small></p><p class="hint num">Ingredients for the day cost about ' + peso(dayCost(info)) + '</p>' + macroBar(info.p, info.c, info.fat, info.fiber) +
+      (locked ? '<button class="btn ghost" data-act="unlock" data-day="' + selDay + '">Unlock ' + DAYS_FULL[selDay] + '</button><p class="hint">Its ingredients are on your grocery checklist.</p>' :
+        '<button class="btn" data-act="lock" data-day="' + selDay + '">Lock in ' + DAYS_FULL[selDay] + '</button><p class="hint">Locking adds this day\'s ingredients to your grocery checklist.</p>') + '</section>' +
+      info.items.map(function (it) {
+        return '<article class="card meal"><div class="meal-h"><span class="slot">' + SLOT_LABEL[it.m.slot] + '</span>' + (locked ? '<span class="pill">Locked in</span>' : '<button class="link" data-act="swap" data-day="' + selDay + '" data-idx="' + it.idx + '">Swap meal</button>') + '</div>' +
+          '<div><h3>' + esc(it.m.name) + '</h3><p class="how">' + esc(it.m.how) + '</p></div>' +
+          '<div class="cells five num"><div class="cell"><b>' + it.kcal + '</b><span>kcal</span></div><div class="cell p"><b>' + it.p + ' g</b><span>Protein</span></div><div class="cell c"><b>' + it.c + ' g</b><span>Carbs</span></div><div class="cell f"><b>' + it.fat + ' g</b><span>Fat</span></div><div class="cell fi"><b>' + it.fiber + ' g</b><span>Fiber</span></div></div>' +
+          '<details><summary>Ingredients</summary><ul class="ing">' + it.m.ing.map(function (g) { return '<li><span>' + esc(g[0]) + '</span><span class="num">' + fmtQty(g[1] * it.f, g[2]) + '</span></li>'; }).join('') + '</ul></details><details><summary>Recipe' + (it.m.mins ? ' \u00B7 ' + it.m.mins + ' min' : '') + '</summary><ol class="steps">' + recipeFor(it.m).map(function (st) { return '<li>' + esc(st) + '</li>'; }).join('') + '</ol></details></article>';
+      }).join('') +
+      '<button class="btn ghost" data-act="regen">Generate a new week</button>';
+  }
+
+  /* Tab: Calories intake */
+  function ring(consumed, target) {
+    var r = 48, c = 2 * Math.PI * r, pct = clamp(consumed / target, 0, 1), left = target - consumed;
+    return '<div class="ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="trk" cx="60" cy="60" r="' + r + '"/><circle class="val" cx="60" cy="60" r="' + r + '" stroke-dasharray="' + (c * pct).toFixed(1) + ' ' + c.toFixed(1) + '"/></svg>' +
+      '<div class="mid"><b class="num">' + fmt(Math.abs(left)) + '</b><span>' + (left >= 0 ? 'kcal left' : 'kcal over') + '</span></div></div>';
+  }
+  function viewCalories() {
+    var cal = calc(), p = state.profile, ds = dstr(), log = dayLog(ds), info = dayInfo(todayIdx());
+    var eaten = eatenTotal(ds), burned = burnedTotal(ds), net = eaten - burned;
+    var adjTxt = cal.adj === 0 ? 'No change' : (cal.adj > 0 ? '+' : '−') + Math.abs(cal.adj) + ' kcal';
+    var pct = function (g, k) { return Math.round(g * k / (cal.p * 4 + cal.c * 4 + cal.f * 9) * 100); };
+    return header('Your numbers', 'Calories intake') +
+      '<section class="card center"><p class="eyebrow">Daily target</p><p class="big num">' + fmt(cal.target) + '<small>kcal per day</small></p><p class="hint">' + GOALS[p.goal].t + ', ' + GOALS[p.goal].d + '.</p>' +
+      (cal.floored ? '<p class="hint">Raised to the minimum of ' + (p.sex === 'male' ? '1,500' : '1,200') + ' kcal that is generally considered safe without medical supervision.</p>' : '') + '</section>' +
+      '<section class="card"><h2>How it is calculated</h2><div class="kv num">' +
+      '<div><span>Resting burn (BMR)</span><span>' + fmt(cal.bmr) + ' kcal</span></div>' +
+      '<div><span>Activity factor</span><span>× ' + cal.mult + '</span></div>' +
+      '<div><span>Maintenance (TDEE)</span><span>' + fmt(cal.tdee) + ' kcal</span></div>' +
+      '<div><span>Goal adjustment</span><span>' + adjTxt + '</span></div>' +
+      '<div class="tot"><span>Daily target</span><span>' + fmt(cal.target) + ' kcal</span></div></div></section>' +
+      '<section class="card"><h2>Daily macros</h2><div class="cells four num">' +
+      '<div class="cell p"><b>' + cal.p + ' g</b><span>Protein · ' + pct(cal.p, 4) + '%</span></div>' +
+      '<div class="cell c"><b>' + cal.c + ' g</b><span>Carbs · ' + pct(cal.c, 4) + '%</span></div>' +
+      '<div class="cell f"><b>' + cal.f + ' g</b><span>Fat · ' + pct(cal.f, 9) + '%</span></div>' +
+      '<div class="cell fi"><b>' + Math.max(25, Math.round(cal.target / 1000 * 14)) + ' g</b><span>Fiber goal</span></div></div></section>' +
+      '<section class="card"><h2>Today\'s intake</h2><div class="ringrow">' + ring(net, cal.target) +
+      '<p class="big num">' + fmt(Math.max(0, net)) + '<small>net of ' + fmt(cal.target) + ' kcal</small></p></div>' +
+      '<div class="cells num" style="margin-top:16px"><div class="cell"><b>' + fmt(eaten) + '</b><span>Eaten</span></div><div class="cell"><b>' + fmt(burned) + '</b><span>Burned</span></div><div class="cell"><b>' + fmt(Math.max(0, cal.target - net)) + '</b><span>Left</span></div></div>' +
+      '<p class="hint" style="margin-top:16px">Tick each meal as you eat it. Add anything that is not in the plan below.</p>' +
+      '<div class="eats">' + info.items.map(function (it) {
+        var on = log.eaten[it.idx] != null;
+        return '<div class="eat"><button class="check" data-act="eat" data-idx="' + it.idx + '" data-kcal="' + it.kcal + '" aria-pressed="' + on + '" aria-label="Mark ' + esc(it.m.name) + ' as eaten">' + CHECK + '</button><div class="t"><b>' + esc(it.m.name) + '</b><span>' + SLOT_LABEL[it.m.slot] + '</span></div><span class="num">' + it.kcal + ' kcal</span></div>';
+      }).join('') + log.extras.map(function (e, i) {
+        return '<div class="eat extra"><div class="t"><b>' + esc(e.name) + '</b><span>Added by you</span></div><span class="num">' + e.kcal + ' kcal</span><button class="x" data-act="rmextra" data-i="' + i + '" aria-label="Remove ' + esc(e.name) + '">×</button></div>';
+      }).join('') + '</div>' +
+      '<form id="extraForm" class="addgrid" novalidate><div class="field full"><label for="exName">Other food</label><input class="input" id="exName" name="name" type="text" placeholder="Coffee with milk" maxlength="40"></div>' +
+      '<div class="field"><label for="exKcal">Calories</label><input class="input num" id="exKcal" name="kcal" type="number" inputmode="numeric" min="1" max="3000" placeholder="80"></div>' +
+      '<button class="btn" type="submit">Add food</button></form></section>' +
+      '<section class="card"><h2>Exercise</h2>' +
+      '<form id="exerciseForm" class="addgrid" novalidate style="margin-top:0">' +
+      '<div class="field full"><label for="exType">What did you do?</label><select class="input" id="exType" name="type">' +
+      EXERCISES.map(function (x) { return '<option value="' + x[0] + '"' + (x[0] === exSel ? ' selected' : '') + '>' + x[1] + '</option>'; }).join('') + '</select></div>' +
+      '<div class="field"><label for="exMin">Minutes</label><input class="input num" id="exMin" name="min" type="number" inputmode="numeric" min="1" max="600" value="30"></div>' +
+      '<div class="field"><span class="lab">Estimated burn</span><div class="preview num" id="exPreview" aria-live="polite">0 kcal</div></div>' +
+      '<div class="field full"><span class="lab">How hard?</span><div class="seg" role="radiogroup">' +
+      LEVELS.map(function (l, i) { return '<label><input type="radio" name="level" value="' + i + '"' + (i === 1 ? ' checked' : '') + '><span>' + l + '</span></label>'; }).join('') + '</div></div>' +
+      '<button class="btn full" type="submit">Add exercise</button></form>' +
+      '<div class="eats">' + log.exercise.map(function (x, i) {
+        return '<div class="eat extra"><div class="t"><b>' + esc(x.name) + '</b><span>' + x.min + ' min · ' + LEVELS[x.level] + '</span></div><span class="num">−' + x.kcal + ' kcal</span><button class="x" data-act="rmex" data-i="' + i + '" aria-label="Remove ' + esc(x.name) + '">×</button></div>';
+      }).join('') + '</div>' +
+      '<p class="hint" style="margin-top:16px">Burn = MET × your weight × hours. It is subtracted from today\'s intake.</p></section>' +
+      '<p class="note">Estimates based on the Mifflin-St Jeor formula. This is general guidance, not medical advice.</p>';
+  }
+
+  /* Tab: Settings */
+  function viewSettings() {
+    var dark = isDark(), cur = state.settings.palette;
+    return header('Make it yours', 'Settings') +
+      '<section class="card stack"><h2 style="margin-bottom:0">Account</h2><div class="acct static">' + avatar(account) + '<span class="who"><b>' + esc(account.name) + '</b><small>' + (account.cloud ? esc(account.email) : 'Signed in on this device') + '</small></span></div>' +
+      '<button class="btn ghost" data-act="signout">Sign out or switch person</button></section>' +
+      (account.cloud ? '<section class="card"><h2>Password</h2><form id="passChangeForm" class="stack" novalidate>' + textField('pwNew', 'pass', 'New password (8+ characters)', 'password', 'new-password') + textField('pwNew2', 'pass2', 'Confirm new password', 'password', 'new-password') + '<button class="btn" type="submit">Change password</button></form></section>' : '') +
+      (canPin && !account.cloud ? '<section class="card"><h2>PIN</h2><form id="pinChangeForm" class="stack" novalidate>' + (account.hash ? pinField('pcCur', 'cur', 'Current PIN') : '') + pinField('pcNew', 'neu', account.hash ? 'New PIN (leave empty to remove)' : 'New PIN (4 to 6 digits)') + pinField('pcConf', 'conf', 'Confirm new PIN') + '<button class="btn" type="submit">Save PIN</button></form></section>' : '') +
+      '<section class="card"><h2>Color theme</h2><div class="themes">' + Object.keys(PAL).map(function (k) {
+        var c = dark ? PAL[k].d : PAL[k].l;
+        return '<button class="theme" data-act="palette" data-p="' + k + '" aria-pressed="' + (k === cur) + '"><span class="swatch" style="background:linear-gradient(135deg,' + c.accent + ' 50%,' + c.wash + ' 50%)"></span>' + PAL[k].name + '</button>';
+      }).join('') + '</div></section>' +
+      '<section class="card"><h2>Appearance</h2><div class="seg" role="radiogroup" id="modeSeg">' +
+      [['light', 'Light'], ['auto', 'Auto'], ['dark', 'Dark']].map(function (m) { return '<label><input type="radio" name="mode" value="' + m[0] + '"' + (state.settings.mode === m[0] ? ' checked' : '') + '><span>' + m[1] + '</span></label>'; }).join('') + '</div>' +
+      '<p class="hint" style="margin-top:16px">Auto follows your phone\'s light or dark setting.</p></section>' +
+      '<section class="card"><h2>Price adjustment</h2><div class="seg" role="radiogroup">' +
+      [['0.9', '\u221210%'], ['1', 'Listed'], ['1.1', '+10%'], ['1.2', '+20%']].map(function (m) { return '<label><input type="radio" name="padj" value="' + m[0] + '"' + (String(state.settings.priceAdj || 1) === m[0] ? ' checked' : '') + '><span>' + m[1] + '</span></label>'; }).join('') + '</div>' +
+      '<p class="hint" style="margin-top:16px">Raises or lowers every estimated grocery price to match your market.</p></section>' +
+      '<section class="card stack"><h2 style="margin-bottom:0">Your data</h2><button class="btn ghost" data-act="editprofile">Edit profile</button>' +
+      (resetArmed ? '<p class="hint">This erases your profile, plan, grocery ticks and logs.</p><div class="btns"><button class="btn danger" data-act="reset">Erase everything</button><button class="btn ghost" data-act="resetcancel">Keep my data</button></div>' :
+        '<button class="btn danger" data-act="resetask">Reset all data</button>') +
+      (account.cloud ? '' : delArmed ? '<p class="hint">This deletes ' + esc(account.name) + '\'s profile and all its data from this device.</p><div class="btns"><button class="btn danger" data-act="del">Delete profile</button><button class="btn ghost" data-act="delcancel">Keep it</button></div>' : '<button class="btn danger" data-act="delask">Delete this profile</button>') + '</section>';
+  }
+
+  /* Tab: Dashboard */
+  function weightChart() {
+    var ws = state.weights, W = 600, H = 210, pl = 46, pr = 18, pt = 16, pb = 30;
+    var vs = ws.map(function (w) { return kgToUnit(w.kg); });
+    var lo = Math.min.apply(null, vs), hi = Math.max.apply(null, vs);
+    if (hi - lo < 2) { var m = (hi + lo) / 2; lo = m - 1.5; hi = m + 1.5; } else { lo -= 0.5; hi += 0.5; }
+    var t0 = toDate(ws[0].d).getTime(), t1 = toDate(ws[ws.length - 1].d).getTime();
+    var x = function (i) { return ws.length === 1 || t1 === t0 ? pl + (W - pl - pr) / 2 : pl + (W - pl - pr) * ((toDate(ws[i].d).getTime() - t0) / (t1 - t0)); };
+    var y = function (v) { return pt + (H - pt - pb) * (1 - (v - lo) / (hi - lo)); };
+    var grid = [lo, (lo + hi) / 2, hi].map(function (v) { return '<line class="grid" x1="' + pl + '" x2="' + (W - pr) + '" y1="' + y(v).toFixed(1) + '" y2="' + y(v).toFixed(1) + '"/><text x="' + (pl - 8) + '" y="' + (y(v) + 4).toFixed(1) + '" text-anchor="end">' + v.toFixed(1) + '</text>'; }).join('');
+    var pts = ws.map(function (w, i) { return x(i).toFixed(1) + ',' + y(vs[i]).toFixed(1); });
+    var last = ws.length - 1;
+    var xl = ws.length === 1 ? '<text x="' + x(0) + '" y="' + (H - 8) + '" text-anchor="middle">' + shortDate(ws[0].d) + '</text>' :
+      '<text x="' + pl + '" y="' + (H - 8) + '">' + shortDate(ws[0].d) + '</text><text x="' + (W - pr) + '" y="' + (H - 8) + '" text-anchor="end">' + shortDate(ws[last].d) + '</text>';
+    return '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Weight over time in ' + wUnit() + '">' + grid +
+      (ws.length > 1 ? '<polyline class="ln" points="' + pts.join(' ') + '"/>' : '') +
+      ws.map(function (w, i) { return '<circle class="pt" cx="' + x(i).toFixed(1) + '" cy="' + y(vs[i]).toFixed(1) + '" r="' + (i === last ? 6 : 4) + '"/>'; }).join('') +
+      '<text class="vl" x="' + Math.min(W - pr - 20, x(last)).toFixed(1) + '" y="' + (y(vs[last]) - 12).toFixed(1) + '" text-anchor="middle">' + vs[last].toFixed(1) + '</text>' + xl + '</svg>';
+  }
+  function calChart(target) {
+    var W = 600, H = 200, pl = 12, pr = 12, pt = 22, pb = 26, days = [];
+    for (var i = 6; i >= 0; i--) { var d = new Date(); d.setDate(d.getDate() - i); days.push({ ds: dstr(d), wd: d.getDay(), now: i === 0 }); }
+    days.forEach(function (d) { d.k = Math.max(0, eatenTotal(d.ds) - burnedTotal(d.ds)); });
+    var mx = Math.max(target * 1.2, Math.max.apply(null, days.map(function (d) { return d.k; })) * 1.05);
+    var bw = (W - pl - pr) / 7, y = function (v) { return pt + (H - pt - pb) * (1 - v / mx); };
+    return '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Net calories in the last 7 days against a target of ' + target + '">' +
+      days.map(function (d, i) {
+        var bx = pl + i * bw + bw * 0.2, w = bw * 0.6, top = y(d.k);
+        return (d.k > 0 ? '<rect class="bar' + (d.now ? ' now' : '') + '" x="' + bx.toFixed(1) + '" y="' + top.toFixed(1) + '" width="' + w.toFixed(1) + '" height="' + (H - pb - top).toFixed(1) + '" rx="5"/><text class="vl" x="' + (bx + w / 2).toFixed(1) + '" y="' + (top - 5).toFixed(1) + '" text-anchor="middle">' + fmt(d.k) + '</text>' : '') +
+          '<text x="' + (bx + w / 2).toFixed(1) + '" y="' + (H - 8) + '" text-anchor="middle">' + 'SMTWTFS'.charAt(d.wd) + '</text>';
+      }).join('') +
+      '<line class="tgt" x1="' + pl + '" x2="' + (W - pr) + '" y1="' + y(target).toFixed(1) + '" y2="' + y(target).toFixed(1) + '"/>' +
+      '<text x="' + (W - pr) + '" y="' + (y(target) - 6).toFixed(1) + '" text-anchor="end">Target ' + fmt(target) + '</text></svg>';
+  }
+  function viewDashboard() {
+    var cal = calc(), kg = latestKg(), start = state.weights[0].kg, diff = kgToUnit(kg) - kgToUnit(start), p = state.profile;
+    var bmi = cal.bmi, bcat = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Healthy range' : bmi < 30 ? 'Overweight' : 'Obese range';
+    var ok = bmi >= 18.5 && bmi < 25;
+    var recent = state.weights.slice().reverse().slice(0, 5);
+    return header('Progress', 'Dashboard') +
+      '<div class="tiles num">' +
+      '<div class="tile"><span class="k">Current weight</span><b>' + dispW(kg) + '</b><span class="pill neutral">Started ' + dispW(start) + '</span></div>' +
+      '<div class="tile"><span class="k">Change</span><b>' + (Math.abs(diff) < 0.05 ? '0.0' : (diff > 0 ? '+' : '−') + Math.abs(diff).toFixed(1)) + ' ' + wUnit() + '</b><span class="pill neutral">' + (state.weights.length - 1) + ' weigh-in' + (state.weights.length === 2 ? '' : 's') + ' since</span></div>' +
+      '<div class="tile"><span class="k">BMI</span><b>' + bmi.toFixed(1) + '</b><span class="pill' + (ok ? '' : ' warn') + '">' + bcat + '</span></div>' +
+      '<div class="tile"><span class="k">Daily target</span><b>' + fmt(cal.target) + ' kcal</b><span class="pill neutral">' + GOALS[p.goal].t + '</span></div></div>' +
+      '<section class="card"><h2>Update your weight</h2><form id="weightForm" class="stack" novalidate>' +
+      '<div class="field"><label for="newW">Today\'s weight in ' + wUnit() + '</label><input class="input num" id="newW" name="w" type="number" inputmode="decimal" step="0.1" value="' + kgToUnit(kg).toFixed(1) + '"></div>' +
+      '<button class="btn" type="submit">Save weight</button>' +
+      '<p class="hint">Saving recalculates your calorie target and rescales every meal and the grocery list.</p></form></section>' +
+      '<section class="card"><h2>Weight trend</h2>' + weightChart() + (state.weights.length < 2 ? '<p class="hint">Log your weight again in a few days to see the line.</p>' : '') + '</section>' +
+      '<section class="card"><h2>Net calories, last 7 days</h2>' + calChart(cal.target) + '<p class="hint">Meals eaten minus exercise burned. Fill it in on the Calories tab.</p></section>' +
+      '<section class="card"><h2>Recent weigh-ins</h2><div class="kv num">' + recent.map(function (w) { return '<div><span>' + shortDate(w.d) + '</span><span>' + dispW(w.kg) + '</span></div>'; }).join('') + '</div></section>' +
+      '<button class="btn ghost" data-act="editprofile">Edit profile</button>';
+  }
+
+  /* Tab: Grocery */
+  function viewGrocery() {
+    var g = groceries(), total = 0, done = 0, cost = 0, left = 0;
+    var lockedDays = DAYS.filter(function (d, i) { return state.locked[i]; });
+    CAT_ORDER.forEach(function (c) {
+      (g[c] || []).forEach(function (it) {
+        it.plan = buyPlan(it.name, it.q);
+        it.cost = priceOf(it.name, it.plan.bought, it.unit, true);
+        total++; cost += it.cost;
+        if (state.checked[it.key]) done++; else left += it.cost;
+      });
+    });
+    if (!lockedDays.length) {
+      return header('Shopping list', 'Grocery checklist') +
+        '<section class="card center"><p class="big" style="font-size:32px;line-height:40px">Nothing to buy yet<small>Lock in a day on the Meal Planner and only the ingredients for the locked days will appear here, with an estimated budget.</small></p>' +
+        '<button class="btn" data-act="tab" data-tab="planner">Go to the Meal Planner</button></section>';
+    }
+    return header('Shopping list', 'Grocery checklist') +
+      '<section class="card center"><p class="eyebrow">Estimated budget</p><p class="big num">' + peso(cost) + '<small>' + lockedDays.join(', ') + ' locked in \u00B7 ' + peso(left) + ' left to buy</small></p>' +
+      '<div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="' + total + '" aria-valuenow="' + done + '"><i style="width:' + (total ? done / total * 100 : 0) + '%"></i></div>' +
+      '<p class="hint num">' + done + ' of ' + total + ' items ticked</p>' +
+      '<div class="btns"><button class="btn small" data-act="copylist">Copy list</button><button class="btn ghost small" data-act="clearticks">Clear ticks</button></div></section>' +
+      CAT_ORDER.filter(function (c) { return g[c]; }).map(function (c) {
+        var sub = g[c].reduce(function (t, it) { return t + it.cost; }, 0);
+        return '<section class="card gcat"><h2><span>' + CATS[c] + '</span><span class="num">' + peso(sub) + '</span></h2>' + g[c].map(function (it) {
+          return '<button class="gi" data-act="tick" data-key="' + esc(it.key) + '" aria-pressed="' + !!state.checked[it.key] + '"><span class="check">' + CHECK + '</span><span class="nm">' + esc(it.name) + '<small>Need ' + fmtBuy(it.q, it.unit) + (it.plan.leftover >= 1 ? ' \u00B7 ' + fmtBuy(it.plan.leftover, it.unit) + ' left over' : '') + '</small></span><span class="qt num"><b>' + peso(it.cost) + '</b><span>Buy ' + buyText(it.plan, it.unit) + '</span></span></button>';
+        }).join('') + '</section>';
+      }).join('') +
+      '<p class="note">Each item is rounded up to the pack sizes sold, for example 500 g or 1 kg of pork and 500 ml or 1 L of oil, so the budget is what you would actually pay. Leftovers are shown on each item. Prices are estimates for Metro Manila wet markets (' + PRICE_AS_OF + '). They are based on the latest Department of Agriculture reports I could verify, from April 2026, plus typical market ranges. Real prices change by market and by week, so use the price adjustment in Settings to match yours.</p>';
+  }
+
+  /* ---------- Events ---------- */
+  function readCm(f, u) { return u === 'cm' ? parseFloat(f.hCm.value) : ((parseFloat(f.hFt.value) || 0) * 12 + (parseFloat(f.hIn.value) || 0)) * 2.54; }
+  function readKg(f, u) { return u === 'kg' ? parseFloat(f.wKg.value) : parseFloat(f.wLb.value) / 2.20462; }
+  function setCm(f, u, cm) {
+    if (isNaN(cm)) return;
+    if (u === 'cm') f.hCm.value = Math.round(cm);
+    else { var tot = Math.round(cm / 2.54); f.hFt.value = Math.floor(tot / 12); f.hIn.value = tot % 12; }
+  }
+  function setKg(f, u, kg) {
+    if (isNaN(kg)) return;
+    if (u === 'kg') f.wKg.value = kg.toFixed(1); else f.wLb.value = (kg * 2.20462).toFixed(1);
+  }
+
+  function setStyle(v) {
+    var old = state.plan, np;
+    state.style = v; np = genPlan(state.seed, v);
+    for (var q = 0; q < 7; q++) if (state.locked[q]) np[q] = old[q];
+    state.plan = np;
+    if (!state.locked[todayIdx()]) dayLog(dstr()).eaten = {};
+    save(); render();
+    toast(STYLES.filter(function (x) { return x[0] === v; })[0][1] + ' meals. Locked days kept.');
+  }
+  function updatePreview(f) {
+    var el = document.getElementById('exPreview');
+    if (!f || !el) return;
+    var m = parseFloat(f.min.value);
+    el.textContent = (m > 0 ? fmt(exKcal(f.type.value, +f.level.value, m)) : 0) + ' kcal';
+  }
+  document.addEventListener('input', function (e) {
+    var f = e.target.form;
+    if (f && f.id === 'exerciseForm') updatePreview(f);
+  });
+
+  document.addEventListener('change', function (e) {
+    var t = e.target, f = t.form;
+    if (t.name === 'padj') { state.settings.priceAdj = parseFloat(t.value); save(); render(); return; }
+    if (t.name === 'mstyle') { setStyle(t.value); return; }
+    if (t.name === 'mode') { state.settings.mode = t.value; applyTheme(); save(); render(); return; }
+    if (f && f.id === 'exerciseForm') { if (t.name === 'type') exSel = t.value; updatePreview(f); return; }
+    if (!f || f.id !== 'profileForm') return;
+    if (t.name === 'hUnit') {
+      var cm = readCm(f, formH); formH = t.value; setCm(f, formH, cm);
+      f.querySelector('.h-cm').hidden = formH !== 'cm'; f.querySelector('.h-ft').hidden = formH !== 'ft';
+    } else if (t.name === 'wUnit') {
+      var kg = readKg(f, formW); formW = t.value; setKg(f, formW, kg);
+      f.querySelector('.w-kg').hidden = formW !== 'kg'; f.querySelector('.w-lb').hidden = formW !== 'lb';
+    }
+  });
+
+  document.addEventListener('submit', function (e) {
+    var f = e.target;
+    e.preventDefault();
+    if (/^cloud/.test(f.id) || f.id === 'passChangeForm') { handleCloudForm(f); return; }
+    if (f.id === 'createForm' || f.id === 'pinForm' || f.id === 'pinChangeForm') { handleAuthForm(f); return; }
+    if (f.id === 'profileForm') {
+      var hu = f.hUnit.value, wu = f.wUnit.value, cm = readCm(f, hu), kg = readKg(f, wu), age = parseInt(f.age.value, 10), err = document.getElementById('formErr');
+      if (!(age >= 14 && age <= 90)) { err.textContent = 'Enter an age between 14 and 90.'; return; }
+      if (!(cm >= 120 && cm <= 230)) { err.textContent = 'Check your height. It should be between 120 and 230 cm (about 4 ft to 7 ft 6 in).'; return; }
+      if (!(kg >= 30 && kg <= 250)) { err.textContent = 'Check your weight. It should be between 30 and 250 kg (66 to 550 lb).'; return; }
+      var editing = !!f.dataset.editing, today = dstr();
+      state.profile = { sex: f.sex.value, age: age, heightUnit: hu, weightUnit: wu, heightCm: cm, activity: f.activity.value, goal: f.goal.value };
+      var last = state.weights[state.weights.length - 1];
+      if (last && last.d === today) last.kg = kg; else if (!last || Math.abs(last.kg - kg) > 0.01) state.weights.push({ d: today, kg: kg });
+      if (!state.plan) { state.seed = Math.floor(Math.random() * 2147483647); state.plan = genPlan(state.seed); }
+      state.tab = editing ? 'dashboard' : 'planner';
+      selDay = todayIdx();
+      save(); render(); window.scrollTo(0, 0);
+      toast(editing ? 'Profile updated' : 'Your plan is ready');
+    } else if (f.id === 'weightForm') {
+      var v = parseFloat(f.w.value), nkg = unitToKg(v);
+      if (!(nkg >= 30 && nkg <= 250)) { toast('Enter a weight between 30 and 250 kg'); return; }
+      var today2 = dstr(), l = state.weights[state.weights.length - 1];
+      if (l && l.d === today2) l.kg = nkg; else state.weights.push({ d: today2, kg: nkg });
+      save(); render(); toast('Weight saved. Plan recalculated.');
+    } else if (f.id === 'exerciseForm') {
+      var mins = parseInt(f.min.value, 10);
+      if (!(mins >= 1 && mins <= 600)) { toast('Enter minutes between 1 and 600'); return; }
+      var lv = +f.level.value, xt = EX_BY[f.type.value];
+      dayLog(dstr()).exercise.push({ name: xt[1], min: mins, level: lv, kcal: exKcal(xt[0], lv, mins) });
+      save(); render(); toast('Exercise added');
+    } else if (f.id === 'extraForm') {
+      var name = f.name.value.trim(), k = parseInt(f.kcal.value, 10);
+      if (!name || !(k > 0)) { toast('Enter a food name and its calories'); return; }
+      dayLog(dstr()).extras.push({ name: name, kcal: k });
+      save(); render();
+    }
+  });
+
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act]');
+    if (!b) return;
+    var act = b.dataset.act;
+    if (act === 'tab') { state.tab = b.dataset.tab; save(); render(); window.scrollTo(0, 0); }
+    else if (act === 'day') { selDay = +b.dataset.day; render(); }
+    else if (act === 'regen') {
+      var old = state.plan;
+      state.seed = Math.floor(Math.random() * 2147483647); state.plan = genPlan(state.seed);
+      for (var q = 0; q < 7; q++) if (state.locked[q]) state.plan[q] = old[q];
+      if (!state.locked[todayIdx()]) dayLog(dstr()).eaten = {};
+      save(); render(); window.scrollTo(0, 0); toast('New week generated. Locked days kept.');
+    }
+    else if (act === 'lock') {
+      var ld = +b.dataset.day, li = dayInfo(ld);
+      state.locked[ld] = { ids: li.items.map(function (x) { return x.m.id; }), f: li.items[0].f };
+      save(); render(); toast(DAYS_FULL[ld] + ' locked in. Ingredients added to groceries.');
+    }
+    else if (act === 'unlock') {
+      var ud = +b.dataset.day; delete state.locked[ud];
+      save(); render(); toast(DAYS_FULL[ud] + ' unlocked. Ingredients removed from groceries.');
+    }
+    else if (act === 'swap') {
+      var d = +b.dataset.day, i = +b.dataset.idx;
+      if (state.locked[d]) return;
+      var cur = BY_ID[state.plan[d][i]];
+      var pool = MEALS.filter(function (m) { return m.slot === cur.slot && m.style === cur.style && state.plan[d].indexOf(m.id) < 0; });
+      if (pool.length) { state.plan[d][i] = pool[Math.floor(Math.random() * pool.length)].id; if (d === todayIdx()) dayLog(dstr()).eaten = {}; save(); render(); }
+    }
+    else if (act === 'eat') {
+      var lg = dayLog(dstr()), ix = b.dataset.idx;
+      if (lg.eaten[ix] != null) delete lg.eaten[ix]; else lg.eaten[ix] = +b.dataset.kcal;
+      save(); render();
+    }
+    else if (act === 'rmex') { dayLog(dstr()).exercise.splice(+b.dataset.i, 1); save(); render(); }
+    else if (act === 'acct-pick') { var pa = findAccount(b.dataset.id); authErr = ''; forgotArmed = false; if (pa && pa.hash) { authScreen = 'pin'; authId = pa.id; render(); } else if (pa) signIn(pa.id); }
+    else if (act === 'c-go') { authScreen = b.dataset.s; authErr = ''; render(); }
+    else if (act === 'acct-new') { authScreen = 'create'; authErr = ''; authDraft = ''; render(); }
+    else if (act === 'acct-back') { authScreen = 'pick'; authErr = ''; forgotArmed = false; render(); }
+    else if (act === 'forgotask') { forgotArmed = true; render(); }
+    else if (act === 'forgotcancel') { forgotArmed = false; render(); }
+    else if (act === 'forgot') { removeAccount(authId); forgotArmed = false; authScreen = meta.profiles.length ? 'pick' : 'create'; render(); }
+    else if (act === 'signout') { signOut(); }
+    else if (act === 'delask') { delArmed = true; render(); }
+    else if (act === 'delcancel') { delArmed = false; render(); }
+    else if (act === 'del') { var did = account.id; signOut(); removeAccount(did); authScreen = meta.profiles.length ? 'pick' : 'create'; render(); }
+    else if (act === 'palette') { state.settings.palette = b.dataset.p; applyTheme(); save(); render(); }
+    else if (act === 'resetask') { resetArmed = true; render(); }
+    else if (act === 'resetcancel') { resetArmed = false; render(); }
+    else if (act === 'reset') {
+      state = { profile: null, weights: [], plan: null, seed: 0, checked: {}, log: {}, locked: {}, settings: state.settings, style: state.style, tab: 'planner' };
+      resetArmed = false; save(); render(); window.scrollTo(0, 0);
+    }
+    else if (act === 'rmextra') { dayLog(dstr()).extras.splice(+b.dataset.i, 1); save(); render(); }
+    else if (act === 'editprofile') { state.tab = 'profile'; render(); window.scrollTo(0, 0); }
+    else if (act === 'tick') { var k = b.dataset.key; if (state.checked[k]) delete state.checked[k]; else state.checked[k] = true; save(); var y = window.scrollY; render(); window.scrollTo(0, y); }
+    else if (act === 'clearticks') { state.checked = {}; save(); render(); }
+    else if (act === 'copylist') {
+      var g = groceries(), lines = [];
+      var sum = 0;
+      CAT_ORDER.forEach(function (c) { if (g[c]) { lines.push(CATS[c].toUpperCase()); g[c].forEach(function (it) { var bp = buyPlan(it.name, it.q), pc = priceOf(it.name, bp.bought, it.unit, true); sum += pc; lines.push('- ' + it.name + ': buy ' + buyText(bp, it.unit) + ' (about ' + peso(pc) + ')'); }); lines.push(''); } });
+      lines.push('Estimated total: ' + peso(sum));
+      var text = lines.join('\n');
+      var ok = function () { toast('Grocery list copied'); };
+      var fallback = function () {
+        var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select();
+        var done = false; try { done = document.execCommand('copy'); } catch (er) { done = false; }
+        document.body.removeChild(ta); toast(done ? 'Grocery list copied' : 'Could not copy. Select the list manually.');
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok, fallback); else fallback();
+    }
+  });
+
+  boot();
+})();
+</script>
+<script>if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }</script>
+</body>
+</html>
