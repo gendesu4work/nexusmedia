@@ -581,22 +581,24 @@ function expForm(){return `<div class="card"><h2>Add expense</h2><div class="row
 function expList(h){const list=S.expenses.filter(e=>inM(e.date)).sort((a,b)=>b.date.localeCompare(a.date)||(b.ts||'').localeCompare(a.ts||'')).map(e=>`<div class="li"><span>${e.date} · ${esc(e.cat)}${e.desc?' – '+esc(e.desc):''}<br><span class="note">🕒 ${e.ts?'Entered '+fmtTs(e.ts):'Time not recorded'}</span></span><span>${m(e.amt)}<button class="x" onclick="del('expenses','${e.id}')">×</button></span></div>`).join('');
  return `<div class="card">${h?'<h2>'+h+'</h2>':''}${list||'<div class="note">No expenses this month.</div>'}</div>`}
 // ===== Bundles: a product made of other products at its own price. Selling one deducts each item's recipe from stock. =====
-let bOpen=false,bLines=[{pid:'',q:1}],bName='',bPrice='',bBox='',bCat='';
+let bOpen=false,bLines=[{pid:'',q:1}],bName='',bPrice='',bPk='',bPkn='',bCat='';
+// a bundle uses its own packaging, so each item's single-piece packaging is left out of its cost
+const pieceCost=c=>c.cost-(c.pkn>0?(c.pk||0)/c.pkn:0),bndPack=p=>p.pkn>0?(p.pk||0)/p.pkn:(p.box||0);
 const bndL=id=>id?gp(id).items:bLines;
 function bndSet(id,i,f,v){const L=bndL(id);L[i][f]=f==='q'?Math.max(1,Math.floor(+v)||1):v;if(id){sync(gp(id));save()}render()}
 function bndAdd(id){bndL(id).push({pid:'',q:1});render()}
 function bndDel(id,i){const L=bndL(id);L.splice(i,1);if(!L.length)L.push({pid:'',q:1});if(id){sync(gp(id));save()}render()}
-function bndBox(id,v){const p=gp(id);if(p){p.box=+v||0;sync(p);save();render()}}
+function bndPk(id,f,v){const p=gp(id);if(!p)return;if(p.box){p.pk=p.box;p.pkn=1;delete p.box}p[f]=+v||0;sync(p);save();render()}
 function addBundle(){const n=bName.trim(),pr=+bPrice,L=bLines.filter(l=>gp(l.pid)&&l.q>0);if(!n){msg('Enter a name for the bundle.');return}if(!(pr>0)){msg('Enter the bundle price.');return}if(!L.length){msg('Choose at least one product for the bundle.');return}
- const p={id:uid(),name:n,price:pr,cost:0,cat:bCat,items:L.map(l=>({pid:l.pid,q:l.q})),box:+bBox||0};S.products.push(p);sync(p);bOpen=false;bLines=[{pid:'',q:1}];bName='';bPrice='';bBox='';save();render()}
-function bForm(p){const id=p?p.id:'',L=p?p.items:bLines,box=p?(p.box||0):(+bBox||0),pr=p?p.price:(+bPrice||0),V=L.filter(l=>gp(l.pid));
- const sep=V.reduce((a,l)=>a+gp(l.pid).price*l.q,0),cost=V.reduce((a,l)=>a+gp(l.pid).cost*l.q,0)+box,u=useOf({items:L},1);
+ const p={id:uid(),name:n,price:pr,cost:0,cat:bCat,items:L.map(l=>({pid:l.pid,q:l.q})),pk:+bPk||0,pkn:+bPkn||0};S.products.push(p);sync(p);bOpen=false;bLines=[{pid:'',q:1}];bName='';bPrice='';bPk='';bPkn='';save();render()}
+function bForm(p){const id=p?p.id:'',L=p?p.items:bLines,pack=bndPack(p||{pk:+bPk||0,pkn:+bPkn||0}),pr=p?p.price:(+bPrice||0),V=L.filter(l=>gp(l.pid));
+ const sep=V.reduce((a,l)=>a+gp(l.pid).price*l.q,0),items=V.reduce((a,l)=>a+pieceCost(gp(l.pid))*l.q,0),cost=items+pack,u=useOf({items:L},1);
  const opts=v=>S.products.filter(x=>!x.items).map(x=>`<option value="${x.id}" ${x.id===v?'selected':''}>${esc(x.name)} (${m(x.price)})</option>`).join('');
  const stock=Object.keys(u).map(k=>{const v=S.inv.find(x=>x.id===k);return v?`${esc(v.name)} ${+u[k].toFixed(2)} ${v.u}`:''}).filter(Boolean).join(', ');
  return `${L.map((l,i)=>`<div class="row" style="align-items:center"><select aria-label="Bundle item" onchange="bndSet('${id}',${i},'pid',this.value)"><option value="">Choose product</option>${opts(l.pid)}</select><input type="number" aria-label="Quantity" min="1" value="${l.q}" inputmode="numeric" style="flex:0 0 70px" onchange="bndSet('${id}',${i},'q',this.value)"><button class="x" aria-label="Remove item" onclick="bndDel('${id}',${i})">×</button></div>`).join('')}
  <button class="btn ghost" style="margin-bottom:8px" onclick="bndAdd('${id}')">+ Add item</button>
- <div class="k">Box or packaging cost per bundle (optional)</div><input type="number" value="${(p?p.box:bBox)||''}" placeholder="Cost of the box" inputmode="decimal" onchange="${p?`bndBox('${id}',this.value)`:'bBox=this.value;render()'}" style="margin-bottom:8px">
- <div class="li"><span>If bought separately</span><span>${m(sep)}</span></div><div class="li"><span>Bundle price</span><b>${m(pr)}</b></div>${pr>0&&sep>pr?`<div class="li"><span>Customer saves</span><span class="pos">${m(sep-pr)}</span></div>`:''}<div class="li"><span>Your cost</span><span>${m(cost)}</span></div><div class="li"><span>Profit per bundle</span><b class="${cls(pr-cost)}">${m(pr-cost)}</b></div>
+ <div class="k"><b>Bundle packaging</b> (box, bag, sticker). Replaces the packaging of each single item.</div><div class="row"><input type="number" aria-label="Price of one pack" value="${(p?(p.pk||p.box):bPk)||''}" placeholder="Price of one pack" inputmode="decimal" onchange="${p?`bndPk('${id}','pk',this.value)`:'bPk=this.value;render()'}"><input type="number" aria-label="Pieces in that pack" value="${(p?(p.pkn||(p.box?1:'')):bPkn)||''}" placeholder="Pieces in that pack" inputmode="numeric" onchange="${p?`bndPk('${id}','pkn',this.value)`:'bPkn=this.value;render()'}"></div>
+ <div class="li"><span>If bought separately</span><span>${m(sep)}</span></div><div class="li"><span>Bundle price</span><b>${m(pr)}</b></div>${pr>0&&sep>pr?`<div class="li"><span>Customer saves</span><span class="pos">${m(sep-pr)}</span></div>`:''}<div class="li"><span>Items (no single packaging)</span><span>${m(items)}</span></div><div class="li"><span>Bundle packaging</span><span>${m(pack)}</span></div><div class="li"><span>Your cost</span><span>${m(cost)}</span></div><div class="li"><span>Profit per bundle</span><b class="${cls(pr-cost)}">${m(pr-cost)}</b></div>
  <div class="note" style="margin-top:6px">${stock?'Each sale takes out of inventory: '+stock+'.':'No inventory will be deducted yet. Link each product’s recipe to your Inventory ingredients first.'}</div>`}
 function bundleCard(){if(!S.products.some(x=>!x.items))return '';
  if(!bOpen)return `<div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><b>🎁 Bundle</b><div class="note">Sell several products together at one price, like a box of 4.</div></div><button class="btn" style="width:auto;padding:8px 14px;flex:0 0 auto" onclick="bOpen=true;render()">Add a bundle</button></div>`;
@@ -771,7 +773,7 @@ function setBatch(id,v){const p=S.products.find(x=>x.id===id);if(p&&+v>0){p.batc
 function applyPrice(id){const p=S.products.find(x=>x.id===id),tm=(S.set.tm??40)/100;if(p&&tm<1){p.price=+(p.cost/(1-tm)).toFixed(2);save();render()}}
 let openP=null,openI=null,openV=null;
 const bc=p=>(p.ing||[]).reduce((a,i)=>a+(ic(i)),0)+(p.ut||0)+(p.pkn>0?(p.pk||0)/p.pkn*(p.batch||12):0);
-function sync(p){if(p.items){p.cost=+(p.items.reduce((a,i)=>{const c=gp(i.pid);if(c&&!c.items){sync(c);a+=c.cost*i.q}return a},0)+(p.box||0)).toFixed(4);return}if((p.ing&&p.ing.length)||p.pk||p.ut)p.cost=+(bc(p)/(p.batch||12)).toFixed(4)}
+function sync(p){if(p.items){p.cost=+(p.items.reduce((a,i)=>{const c=gp(i.pid);if(c&&!c.items){sync(c);a+=pieceCost(c)*i.q}return a},0)+bndPack(p)).toFixed(4);return}if((p.ing&&p.ing.length)||p.pk||p.ut)p.cost=+(bc(p)/(p.batch||12)).toFixed(4)}
 const gp=id=>S.products.find(x=>x.id===id);
 function recInner(p){const ing=p.ing||[],fl=ing.filter(i=>i.fl).reduce((a,i)=>a+i.g,0),tw=ing.reduce((a,i)=>a+i.g,0),n=p.batch||12,cost=(ing.length||p.pk||p.ut)?bc(p):p.cost*n,pp=cost/n,tm=(S.set.tm??40)/100,price=tm<1?pp/(1-tm):0,pu=price-pp,cu=p.price-pp;
  const fld=(l,k,i,v)=>`<div><div class="note">${l}</div><input type="number" value="${v}" inputmode="decimal" onchange="ingEdit('${p.id}','${i.id}','${k}',this.value)"></div>`;
