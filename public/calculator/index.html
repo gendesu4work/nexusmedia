@@ -433,10 +433,13 @@ function shiftCard(){const sh=curShift(),H=S.shifts||[],rp=shRep&&H.find(x=>x.id
  <div class="shsp"></div>${shClose?`<div style="margin-top:12px"><label class="shl" for="sc1">Cash counted in the drawer (₱)</label><input id="sc1" type="number" placeholder="0.00" inputmode="decimal" style="margin-bottom:10px"><label class="shl" for="sc2">GCash, card or other non-cash sales (optional)</label><input id="sc2" type="number" placeholder="0.00" inputmode="decimal" style="margin-bottom:10px"><div class="row"><button class="btn" onclick="closeShift()">Close shift</button><button class="btn ghost" onclick="shClose=false;render()">Cancel</button></div></div>`:`<button class="btn" style="margin-top:12px" onclick="shClose=true;render()">Close shift</button>`}</div>`}
 function refundCard(){
  if(!rfOpen)return `<div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><b>↩️ Refund</b><div class="note">Optional. A refund is taken off your gross sales.</div></div><button class="btn" style="width:auto;padding:8px 14px;flex:0 0 auto" onclick="rfOpen=true;render()">Add a refund</button></div>`;
- return `<div class="card"><h2>↩️ Add a refund</h2>${S.products.length?`<div class="row"><select id="rfp">${S.products.map(p=>`<option value="${p.id}">${esc(p.name)} (${m(p.price)})</option>`).join('')}</select><input id="rfq" type="number" min="1" value="1" inputmode="numeric" style="flex:0 0 70px"></div><input id="rfa" type="number" placeholder="Refund amount (leave blank for full price)" inputmode="decimal" style="margin-bottom:8px"><input id="rfr" placeholder="Reason (optional)" style="margin-bottom:8px"><div class="note" style="margin:-4px 0 8px">A refund cannot be deleted once it is added.</div><div class="row"><button class="btn" onclick="addRefund()">Add refund</button><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="rfOpen=false;render()">Cancel</button></div>`:'<div class="note">Add a product first (Products tab).</div>'}</div>`}
+ return `<div class="card"><h2>↩️ Add a refund</h2>${S.products.length?`<div class="row"><select id="rfp">${S.products.map(p=>`<option value="${p.id}">${esc(p.name)} (${m(p.price)})</option>`).join('')}</select><input id="rfq" type="number" min="1" value="1" inputmode="numeric" style="flex:0 0 70px"></div><input id="rfa" type="number" placeholder="Refund amount (leave blank for full price)" inputmode="decimal" style="margin-bottom:8px"><input id="rfr" placeholder="Reason (optional)" style="margin-bottom:8px"><div class="note" style="margin:-4px 0 8px">The ingredients go back into your inventory. A refund cannot be deleted once it is added.</div><div class="row"><button class="btn" onclick="addRefund()">Add refund</button><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="rfOpen=false;render()">Cancel</button></div>`:'<div class="note">Add a product first (Products tab).</div>'}</div>`}
+// a refund puts the ingredients back in stock, so their cost comes back too
+const rfCost=x=>{const p=gp(x.pid);return x.use&&p?x.qty*p.cost:0};
 function addRefund(){const p=gp($('#rfp').value),q=+$('#rfq').value;if(!p||!(q>0)){msg('Choose a product and a quantity.');return}
  const a=$('#rfa').value===''?p.price*q:+$('#rfa').value;if(!(a>0)){msg('Enter a refund amount above zero.');return}
- S.refunds=[{id:uid(),date:lday(),ts:new Date().toISOString(),pid:p.id,qty:q,amt:a,reason:$('#rfr').value.trim()}].concat(S.refunds||[]);rfOpen=false;month=lday().slice(0,7);save();render()}
+ const use=useOf(p,q);Object.keys(use).forEach(k=>{const v=S.inv.find(x=>x.id===k);if(v)v.qty=+(v.qty+use[k]).toFixed(3)});
+ S.refunds=[{id:uid(),date:lday(),ts:new Date().toISOString(),pid:p.id,qty:q,amt:a,use,reason:$('#rfr').value.trim()}].concat(S.refunds||[]);rfOpen=false;month=lday().slice(0,7);save();render()}
 function fmtTs(t){const d=new Date(t);if(isNaN(d))return '';return d.toLocaleDateString('en-PH',{timeZone:'Asia/Manila',year:'numeric',month:'short',day:'numeric'})+', '+d.toLocaleTimeString('en-PH',{timeZone:'Asia/Manila',hour:'numeric',minute:'2-digit',second:'2-digit'})+' PHT'}
 function recSale(pid,q,date,d,dk,dno){const p=gp(pid);if(!p)return;d=d||0;const s={id:uid(),date,pid,qty:q,ts:new Date().toISOString(),amt:+(p.price*q-d).toFixed(2)};if(d>0){s.disc=d;s.dk=dk;if(dno)s.dno=dno}s.use=useOf(p,q);Object.keys(s.use).forEach(k=>{const v=S.inv.find(x=>x.id===k);if(v)v.qty=+(v.qty-s.use[k]).toFixed(3)});S.sales.push(s)}
 const rDisc=()=>discAmt(rDK,rDV,rTotal());
@@ -513,7 +516,7 @@ function calc(){
  let rev=0,cogs=0;const per={};S.products.forEach(p=>per[p.id]={u:0,r:0,c:0});
  sales.forEach(s=>{const p=pm[s.pid];per[p.id].u+=s.qty;per[p.id].r+=s.qty*p.price-(s.disc||0);per[p.id].c+=s.qty*p.cost});
  Object.values(per).forEach(x=>{rev+=x.r;cogs+=x.c});
- const soldTotal=rev,rfs=(S.refunds||[]).filter(r=>inM(r.date)),refunds=rfs.reduce((a,r)=>a+r.amt,0);rev-=refunds;rfs.forEach(r=>{if(per[r.pid]){per[r.pid].r-=r.amt;per[r.pid].u-=r.qty}});
+ const soldTotal=rev,rfs=(S.refunds||[]).filter(r=>inM(r.date)),refunds=rfs.reduce((a,r)=>a+r.amt,0);rev-=refunds;rfs.forEach(r=>{if(per[r.pid]){const b=rfCost(r);per[r.pid].r-=r.amt;per[r.pid].u-=r.qty;per[r.pid].c-=b;cogs-=b}});
  const ops=S.expenses.filter(e=>inM(e.date)).reduce((a,e)=>a+e.amt,0);
  const rent=S.set.rentOn?+S.set.rent:0,staff=S.set.staffOn?S.staff.reduce((a,x)=>a+x.pay,0):0;
  const gross=rev-cogs,net=gross-ops-rent-staff,buys=(S.buys||[]).filter(b=>inM(b.date)).reduce((a,b)=>a+b.amt,0);return{buys,rev,cogs,gross,ops,rent,staff,net,per,refunds,soldTotal,disc:sales.reduce((a,s)=>a+(s.disc||0),0)}}
@@ -654,7 +657,7 @@ function chart(o){const W=720,H=250,L=58,R=10,T=12,B=28,n=o.lab.length,bs=o.bars
 function hbars(R){const mx=Math.max(...R.map(r=>Math.abs(r.v)),0)||1;return R.map(r=>`<div class="hb"><div class="hbl"><span>${esc(r.n)}</span><b class="${r.k||''}">${r.t}</b></div><div class="hbt"><i style="width:${(Math.abs(r.v)/mx*100).toFixed(1)}%;background:${r.c||'var(--c1)'}"></i></div>${r.s?`<div class="note">${r.s}</div>`:''}</div>`).join('')}
 function daily(){const y=+month.slice(0,4),mo=+month.slice(5,7),n=new Date(y,mo,0).getDate(),r=Array(n).fill(0),g=Array(n).fill(0),c=Array(n).fill(0),pm=Object.fromEntries(S.products.map(p=>[p.id,p]));
  S.sales.forEach(s=>{const p=pm[s.pid];if(!p||!inM(s.date))return;const d=+s.date.slice(8,10)-1;r[d]+=s.qty*p.price-(s.disc||0);g[d]+=s.qty*(p.price-p.cost)-(s.disc||0);c[d]++});
- (S.refunds||[]).forEach(x=>{if(!inM(x.date))return;const d=+x.date.slice(8,10)-1;r[d]-=x.amt;g[d]-=x.amt});
+ (S.refunds||[]).forEach(x=>{if(!inM(x.date))return;const d=+x.date.slice(8,10)-1;r[d]-=x.amt;g[d]-=x.amt-rfCost(x)});
  const last=month===lday().slice(0,7)?+lday().slice(8,10)-1:n-1;
  return{n,r,g,c,last,has:c.some(Boolean)||r.some(Boolean)}}
 function dayChart(d,line){const mn=mName(month);return chart({lab:d.r.map((_,i)=>String(i+1)),show:i=>i===0||(i+1)%5===0,bars:[{n:'Sales',c:'var(--c1)',v:d.r}],line:line?{n:'Gross profit',c:'var(--c2)',v:d.g.map((v,i)=>i<=d.last?v:null)}:null,
@@ -667,7 +670,7 @@ function salesSeries(mode){const d=daily(),n=d.n,pm=Object.fromEntries(S.product
   return{lab:r.map((_,i)=>'Wk '+(i+1)),show:null,r,g,c,last:Math.floor((today-1)/7),tip:i=>mn+' '+(i*7+1)+'–'+Math.min(n,i*7+7),aria:'Weekly sales for '+mName(month,1),has:d.has,note:''}}
  const r=Array(24).fill(0),g=Array(24).fill(0),c=Array(24).fill(0);let miss=0;
  S.sales.forEach(s=>{const p=pm[s.pid];if(!p||!inM(s.date))return;if(!s.ts){miss++;return}const h=+phParts(new Date(s.ts)).hour;r[h]+=s.qty*p.price-(s.disc||0);g[h]+=s.qty*(p.price-p.cost)-(s.disc||0);c[h]++});
- (S.refunds||[]).forEach(x=>{if(!inM(x.date)||!x.ts)return;const h=+phParts(new Date(x.ts)).hour;r[h]-=x.amt;g[h]-=x.amt});
+ (S.refunds||[]).forEach(x=>{if(!inM(x.date)||!x.ts)return;const h=+phParts(new Date(x.ts)).hour;r[h]-=x.amt;g[h]-=x.amt-rfCost(x)});
  const hl=h=>(h%12||12)+(h<12?'am':'pm');
  return{lab:r.map((_,h)=>(h%12||12)+(h<12?'a':'p')),show:i=>i%3===0,r,g,c,last:23,tip:i=>hl(i)+' – '+hl((i+1)%24),aria:'Sales by hour of the day for '+mName(month,1),has:c.some(Boolean),note:miss?miss+' sale'+(miss===1?'':'s')+' without a recorded time not shown.':''}}
 function salesTimeCard(cl){const m0=dsv,S2=salesSeries(m0),ttl={hour:'Sales by hour',day:'Sales by day',week:'Sales by week'}[m0];
