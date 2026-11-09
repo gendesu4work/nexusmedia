@@ -892,7 +892,9 @@ details summary { cursor: pointer; font-weight: 700; font-size: 14px; color: var
     return '<div class="field"><label for="' + id + '">' + label + '</label><input class="input" id="' + id + '" name="' + name + '" type="' + type + '" autocomplete="' + ac + '" placeholder="' + (ph || '') + '" value="' + esc(val || '') + '"></div>';
   }
   function friendlyAuthError(e) {
-    var m = (e && e.message) || '';
+    var m = (e && e.message) || '', st = +(e && e.status) || 0;
+    // No answer or a 5xx means the server is down, not that the password is wrong.
+    if (navigator.onLine && (st === 0 || st >= 500)) return 'The server is not responding right now. Your account is safe. Please try again in a little while.';
     if (/invalid login/i.test(m)) return 'Wrong email or password.';
     if (/not confirmed/i.test(m)) return 'Confirm your email first. Check your inbox for the link.';
     if (/rate limit|too many/i.test(m)) return 'Too many tries. Wait a few minutes and try again.';

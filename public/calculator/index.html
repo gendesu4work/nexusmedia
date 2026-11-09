@@ -311,7 +311,7 @@ async function start(){regSW();try{localStorage.removeItem('ppt-guest')}catch(e)
 async function enter(u){guest=false;clearTimeout(promoT);$('#promo').style.display='none';uidU=u.id;S=EMPTY();const lc=rj('ppt-'+uidU);let paid=null;
  try{const pr=await sb.from('profiles').select('paid').eq('user_id',uidU).maybeSingle();if(!pr.error)paid=!!(pr.data&&pr.data.paid)}catch(e){}
  if(paid===false){try{await sb.auth.signOut()}catch(e){}uidU=null;showLogin('Your payment is not confirmed yet. If you just paid, wait a minute and log in again. If you did not finish paying, tap Sign up again with the same email.');return}
- if(paid===null&&!lc){uidU=null;showLogin('Could not check your account. Connect to the internet and try again.');return}
+ if(paid===null&&!lc){uidU=null;showLogin(navigator.onLine?DOWN:'Could not check your account. Connect to the internet and try again.');return}
  try{dirty=localStorage.getItem('ppt-dirty-'+uidU)}catch(e){dirty=null}
  let row=null,err=false;
  try{const r=await sb.from('app_data').select('data,updated_at').eq('user_id',uidU).maybeSingle();err=!!r.error;row=r.data}catch(e){err=true}
@@ -502,9 +502,14 @@ async function doSignup(){const e=$('#se').value.trim(),p=$('#sp1').value,q=$('#
  try{const r=await fetch(SUPABASE_URL+'/functions/v1/signup',{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY},body:JSON.stringify({email:e,password:p})});const j=await r.json();
   if(j.url){location.href=j.url;return}sm.textContent=j.error||'Something went wrong. Please try again.'}catch(x){sm.textContent='Could not connect. Check your internet and try again.'}}
 function showLogin(msg){document.body.classList.remove('inapp');$('#shell').style.display='none';$('#login').style.display='';$('#lmsg').textContent=msg}
+// Only a 4xx answer means the email/password was checked. No answer or a 5xx means our server is down, so do not blame the password.
+const DOWN='Our server is not responding right now. Your account and data are safe. Please try again in a little while.';
+function loginErr(er){if(!navigator.onLine)return 'You need internet to log in.';const st=+er.status||0;
+ if(st===429)return 'Too many tries. Wait a few minutes and try again.';
+ if(st>=400&&st<500)return 'Wrong email or password, or your access is turned off.';return DOWN}
 async function doLogin(){const e=$('#le').value.trim(),p=$('#lp').value;if(!e||!p)return;$('#lmsg').textContent='Signing in…';
- let r;try{r=await sb.auth.signInWithPassword({email:e,password:p})}catch(x){r={error:1}}
- if(r.error){$('#lmsg').textContent=navigator.onLine?'Wrong email or password, or your access is turned off.':'You need internet to log in.';return}
+ let r;try{r=await sb.auth.signInWithPassword({email:e,password:p})}catch(x){r={error:{}}}
+ if(r.error){$('#lmsg').textContent=loginErr(r.error);return}
  $('#lp').value='';await enter(r.data.user)}
 async function doLogout(){if(dirty){status('⚠️ You have changes waiting to sync. Connect to the internet and wait for "Saved" before logging out.');return}
  try{await sb.auth.signOut()}catch(e){}
