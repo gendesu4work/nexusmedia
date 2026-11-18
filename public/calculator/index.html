@@ -55,6 +55,19 @@ footer img{width:18px;height:18px;vertical-align:-4px;margin-right:4px}.fd{displ
 @media print{body *{visibility:hidden}#rcp,#rcp *{visibility:visible}#rcp{position:absolute;left:0;top:0;width:100%;max-width:none;box-shadow:none;margin:0}}
 
 #login{position:fixed;inset:0;z-index:100;overflow:auto;background:var(--bg)}
+#pk .su{max-width:440px;margin:0 auto 16px;padding:32px 32px 26px;border-radius:16px;position:relative;box-shadow:0 24px 60px -28px rgba(0,20,40,.55)}
+.sux{position:absolute;top:10px;right:10px;width:44px;height:44px;border:0;border-radius:8px;background:transparent;color:var(--mut);font-size:24px;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0;transition:background .15s,color .15s}.sux:hover{background:var(--bg);color:var(--tx)}
+.sukick{margin:0 0 10px;font-size:13px;font-weight:600;color:var(--ac)}
+#pk .su h2{font-size:26px;line-height:1.18;letter-spacing:-.4px;font-weight:700;margin:0 0 12px;color:var(--tx);max-width:15em}
+.sulead{margin:0;font-size:15px;line-height:1.55;color:var(--mut)}
+.suprice{display:flex;align-items:baseline;gap:10px;margin:22px 0 24px;padding:16px 0;border-top:1px solid var(--ln);border-bottom:1px solid var(--ln)}.suamt{font-size:30px;font-weight:700;letter-spacing:-.5px;color:var(--tx);line-height:1}.suterm{font-size:14px;color:var(--mut)}
+.suform>label:not(.agree){display:block;font-size:13.5px;font-weight:600;margin:0 0 6px;color:var(--tx)}.suform>input{margin-bottom:16px;padding:11px 12px;border-radius:8px;background:var(--card);font-size:15px}.suform>input::placeholder{color:var(--mut);opacity:.7}.suform>input:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 20%,transparent)}
+.suform label.agree{margin:4px 0 6px;font-size:13.5px}.sulink{display:inline-block;margin:0 0 18px 28px;font-size:13px;color:var(--ac);text-decoration:none}.sulink:hover{text-decoration:underline}
+.sugo{padding:13px 16px;font-weight:600;font-size:15.5px;border-radius:8px;transition:filter .15s,transform .1s}.sugo:not(:disabled):hover{filter:brightness(1.08)}.sugo:not(:disabled):active{transform:translateY(1px)}
+.sufine{margin:16px 0 0;font-size:12.5px;line-height:1.55;color:var(--mut)}
+.sufoot{margin-top:18px;padding-top:16px;border-top:1px solid var(--ln);font-size:14px;color:var(--mut);text-align:center}.sufoot a{color:var(--ac);font-weight:600;text-decoration:none}.sufoot a:hover{text-decoration:underline}
+.suamt{white-space:nowrap}
+@media(max-width:420px){#pk .su{padding:26px 20px 20px}#pk .su h2{font-size:23px}.suamt{font-size:24px}}
 label.agree{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5;color:var(--tx);margin:4px 0 10px;cursor:pointer}label.agree input{width:18px;height:18px;margin:2px 0 0;flex:none;accent-color:var(--ac)}label.agree a{color:var(--ac);font-weight:600}
 #pol{position:fixed;inset:0;z-index:300;background:rgba(5,15,25,.55);display:flex;align-items:center;justify-content:center;padding:16px}
 #pol .polw{background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:16px;width:100%;max-width:680px;max-height:100%;display:flex;flex-direction:column;box-shadow:0 30px 60px -20px rgba(0,0,0,.5)}
@@ -257,22 +270,24 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 <div class="toast"><span class="ck"><svg viewBox="0 0 24 24" class="i"><path d="M5 12l5 5 9-10"/></svg></span><div><b>Sale added</b><small>Cinnamon roll · ₱45</small></div></div></div></div>
 </div></div></div>
 <div id="reset" style="display:none"><div class="card" style="max-width:380px;margin:30px auto"><h2>Set a new password</h2><input id="rp1" type="password" placeholder="New password (8+ characters)" autocomplete="new-password" style="margin-bottom:8px"><input id="rp2" type="password" placeholder="Repeat new password" autocomplete="new-password" style="margin-bottom:8px"><button class="btn" onclick="doReset()">Save new password</button><div class="note" id="rmsg" style="margin-top:8px"></div></div></div>
-<div id="promo" class="card" style="display:none;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:520px;margin:0 auto;z-index:20;box-shadow:0 8px 28px rgba(0,0,0,.28)"><div style="font-weight:700">💾 Don’t lose your data</div><div class="note" style="margin:2px 0 8px">Sign up to save it online, use it offline and on any device. Just ₱99.</div><div class="row" style="margin:0;align-items:center"><button class="btn" onclick="openPackage()">See what you get</button><a href="#" onclick="hidePromo(true);return false" class="note" style="text-align:center;color:var(--ac)">Maybe later</a></div></div>
-<div id="pk" style="display:none"><div class="card" style="max-width:480px;margin:0 auto 16px"><div style="text-align:right"><a href="#" onclick="closePackage();return false" class="note" style="color:var(--ac)">✕ Close</a></div>
-<h2 style="font-size:20px;margin-bottom:2px">Save your data with Product Calculator Online</h2>
-<div style="font-size:30px;font-weight:800;color:var(--ac)">₱99 <span style="font-size:14px;font-weight:600;color:var(--mut)">one-time · beta price</span></div>
-<div class="note" style="margin-bottom:10px">Pay with GCash, Maya or QR Ph.</div>
-<div class="li"><span>💾 Your data is saved safely online</span></div>
-<div class="li"><span>📴 Works online and offline. Enter sales with no signal and they sync when you’re back online</span></div>
-<div class="li"><span>📱💻 Unlimited devices: use one login on your phone, tablet and computer</span></div>
-<div class="li"><span>🔒 Your data is protected by your own login</span></div>
-<div class="li"><span>🗂️ Download a backup file anytime</span></div>
-<h2 style="margin-top:14px">Everything in the app</h2>
-<div class="note" style="line-height:1.8">🧾 Recipe costing for every serving<br>📈 Profit and margin for each product<br>📦 Inventory that deducts stock on every sale, with low-stock alerts<br>👥 Staff with roles, photos and salaries<br>🏠 Rent, packaging and utilities in your costs<br>🧮 Tax estimate for the Philippines<br>🖼️ Your own business name and logo<br>🌙 Light and dark mode</div>
-<h2 style="margin-top:14px">How it works</h2>
-<div class="note" style="line-height:1.8">1. Enter your email and choose a password<br>2. Pay ₱99 with GCash, Maya or QR Ph on SikatPay’s secure page (the recipient shows as PMP BONGGOT TECH)<br>3. Wait about a minute, then log in<br>Guest entries are erased when you leave this page, so you start with a clean account.</div>
-<div style="margin-top:12px"><input id="se" type="email" placeholder="Your email" autocomplete="email" style="margin-bottom:8px"><input id="sp1" type="password" placeholder="Choose a password (8+ characters)" autocomplete="new-password" style="margin-bottom:8px"><input id="sp2" type="password" placeholder="Repeat password" autocomplete="new-password" style="margin-bottom:8px"><label class="agree"><input type="checkbox" id="sagree" onchange="$('#sgo').disabled=!this.checked"><span>I have read and agree to the Terms of Use and Privacy Policy.</span></label><div class="note" style="margin:-4px 0 10px 28px"><a href="#" onclick="openPolicy();return false" style="color:var(--ac)">View the Terms of Use and Privacy Policy</a></div><button class="btn" id="sgo" disabled onclick="doSignup()">Pay ₱99 and save my data</button><div class="note" id="smsg" style="margin-top:8px"></div></div>
-<div class="note" style="text-align:center;margin-top:8px"><a href="#" onclick="closePackage();leaveGuest();return false" style="color:var(--ac)">Already paid? Log in</a> · <a href="#" onclick="closePackage();return false" style="color:var(--ac)">Not now</a></div></div></div>
+<div id="promo" class="card" style="display:none;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:520px;margin:0 auto;z-index:20;box-shadow:0 8px 28px rgba(0,0,0,.28)"><div style="font-weight:700">Don’t lose your data</div><div class="note" style="margin:2px 0 8px">Sign up to save it online, use it offline and on any device. Just ₱99.</div><div class="row" style="margin:0;align-items:center"><button class="btn" onclick="openPackage()">See what you get</button><a href="#" onclick="hidePromo(true);return false" class="note" style="text-align:center;color:var(--ac)">Maybe later</a></div></div>
+<div id="pk" style="display:none"><div class="card su" role="dialog" aria-modal="true" aria-labelledby="sut">
+<button class="sux" onclick="closePackage()" aria-label="Close">&times;</button>
+<p class="sukick">Online saving</p>
+<h2 id="sut">Keep your records in your own account</h2>
+<p class="sulead">Your products, sales and stock stay saved online and open on any phone, tablet or computer you log in on. It still works without signal and syncs when you're back online.</p>
+<div class="suprice"><span class="suamt">₱99</span><span class="suamt">One-time Payment</span></div>
+<div class="suform">
+<label for="se">Email</label><input id="se" type="email" autocomplete="email">
+<label for="sp1">Password</label><input id="sp1" type="password" placeholder="At least 8 characters" autocomplete="new-password">
+<label for="sp2">Confirm password</label><input id="sp2" type="password" autocomplete="new-password">
+<label class="agree"><input type="checkbox" id="sagree" onchange="$('#sgo').disabled=!this.checked"><span>I have read and agree to the Terms of Use and Privacy Policy.</span></label><a href="#" class="sulink" onclick="openPolicy();return false">Read the Terms of Use and Privacy Policy</a>
+<button class="btn sugo" id="sgo" disabled onclick="doSignup()">Continue to payment</button>
+<div class="note" id="smsg" style="margin-top:8px"></div>
+</div>
+<p class="sufine">You'll pay on SikatPay with GCash, Maya or QR Ph, and the recipient shows as PMP BONGGOT TECH. Your account is ready about a minute after paying. Anything you entered as a guest is not carried over.</p>
+<div class="sufoot">Already paid? <a href="#" onclick="closePackage();leaveGuest();return false">Log in</a></div>
+</div></div>
 <div id="pol" style="display:none" role="dialog" aria-modal="true" aria-labelledby="polt" onclick="if(event.target===this)closePolicy()"><div class="polw">
 <div class="polh"><h2 id="polt">Terms of Use and Privacy Policy</h2><a href="#" onclick="closePolicy();return false">✕ Close</a></div>
 <div class="polb">
