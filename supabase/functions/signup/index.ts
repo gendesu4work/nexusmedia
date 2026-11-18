@@ -9,6 +9,10 @@ import { createClient } from "npm:@supabase/supabase-js@2.117.2";
 // The price lives here on the server. The browser never sends it.
 const PRICE = 9900; // centavos = P99.00
 
+// Must match POLICY_VERSION in public/calculator/index.html. When the terms change,
+// update both so new sign-ups are recorded against the new version.
+const TERMS_VERSION = "2026-11-19";
+
 const cors = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -27,6 +31,9 @@ Deno.serve(async (req) => {
   const password = String(body.password || "");
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({ error: "Please enter a valid email." }, 400);
   if (password.length < 8) return json({ error: "Password must be at least 8 characters." }, 400);
+  if (body.agreed !== TERMS_VERSION) {
+    return json({ error: "Please tick the box to agree to the Terms of Use and Privacy Policy. If it is already ticked, refresh the page and try again." }, 400);
+  }
 
   const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
   const site = (Deno.env.get("SITE_URL") || "").replace(/\/$/, "");
@@ -75,6 +82,18 @@ Deno.serve(async (req) => {
     return json({ error: "Could not start the payment. Please try again." }, 502);
   }
 
-  await admin.from("profiles").upsert({ user_id: userId, paid: false, checkout_id: pid });
+  // Proof of agreement: which version of the terms, and when. Saved on every sign-up attempt,
+  // so it always shows the version agreed to just before paying.
+  const saved = await admin.from("profiles").upsert({
+    user_id: userId,
+    paid: false,
+    checkout_id: pid,
+    terms_version: TERMS_VERSION,
+    terms_accepted_at: new Date().toISOString(),
+  });
+  if (saved.error) {
+    console.error("Could not save profile", saved.error.message);
+    return json({ error: "Could not start the payment. Please try again." }, 500);
+  }
   return json({ url });
 });
