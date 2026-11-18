@@ -55,6 +55,11 @@ footer img{width:18px;height:18px;vertical-align:-4px;margin-right:4px}.fd{displ
 @media print{body *{visibility:hidden}#rcp,#rcp *{visibility:visible}#rcp{position:absolute;left:0;top:0;width:100%;max-width:none;box-shadow:none;margin:0}}
 
 #login{position:fixed;inset:0;z-index:100;overflow:auto;background:var(--bg)}
+label.agree{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5;color:var(--tx);margin:4px 0 10px;cursor:pointer}label.agree input{width:18px;height:18px;margin:2px 0 0;flex:none;accent-color:var(--ac)}label.agree a{color:var(--ac);font-weight:600}
+#pol{position:fixed;inset:0;z-index:300;background:rgba(5,15,25,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+#pol .polw{background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:16px;width:100%;max-width:680px;max-height:100%;display:flex;flex-direction:column;box-shadow:0 30px 60px -20px rgba(0,0,0,.5)}
+#pol .polh{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--ln)}#pol .polh h2{margin:0;font-size:18px}#pol .polh a{color:var(--ac);font-size:14px;text-decoration:none;white-space:nowrap}
+#pol .polb a{color:var(--ac);font-weight:600;overflow-wrap:anywhere}#pol .polb{overflow:auto;padding:4px 20px 16px;font-size:14px;line-height:1.65}#pol .polb h3{font-size:15px;margin:20px 0 6px;color:var(--ac)}#pol .polb p,#pol .polb ul{margin:0 0 10px}#pol .polb ul{padding-left:20px}#pol .polb li{margin-bottom:4px}#pol .polf{display:flex;gap:10px;padding:12px 20px;border-top:1px solid var(--ln)}#pol .polf .btn{flex:1}
 .lg{min-height:100%;display:flex;flex-direction:column;padding:0}
 .lR{display:flex;flex-direction:column;padding:18px 20px 14px;box-sizing:border-box}
 .lb{display:flex;align-items:center;gap:11px}
@@ -255,8 +260,8 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 <div id="promo" class="card" style="display:none;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:520px;margin:0 auto;z-index:20;box-shadow:0 8px 28px rgba(0,0,0,.28)"><div style="font-weight:700">💾 Don’t lose your data</div><div class="note" style="margin:2px 0 8px">Sign up to save it online, use it offline and on any device. Just ₱99.</div><div class="row" style="margin:0;align-items:center"><button class="btn" onclick="openPackage()">See what you get</button><a href="#" onclick="hidePromo(true);return false" class="note" style="text-align:center;color:var(--ac)">Maybe later</a></div></div>
 <div id="pk" style="display:none"><div class="card" style="max-width:480px;margin:0 auto 16px"><div style="text-align:right"><a href="#" onclick="closePackage();return false" class="note" style="color:var(--ac)">✕ Close</a></div>
 <h2 style="font-size:20px;margin-bottom:2px">Save your data with Product Calculator Online</h2>
-<div style="font-size:30px;font-weight:800;color:var(--ac)">₱99 </div>
-<div class="note" style="margin-bottom:10px">Pay with GCash, Maya or card.</div>
+<div style="font-size:30px;font-weight:800;color:var(--ac)">₱99 <span style="font-size:14px;font-weight:600;color:var(--mut)">one-time · beta price</span></div>
+<div class="note" style="margin-bottom:10px">Pay with GCash, Maya or QR Ph.</div>
 <div class="li"><span>💾 Your data is saved safely online</span></div>
 <div class="li"><span>📴 Works online and offline. Enter sales with no signal and they sync when you’re back online</span></div>
 <div class="li"><span>📱💻 Unlimited devices: use one login on your phone, tablet and computer</span></div>
@@ -265,9 +270,107 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 <h2 style="margin-top:14px">Everything in the app</h2>
 <div class="note" style="line-height:1.8">🧾 Recipe costing for every serving<br>📈 Profit and margin for each product<br>📦 Inventory that deducts stock on every sale, with low-stock alerts<br>👥 Staff with roles, photos and salaries<br>🏠 Rent, packaging and utilities in your costs<br>🧮 Tax estimate for the Philippines<br>🖼️ Your own business name and logo<br>🌙 Light and dark mode</div>
 <h2 style="margin-top:14px">How it works</h2>
-<div class="note" style="line-height:1.8">1. Enter your email and choose a password<br>2. Pay ₱99 on PayMongo’s secure page<br>3. Wait about a minute, then log in<br>Guest entries are erased when you leave this page, so you start with a clean account.</div>
-<div style="margin-top:12px"><input id="se" type="email" placeholder="Your email" autocomplete="email" style="margin-bottom:8px"><input id="sp1" type="password" placeholder="Choose a password (8+ characters)" autocomplete="new-password" style="margin-bottom:8px"><input id="sp2" type="password" placeholder="Repeat password" autocomplete="new-password" style="margin-bottom:8px"><button class="btn" onclick="doSignup()">Pay ₱99 and save my data</button><div class="note" id="smsg" style="margin-top:8px"></div></div>
+<div class="note" style="line-height:1.8">1. Enter your email and choose a password<br>2. Pay ₱99 with GCash, Maya or QR Ph on SikatPay’s secure page (the recipient shows as PMP BONGGOT TECH)<br>3. Wait about a minute, then log in<br>Guest entries are erased when you leave this page, so you start with a clean account.</div>
+<div style="margin-top:12px"><input id="se" type="email" placeholder="Your email" autocomplete="email" style="margin-bottom:8px"><input id="sp1" type="password" placeholder="Choose a password (8+ characters)" autocomplete="new-password" style="margin-bottom:8px"><input id="sp2" type="password" placeholder="Repeat password" autocomplete="new-password" style="margin-bottom:8px"><label class="agree"><input type="checkbox" id="sagree" onchange="$('#sgo').disabled=!this.checked"><span>I have read and agree to the Terms of Use and Privacy Policy.</span></label><div class="note" style="margin:-4px 0 10px 28px"><a href="#" onclick="openPolicy();return false" style="color:var(--ac)">View the Terms of Use and Privacy Policy</a></div><button class="btn" id="sgo" disabled onclick="doSignup()">Pay ₱99 and save my data</button><div class="note" id="smsg" style="margin-top:8px"></div></div>
 <div class="note" style="text-align:center;margin-top:8px"><a href="#" onclick="closePackage();leaveGuest();return false" style="color:var(--ac)">Already paid? Log in</a> · <a href="#" onclick="closePackage();return false" style="color:var(--ac)">Not now</a></div></div></div>
+<div id="pol" style="display:none" role="dialog" aria-modal="true" aria-labelledby="polt" onclick="if(event.target===this)closePolicy()"><div class="polw">
+<div class="polh"><h2 id="polt">Terms of Use and Privacy Policy</h2><a href="#" onclick="closePolicy();return false">✕ Close</a></div>
+<div class="polb">
+<p class="note" style="margin-top:12px">Product Calculator Online by NEXUSMEDIA · Version 2026-11-19 · Effective November 19, 2026</p>
+<p>Thank you for using Product Calculator. We want you to know exactly what you are signing up for, so we wrote this in plain words. By ticking the box and creating an account, you agree to all of it. If you don't agree, please don't sign up. You can keep using guest mode, which saves nothing online.</p>
+
+<h3>1. Who we are</h3>
+<p>Product Calculator ("the app") is made and run by NEXUSMEDIA ("we", "us"), a small business in the Philippines (nexusmediaph.com). "You" means the person who creates the account, and the business you use the app for.</p>
+
+<h3>2. Beta, the one-time payment, and future pricing</h3>
+<ul>
+<li>The app is in <b>beta</b>. That means it is still being improved, and features may be added, changed or removed.</li>
+<li>During the beta, online saving costs a <b>one-time payment of ₱99</b>. There is no automatic renewal and no hidden fee.</li>
+<li>Running the app costs money (servers, payment fees, upkeep). If we need more funds to keep it running, we may change how we charge: for example to a <b>monthly subscription</b>, a different price, or paid extra features.</li>
+<li>If we do, we will announce it in the app or by email <b>at least 30 days before</b> it takes effect, and explain what it means for accounts that already paid.</li>
+<li>We will never charge you automatically. Any new payment will only happen if you choose to pay it. If you decide not to, you can still download your data before any change takes effect.</li>
+</ul>
+
+<h3>3. Payments and refunds</h3>
+<ul>
+<li>Payments are processed by <b>SikatPay</b>, operated by Bonggot Tech, through a licensed payment processor. Your GCash, Maya or bank app will show the recipient as <b>PMP BONGGOT TECH</b>. That is expected.</li>
+<li>We never see or store your GCash, Maya, bank or card details. SikatPay and its processor handle them under their own terms.</li>
+<li>Your account is unlocked once SikatPay confirms the payment, which usually takes about a minute.</li>
+<li>If you were charged twice, charged the wrong amount, or paid but your account was never unlocked, email us and we will fix it or refund you.</li>
+<li>Apart from that, because the ₱99 unlocks the service right away, it is <b>non-refundable</b> once your account is active, except where Philippine law says otherwise.</li>
+</ul>
+
+<h3>4. Your data is private and only you can access it</h3>
+<p>This is the part we care about most.</p>
+<ul>
+<li><b>Only your login can open your data.</b> The database has rules that tie every record to your account, so no other user can read or change it, even if they have their own account.</li>
+<li><b>We don't sell, rent or share your data</b> with anyone for marketing, and we don't use it for ads.</li>
+<li><b>We don't look at your data.</b> As the people who run the app, we technically have admin access to the database. We will only use it when you ask us for help with your account, when we must fix a serious technical problem, or when the law requires it. We won't browse your sales, products or staff details.</li>
+<li><b>We never see your password.</b> It is stored only in scrambled (hashed) form by our login provider.</li>
+<li>Your connection to the app is encrypted (HTTPS).</li>
+</ul>
+
+<h3>5. What we collect</h3>
+<ul>
+<li><b>Account:</b> your email address and your password (hashed).</li>
+<li><b>Your business data:</b> what you type in: products, recipes, ingredients, stock, sales, refunds, expenses, rent, staff names, roles, salaries and photos, your business name and logo, and settings.</li>
+<li><b>Payment record:</b> whether you paid, when, and SikatPay's payment reference number. No wallet or card details.</li>
+<li>We don't track your location, and we don't use advertising or tracking cookies.</li>
+</ul>
+<p><b>About your staff's information:</b> if you enter details about other people (like your staff's names, photos or salaries), you are responsible for having their permission and for keeping it accurate. Only add what you need.</p>
+
+<h3>6. Where your data is kept</h3>
+<p>To run the app, we use a few trusted service providers. They only process data to provide their service to us:</p>
+<ul>
+<li><b>Supabase</b>: stores your account and business data, and handles login.</li>
+<li><b>Your own device</b>: keeps a copy so the app works offline. Logging out removes it from that device.</li>
+<li><b>SikatPay / Bonggot Tech</b>: processes your payment and sends us a payment confirmation.</li>
+<li><b>Netlify</b>: passes SikatPay's payment confirmation on to our server. It doesn't store your business data.</li>
+<li><b>GitHub</b>: holds an <b>encrypted</b> nightly backup of the database for 30 days, so we can recover from accidents. Nobody can read it without our private key.</li>
+</ul>
+<p>Some of these providers keep data on servers outside the Philippines. They protect it with security measures that meet industry standards.</p>
+
+<h3>7. Your rights over your data</h3>
+<p>Under the Philippine Data Privacy Act of 2012 (Republic Act No. 10173), you have the right to know what we hold about you, get a copy, correct it, object to how it is used, and ask us to delete it. In the app you can see and edit all your data and <b>download a backup file anytime</b>. To delete your account and data, email us from the address on your account. We will delete it within 30 days, and it will also disappear from our backups within the following 30 days. You also have the right to file a complaint with the National Privacy Commission.</p>
+
+<h3>8. Keeping your account safe</h3>
+<p>Please use a strong password that you don't use elsewhere, don't share your login, and log out on shared devices. You are responsible for what happens under your login. If you think someone else got in, tell us right away.</p>
+
+<h3>9. Using the app fairly</h3>
+<p>Please use the app only for lawful business record-keeping. Don't try to access other people's accounts, break, overload or copy the app, resell access, or use it for anything illegal. We may suspend or close an account that does any of these, and in that case the payment is not refunded.</p>
+
+<h3>10. Estimates, not professional advice</h3>
+<p>Costing, profit, margin, stock and tax figures in the app are estimates. They are only as accurate as the numbers you enter and the formulas we use. They are <b>not accounting, tax, legal or financial advice</b>. Before filing taxes with the BIR or making big business decisions, please check with a licensed accountant or the proper government office. You are responsible for the decisions you make using the app.</p>
+
+<h3>11. Beta service "as is"</h3>
+<p>We work hard to keep the app running and your data safe. But it is a beta built by a small team, so we provide it <b>"as is" and "as available"</b>. We can't promise it will always be online, error-free, or never lose data. It also depends on outside services (hosting, database, payments, internet), and those can have outages we don't control. Please <b>download a backup file regularly</b>, especially before important dates like tax filing.</p>
+
+<h3>12. Limits on our responsibility</h3>
+<p>To the fullest extent allowed by Philippine law:</p>
+<ul>
+<li>We are not responsible for indirect or consequential losses, such as lost profits, lost sales, business interruption, tax penalties, or decisions made using numbers from the app.</li>
+<li>We are not responsible for losses caused by things outside our reasonable control, such as outages at our service providers, internet problems, natural disasters, or someone using your login.</li>
+<li>If we are ever found responsible for anything, our total responsibility is limited to the amount you paid us for the app.</li>
+</ul>
+<p>Nothing in these terms takes away rights the law says can't be taken away, or limits responsibility for fraud or for intentional or grossly negligent wrongdoing.</p>
+
+<h3>13. If a claim comes from your use</h3>
+<p>If you break these terms or the law while using the app (for example, by entering someone's personal information without permission), and someone makes a claim against us because of it, you agree to cover the reasonable costs that result.</p>
+
+<h3>14. Stopping, or if the app closes</h3>
+<p>You can stop using the app anytime. If we ever decide to shut the app down, we will tell you <b>at least 30 days before</b> so you can download your data.</p>
+
+<h3>15. Changes to these terms</h3>
+<p>We may update these terms as the app grows, for example when pricing changes. We'll show the new version in the app and update the date at the top. For important changes, we will tell you in advance and may ask you to agree again. If you keep using the app after a change takes effect, you accept the new terms.</p>
+
+<h3>16. Philippine law and settling disagreements</h3>
+<p>These terms are governed by the laws of the Republic of the Philippines. If something goes wrong, please email us first. Most problems can be fixed quickly and friendly. If we can't settle it together, it will be handled by the proper courts of the Philippines.</p>
+
+<h3>17. Contact us</h3>
+<p>NEXUSMEDIA · <a href="mailto:nexusmediaphilippines@gmail.com">nexusmediaphilippines@gmail.com</a> · nexusmediaph.com<br>For privacy requests, write "Privacy" in the subject so we can find it quickly.</p>
+</div>
+<div class="polf"><button class="btn ghost" onclick="closePolicy()">Close</button><button class="btn" onclick="closePolicy(true)">I agree</button></div>
+</div></div>
 <footer><span class="fa"><img alt="" id="fl">Product Calculator<span class="fd">Cost, stock &amp; profit tracker</span></span><span class="fs"> · </span><span class="fb">© 2026 NEXUSMEDIA™</span><span class="fs"> · </span><span class="fc">All rights reserved</span></footer>
 </main>
 <div id="tip" role="tooltip"></div>
@@ -311,7 +414,7 @@ async function start(){regSW();try{localStorage.removeItem('ppt-guest')}catch(e)
 async function enter(u){guest=false;clearTimeout(promoT);$('#promo').style.display='none';uidU=u.id;S=EMPTY();const lc=rj('ppt-'+uidU);let paid=null;
  try{const pr=await sb.from('profiles').select('paid').eq('user_id',uidU).maybeSingle();if(!pr.error)paid=!!(pr.data&&pr.data.paid)}catch(e){}
  if(paid===false){try{await sb.auth.signOut()}catch(e){}uidU=null;showLogin('Your payment is not confirmed yet. If you just paid, wait a minute and log in again. If you did not finish paying, tap Sign up again with the same email.');return}
- if(paid===null&&!lc){uidU=null;showLogin('Could not check your account. Connect to the internet and try again.');return}
+ if(paid===null&&!lc){uidU=null;showLogin(navigator.onLine?DOWN:'Could not check your account. Connect to the internet and try again.');return}
  try{dirty=localStorage.getItem('ppt-dirty-'+uidU)}catch(e){dirty=null}
  let row=null,err=false;
  try{const r=await sb.from('app_data').select('data,updated_at').eq('user_id',uidU).maybeSingle();err=!!r.error;row=r.data}catch(e){err=true}
@@ -329,6 +432,9 @@ function schedulePromo(){clearTimeout(promoT);if(guest)promoT=setTimeout(showPro
 function showPromo(){if(!guest)return;const a=document.activeElement;if((a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName))||$('#pk').style.display!=='none'){clearTimeout(promoT);promoT=setTimeout(showPromo,30000);return}
  $('#promo').style.display='';clearTimeout(promoH);promoH=setTimeout(()=>hidePromo(true),15000)}
 function hidePromo(ignored){clearTimeout(promoH);$('#promo').style.display='none';if(ignored)promoN++;schedulePromo()}
+const POLICY_VERSION='2026-11-19';
+function openPolicy(){$('#pol').style.display='';$('#pol .polb').scrollTop=0;document.body.style.overflow='hidden'}
+function closePolicy(agree){$('#pol').style.display='none';document.body.style.overflow='';if(agree){$('#sagree').checked=true;$('#sgo').disabled=false}}
 function openPackage(){hidePromo(false);$('#pk').style.display=''}
 function closePackage(){$('#pk').style.display='none'}
 async function doForgot(){const e=$('#fe').value.trim(),mm=$('#lmsg');if(!sb){mm.textContent='Not connected yet.';return}
@@ -433,10 +539,13 @@ function shiftCard(){const sh=curShift(),H=S.shifts||[],rp=shRep&&H.find(x=>x.id
  <div class="shsp"></div>${shClose?`<div style="margin-top:12px"><label class="shl" for="sc1">Cash counted in the drawer (₱)</label><input id="sc1" type="number" placeholder="0.00" inputmode="decimal" style="margin-bottom:10px"><label class="shl" for="sc2">GCash, card or other non-cash sales (optional)</label><input id="sc2" type="number" placeholder="0.00" inputmode="decimal" style="margin-bottom:10px"><div class="row"><button class="btn" onclick="closeShift()">Close shift</button><button class="btn ghost" onclick="shClose=false;render()">Cancel</button></div></div>`:`<button class="btn" style="margin-top:12px" onclick="shClose=true;render()">Close shift</button>`}</div>`}
 function refundCard(){
  if(!rfOpen)return `<div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><b>↩️ Refund</b><div class="note">Optional. A refund is taken off your gross sales.</div></div><button class="btn" style="width:auto;padding:8px 14px;flex:0 0 auto" onclick="rfOpen=true;render()">Add a refund</button></div>`;
- return `<div class="card"><h2>↩️ Add a refund</h2>${S.products.length?`<div class="row"><select id="rfp">${S.products.map(p=>`<option value="${p.id}">${esc(p.name)} (${m(p.price)})</option>`).join('')}</select><input id="rfq" type="number" min="1" value="1" inputmode="numeric" style="flex:0 0 70px"></div><input id="rfa" type="number" placeholder="Refund amount (leave blank for full price)" inputmode="decimal" style="margin-bottom:8px"><input id="rfr" placeholder="Reason (optional)" style="margin-bottom:8px"><div class="note" style="margin:-4px 0 8px">A refund cannot be deleted once it is added.</div><div class="row"><button class="btn" onclick="addRefund()">Add refund</button><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="rfOpen=false;render()">Cancel</button></div>`:'<div class="note">Add a product first (Products tab).</div>'}</div>`}
+ return `<div class="card"><h2>↩️ Add a refund</h2>${S.products.length?`<div class="row"><select id="rfp">${S.products.map(p=>`<option value="${p.id}">${esc(p.name)} (${m(p.price)})</option>`).join('')}</select><input id="rfq" type="number" min="1" value="1" inputmode="numeric" style="flex:0 0 70px"></div><input id="rfa" type="number" placeholder="Refund amount (leave blank for full price)" inputmode="decimal" style="margin-bottom:8px"><input id="rfr" placeholder="Reason (optional)" style="margin-bottom:8px"><div class="note" style="margin:-4px 0 8px">The ingredients go back into your inventory. A refund cannot be deleted once it is added.</div><div class="row"><button class="btn" onclick="addRefund()">Add refund</button><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="rfOpen=false;render()">Cancel</button></div>`:'<div class="note">Add a product first (Products tab).</div>'}</div>`}
+// a refund puts the ingredients back in stock, so their cost comes back too
+const rfCost=x=>{const p=gp(x.pid);return x.use&&p?x.qty*p.cost:0};
 function addRefund(){const p=gp($('#rfp').value),q=+$('#rfq').value;if(!p||!(q>0)){msg('Choose a product and a quantity.');return}
  const a=$('#rfa').value===''?p.price*q:+$('#rfa').value;if(!(a>0)){msg('Enter a refund amount above zero.');return}
- S.refunds=[{id:uid(),date:lday(),ts:new Date().toISOString(),pid:p.id,qty:q,amt:a,reason:$('#rfr').value.trim()}].concat(S.refunds||[]);rfOpen=false;month=lday().slice(0,7);save();render()}
+ const use=useOf(p,q);Object.keys(use).forEach(k=>{const v=S.inv.find(x=>x.id===k);if(v)v.qty=+(v.qty+use[k]).toFixed(3)});
+ S.refunds=[{id:uid(),date:lday(),ts:new Date().toISOString(),pid:p.id,qty:q,amt:a,use,reason:$('#rfr').value.trim()}].concat(S.refunds||[]);rfOpen=false;month=lday().slice(0,7);save();render()}
 function fmtTs(t){const d=new Date(t);if(isNaN(d))return '';return d.toLocaleDateString('en-PH',{timeZone:'Asia/Manila',year:'numeric',month:'short',day:'numeric'})+', '+d.toLocaleTimeString('en-PH',{timeZone:'Asia/Manila',hour:'numeric',minute:'2-digit',second:'2-digit'})+' PHT'}
 function recSale(pid,q,date,d,dk,dno){const p=gp(pid);if(!p)return;d=d||0;const s={id:uid(),date,pid,qty:q,ts:new Date().toISOString(),amt:+(p.price*q-d).toFixed(2)};if(d>0){s.disc=d;s.dk=dk;if(dno)s.dno=dno}s.use=useOf(p,q);Object.keys(s.use).forEach(k=>{const v=S.inv.find(x=>x.id===k);if(v)v.qty=+(v.qty-s.use[k]).toFixed(3)});S.sales.push(s)}
 const rDisc=()=>discAmt(rDK,rDV,rTotal());
@@ -495,13 +604,19 @@ function leaveGuest(){guest=false;S=EMPTY();clearTimeout(promoT);$('#promo').sty
 async function doSignup(){const e=$('#se').value.trim(),p=$('#sp1').value,q=$('#sp2').value,sm=$('#smsg');
  if(!e||p.length<8){sm.textContent='Enter your email and a password of at least 8 characters.';return}
  if(p!==q){sm.textContent='The two passwords do not match.';return}
+ if(!$('#sagree').checked){sm.textContent='Please read the Terms of Use and Privacy Policy and tick the box to continue.';return}
  sm.textContent='Starting payment…';
- try{const r=await fetch(SUPABASE_URL+'/functions/v1/signup',{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY},body:JSON.stringify({email:e,password:p})});const j=await r.json();
+ try{const r=await fetch(SUPABASE_URL+'/functions/v1/signup',{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY},body:JSON.stringify({email:e,password:p,agreed:POLICY_VERSION})});const j=await r.json();
   if(j.url){location.href=j.url;return}sm.textContent=j.error||'Something went wrong. Please try again.'}catch(x){sm.textContent='Could not connect. Check your internet and try again.'}}
 function showLogin(msg){document.body.classList.remove('inapp');$('#shell').style.display='none';$('#login').style.display='';$('#lmsg').textContent=msg}
+// Only a 4xx answer means the email/password was checked. No answer or a 5xx means our server is down, so do not blame the password.
+const DOWN='Our server is not responding right now. Your account and data are safe. Please try again in a little while.';
+function loginErr(er){if(!navigator.onLine)return 'You need internet to log in.';const st=+er.status||0;
+ if(st===429)return 'Too many tries. Wait a few minutes and try again.';
+ if(st>=400&&st<500)return 'Wrong email or password, or your access is turned off.';return DOWN}
 async function doLogin(){const e=$('#le').value.trim(),p=$('#lp').value;if(!e||!p)return;$('#lmsg').textContent='Signing in…';
- let r;try{r=await sb.auth.signInWithPassword({email:e,password:p})}catch(x){r={error:1}}
- if(r.error){$('#lmsg').textContent=navigator.onLine?'Wrong email or password, or your access is turned off.':'You need internet to log in.';return}
+ let r;try{r=await sb.auth.signInWithPassword({email:e,password:p})}catch(x){r={error:{}}}
+ if(r.error){$('#lmsg').textContent=loginErr(r.error);return}
  $('#lp').value='';await enter(r.data.user)}
 async function doLogout(){if(dirty){status('⚠️ You have changes waiting to sync. Connect to the internet and wait for "Saved" before logging out.');return}
  try{await sb.auth.signOut()}catch(e){}
@@ -513,7 +628,7 @@ function calc(){
  let rev=0,cogs=0;const per={};S.products.forEach(p=>per[p.id]={u:0,r:0,c:0});
  sales.forEach(s=>{const p=pm[s.pid];per[p.id].u+=s.qty;per[p.id].r+=s.qty*p.price-(s.disc||0);per[p.id].c+=s.qty*p.cost});
  Object.values(per).forEach(x=>{rev+=x.r;cogs+=x.c});
- const soldTotal=rev,rfs=(S.refunds||[]).filter(r=>inM(r.date)),refunds=rfs.reduce((a,r)=>a+r.amt,0);rev-=refunds;rfs.forEach(r=>{if(per[r.pid]){per[r.pid].r-=r.amt;per[r.pid].u-=r.qty}});
+ const soldTotal=rev,rfs=(S.refunds||[]).filter(r=>inM(r.date)),refunds=rfs.reduce((a,r)=>a+r.amt,0);rev-=refunds;rfs.forEach(r=>{if(per[r.pid]){const b=rfCost(r);per[r.pid].r-=r.amt;per[r.pid].u-=r.qty;per[r.pid].c-=b;cogs-=b}});
  const ops=S.expenses.filter(e=>inM(e.date)).reduce((a,e)=>a+e.amt,0);
  const rent=S.set.rentOn?+S.set.rent:0,staff=S.set.staffOn?S.staff.reduce((a,x)=>a+x.pay,0):0;
  const gross=rev-cogs,net=gross-ops-rent-staff,buys=(S.buys||[]).filter(b=>inM(b.date)).reduce((a,b)=>a+b.amt,0);return{buys,rev,cogs,gross,ops,rent,staff,net,per,refunds,soldTotal,disc:sales.reduce((a,s)=>a+(s.disc||0),0)}}
@@ -654,7 +769,7 @@ function chart(o){const W=720,H=250,L=58,R=10,T=12,B=28,n=o.lab.length,bs=o.bars
 function hbars(R){const mx=Math.max(...R.map(r=>Math.abs(r.v)),0)||1;return R.map(r=>`<div class="hb"><div class="hbl"><span>${esc(r.n)}</span><b class="${r.k||''}">${r.t}</b></div><div class="hbt"><i style="width:${(Math.abs(r.v)/mx*100).toFixed(1)}%;background:${r.c||'var(--c1)'}"></i></div>${r.s?`<div class="note">${r.s}</div>`:''}</div>`).join('')}
 function daily(){const y=+month.slice(0,4),mo=+month.slice(5,7),n=new Date(y,mo,0).getDate(),r=Array(n).fill(0),g=Array(n).fill(0),c=Array(n).fill(0),pm=Object.fromEntries(S.products.map(p=>[p.id,p]));
  S.sales.forEach(s=>{const p=pm[s.pid];if(!p||!inM(s.date))return;const d=+s.date.slice(8,10)-1;r[d]+=s.qty*p.price-(s.disc||0);g[d]+=s.qty*(p.price-p.cost)-(s.disc||0);c[d]++});
- (S.refunds||[]).forEach(x=>{if(!inM(x.date))return;const d=+x.date.slice(8,10)-1;r[d]-=x.amt;g[d]-=x.amt});
+ (S.refunds||[]).forEach(x=>{if(!inM(x.date))return;const d=+x.date.slice(8,10)-1;r[d]-=x.amt;g[d]-=x.amt-rfCost(x)});
  const last=month===lday().slice(0,7)?+lday().slice(8,10)-1:n-1;
  return{n,r,g,c,last,has:c.some(Boolean)||r.some(Boolean)}}
 function dayChart(d,line){const mn=mName(month);return chart({lab:d.r.map((_,i)=>String(i+1)),show:i=>i===0||(i+1)%5===0,bars:[{n:'Sales',c:'var(--c1)',v:d.r}],line:line?{n:'Gross profit',c:'var(--c2)',v:d.g.map((v,i)=>i<=d.last?v:null)}:null,
@@ -667,7 +782,7 @@ function salesSeries(mode){const d=daily(),n=d.n,pm=Object.fromEntries(S.product
   return{lab:r.map((_,i)=>'Wk '+(i+1)),show:null,r,g,c,last:Math.floor((today-1)/7),tip:i=>mn+' '+(i*7+1)+'–'+Math.min(n,i*7+7),aria:'Weekly sales for '+mName(month,1),has:d.has,note:''}}
  const r=Array(24).fill(0),g=Array(24).fill(0),c=Array(24).fill(0);let miss=0;
  S.sales.forEach(s=>{const p=pm[s.pid];if(!p||!inM(s.date))return;if(!s.ts){miss++;return}const h=+phParts(new Date(s.ts)).hour;r[h]+=s.qty*p.price-(s.disc||0);g[h]+=s.qty*(p.price-p.cost)-(s.disc||0);c[h]++});
- (S.refunds||[]).forEach(x=>{if(!inM(x.date)||!x.ts)return;const h=+phParts(new Date(x.ts)).hour;r[h]-=x.amt;g[h]-=x.amt});
+ (S.refunds||[]).forEach(x=>{if(!inM(x.date)||!x.ts)return;const h=+phParts(new Date(x.ts)).hour;r[h]-=x.amt;g[h]-=x.amt-rfCost(x)});
  const hl=h=>(h%12||12)+(h<12?'am':'pm');
  return{lab:r.map((_,h)=>(h%12||12)+(h<12?'a':'p')),show:i=>i%3===0,r,g,c,last:23,tip:i=>hl(i)+' – '+hl((i+1)%24),aria:'Sales by hour of the day for '+mName(month,1),has:c.some(Boolean),note:miss?miss+' sale'+(miss===1?'':'s')+' without a recorded time not shown.':''}}
 function salesTimeCard(cl){const m0=dsv,S2=salesSeries(m0),ttl={hour:'Sales by hour',day:'Sales by day',week:'Sales by week'}[m0];
