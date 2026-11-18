@@ -14,7 +14,19 @@ create table if not exists public.profiles (
   created_at timestamptz not null default now()
 );
 
+-- Used by supabase/functions/signup and sikatpay-webhook.
+alter table public.profiles add column if not exists paid_at timestamptz;
+alter table public.profiles add column if not exists checkout_id text;  -- the payment provider's payment id
+create index if not exists profiles_checkout_idx on public.profiles (checkout_id);
+
 alter table public.profiles enable row level security;
+
+-- Look up an account by email (only the server functions can use this).
+create or replace function public.get_user_by_email(p text) returns uuid
+language sql security definer set search_path = public, auth as
+$$ select id from auth.users where lower(email) = lower(p) limit 1 $$;
+revoke all on function public.get_user_by_email(text) from public, anon, authenticated;
+grant execute on function public.get_user_by_email(text) to service_role;
 
 -- A user can only read their own row. There is no insert/update policy on purpose:
 -- only the server (the signup / payment functions using the service_role key) may set paid.
