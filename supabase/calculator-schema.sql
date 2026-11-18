@@ -18,6 +18,9 @@ create table if not exists public.profiles (
 alter table public.profiles add column if not exists paid_at timestamptz;
 alter table public.profiles add column if not exists checkout_id text;  -- the payment provider's payment id
 create index if not exists profiles_checkout_idx on public.profiles (checkout_id);
+-- Proof of agreement to the Terms of Use and Privacy Policy, saved by the signup function.
+alter table public.profiles add column if not exists terms_version text;        -- e.g. '2026-11-19'
+alter table public.profiles add column if not exists terms_accepted_at timestamptz;
 
 alter table public.profiles enable row level security;
 
