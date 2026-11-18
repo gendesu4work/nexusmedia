@@ -1,0 +1,73 @@
+name: Nightly database backup
+
+# Dumps the calculator's Supabase database every night, encrypts it, and keeps it as a
+# workflow artifact for 30 days. The connection also counts as activity, which helps keep
+# the free-plan project from pausing.
+#
+# This repo is PUBLIC, so the dump is always encrypted before upload. Without the
+# passphrase the artifact is unreadable.
+#
+# Needs two repository secrets (Settings > Secrets and variables > Actions):
+#   SUPABASE_DB_URL       Session pooler connection string from Supabase > Connect,
+#                         with the database password filled in, e.g.
+#                         postgresql://postgres.oytgbzaukedyfifavvlq:PASSWORD@aws-0-ap-northeast-1.pooler.supabase.com:5432/postgres
+#   BACKUP_PASSPHRASE     A long random passphrase. Store it somewhere safe outside GitHub:
+#                         without it the backups cannot be opened.
+#
+# To restore: download the artifact, then
+#   gpg --decrypt calculator-YYYY-MM-DD.dump.gpg > calculator.dump
+#   pg_restore --list calculator.dump        # see what is inside
+# and restore the tables you need with pg_restore into a Supabase project.
+
+on:
+  schedule:
+    - cron: '0 18 * * *'   # 2:00am Philippine time
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check secrets
+        env:
+          DB: ${{ secrets.SUPABASE_DB_URL }}
+          PW: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          if [ -z "$DB" ] || [ -z "$PW" ]; then
+            echo "::error::Add the SUPABASE_DB_URL and BACKUP_PASSPHRASE repository secrets."
+            exit 1
+          fi
+
+      - name: Install PostgreSQL 17 client
+        run: |
+          sudo apt-get install -y postgresql-common
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get install -y postgresql-client-17
+
+      - name: Dump and encrypt
+        env:
+          DB: ${{ secrets.SUPABASE_DB_URL }}
+          PW: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          umask 077
+          f="calculator-$(date -u +%F).dump"
+          # public = profiles, app_data; auth = your clients' login accounts.
+          /usr/lib/postgresql/17/bin/pg_dump "$DB" -Fc --no-owner --no-privileges \
+            --schema=public --schema=auth -f "$f"
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$PW" \
+            --symmetric --cipher-algo AES256 -o "$f.gpg" "$f"
+          shred -u "$f"
+          ls -l "$f.gpg"
+          echo "FILE=$f.gpg" >> "$GITHUB_ENV"
+
+      - name: Upload encrypted backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.FILE }}
+          path: ${{ env.FILE }}
+          retention-days: 30
+          if-no-files-found: error

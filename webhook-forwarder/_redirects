@@ -1,0 +1,4 @@
+# Netlify site served at https://pay.nexusmediaph.com
+# SikatPay only sends webhooks to nexusmediaph.com addresses, and the real handler lives on Supabase.
+# This passes each request through unchanged (method, body, X-Signature header). "200!" = proxy, not redirect.
+/sikatpay-webhook  https://oytgbzaukedyfifavvlq.supabase.co/functions/v1/sikatpay-webhook  200!
