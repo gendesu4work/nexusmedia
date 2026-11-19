@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en" data-type="software" data-radius="soft" data-buttons="pill" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Afterglow: Windows apps for creators</title>
+<meta name="description" content="Download Clipping Studio, Low Poly Animation, YTA and FBA Studio and the Jarvis voice assistant for Windows. Every file comes straight from GitHub Releases, always the newest build.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Afterglow: Windows apps for creators">
+<meta property="og:description" content="Clipping Studio and YTA and FBA Studio, straight from GitHub Releases.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0a0b0e">
+<link rel="canonical" href="https://nexusmediaph.com/blueprints/">
+<meta name="site-kind" content="software">
+<meta name="page-type" content="software">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/system.css">
+<link rel="stylesheet" href="assets/ui/cards.css">
+<link rel="stylesheet" href="assets/motion/motion.css">
+<link rel="stylesheet" href="assets/backgrounds/backgrounds.css">
+<link rel="stylesheet" href="assets/layout/layout.css">
+<link rel="stylesheet" href="assets/icons/icon.css">
+<style>
+:root {
+  --p-bg: #0a0b0e; --p-surface: #14161b; --p-ink: #eef0f3; --p-muted: #8b919c;
+  --p-accent: #8dffc1; --p-accent-ink: #0a0b0e; --p-action: #8dffc1; --p-action-ink: #0a0b0e;
+  --p-inv-bg: #eef0f3; --p-inv-surface: #dbdde0; --p-inv-ink: #0a0b0e; --p-inv-muted: #55575a;
+  --p-inv-accent: #0a0b0e; --p-inv-accent-ink: #eef0f3; --p-inv-action: #0a0b0e; --p-inv-action-ink: #eef0f3;
+  --font-display: "Familjen Grotesk", system-ui, sans-serif;
+  --font-text: "Familjen Grotesk", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --display-weight: 400;
+  --display-tracking: -0.03em;
+  --display-tracking-xl: -0.04em;
+}
+</style>
+<script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
+<script src="assets/backgrounds/backgrounds.js"></script>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="assets/moments/moments.js">
+<link rel="modulepreload" href="assets/moments/lib.js">
+<link rel="modulepreload" href="assets/moments/marquee-row/moment.js">
+<style>
+  /* the hero window: Clipping Studio's ClipForge tab, drawn as live HTML */
+  .d-win { background: #15171c; color: #eceef0; border-radius: 12px; overflow: hidden; font: 400 14px/1.4 var(--font-text); text-align: left;
+           box-shadow: 0 0 0 1px rgb(255 255 255 / .08), 0 30px 70px -30px rgb(0 0 0 / .8); }
+  .d-win__bar { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 14px; border-bottom: 1px solid rgb(255 255 255 / .07); font-size: 13px; color: #9aa0a6; }
+  .d-win__bar b { color: #eceef0; font-weight: 500; } .d-win__bar .sp { flex: 1; }
+  .d-win__dots { display: flex; gap: 6px; } .d-win__dots i { width: 10px; height: 10px; border-radius: 50%; background: #3a3e43; }
+  .d-win__body { display: grid; grid-template-columns: 230px 1fr 170px; min-height: 420px; }
+  .lib { border-right: 1px solid rgb(255 255 255 / .07); padding: 12px 10px; display: grid; align-content: start; gap: 2px; font-size: 13px; }
+  .lib p { margin: 0 0 6px 6px; color: #7d8389; font-size: 13px; }
+  .lib span { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 8px; border-radius: 8px; color: #aeb3b8; white-space: nowrap; }
+  .lib span b { font-weight: 500; overflow: hidden; text-overflow: ellipsis; } .lib span time { color: #6f757c; font-variant-numeric: tabular-nums; }
+  .lib span.is-on { background: rgb(141 255 193 / .1); color: #eef0f3; }
+  .forge { padding: 16px 18px; display: grid; align-content: start; gap: 10px; min-width: 0; }
+  .forge__ask { display: flex; align-items: center; gap: 10px; height: 42px; padding: 0 6px 0 14px; border-radius: 10px; background: rgb(255 255 255 / .05); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .08); color: #dfe2e6; font-size: 13.5px; }
+  .forge__ask span { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .forge__ask i { font-style: normal; height: 30px; padding: 0 12px; border-radius: 99px; background: var(--p-accent); color: #0a0b0e; display: inline-flex; align-items: center; font-weight: 500; font-size: 13px; }
+  .step { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: #c9cdd2; }
+  .step::before { content: ""; width: 16px; height: 16px; border-radius: 50%; flex: none; background: rgb(141 255 193 / .16); box-shadow: inset 0 0 0 1.5px var(--p-accent); }
+  .step b { color: #fff; font-weight: 500; }
+  .done { display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px; border-radius: 99px; background: rgb(141 255 193 / .12); color: var(--p-accent); font: 500 13px/1 var(--font-mono); justify-self: start; }
+  .phone { margin: 14px 14px 14px 0; border-radius: 14px; overflow: hidden; position: relative; aspect-ratio: 9 / 16; align-self: start;
+           background: radial-gradient(60% 40% at 50% 38%, #3b4250, transparent 70%), linear-gradient(#1d2129, #0e1014); box-shadow: 0 0 0 1px rgb(255 255 255 / .1); }
+  .phone::before { content: ""; position: absolute; left: 30%; top: 22%; width: 40%; aspect-ratio: 1; border-radius: 50% 50% 44% 44%; background: #2b3039; }
+  .phone::after { content: ""; position: absolute; left: 18%; top: 50%; width: 64%; height: 40%; border-radius: 40% 40% 0 0; background: #232831; }
+  .phone p { position: absolute; z-index: 1; left: 0; right: 0; bottom: 22%; margin: 0; text-align: center; font: 700 12px/1.2 var(--font-text); letter-spacing: .12em; color: #fff; text-transform: uppercase; }
+  .phone p em { font-style: normal; color: var(--p-accent); text-shadow: 0 0 10px rgb(141 255 193 / .7); }
+  @media (max-width: 1023px) { .d-win__body { grid-template-columns: 200px 1fr; } .phone { display: none; } }
+  @media (max-width: 639px) { .d-win__body { grid-template-columns: 1fr; } .lib { display: none; } .d-win__bar .sp ~ span { display: none; } .forge { padding: 12px 14px; } }
+
+  /* the app sections: an app head, then one big card per file */
+  .app-head { display: grid; gap: var(--s-5); justify-items: start; }
+  .app-head > div { min-width: 0; }
+  .files > *, .grid > * { min-width: 0; }
+  .mq-strip { overflow: hidden; max-width: 100%; min-width: 0; }
+  .app-icon { width: 72px; height: 72px; border-radius: 20px; display: grid; place-items: center; font: 500 30px/1 var(--font-display); color: #0a0b0e;
+              background: var(--app-c, var(--p-accent)); box-shadow: 0 0 40px -6px color-mix(in srgb, var(--app-c, var(--p-accent)) 55%, transparent); }
+  .app-head h2 { margin: 0; }
+  .app-head p { margin: var(--s-3) 0 0; max-width: 62ch; color: var(--muted); font-size: 18px; line-height: 1.5; }
+  .app-meta { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); margin-top: var(--s-4); font: 400 14px/1.4 var(--font-mono); color: var(--muted); }
+  .app-meta b { color: var(--ink); font-weight: 500; }
+  .files { margin-top: var(--s-7); }
+  .file { display: flex; flex-direction: column; gap: var(--s-4); padding: clamp(24px, 3vw, 40px); border-radius: var(--r-lg, 20px); background: var(--surface);
+          box-shadow: inset 0 0 0 1px rgb(255 255 255 / .06); position: relative; overflow: hidden; }
+  .file::before { content: ""; position: absolute; inset: -40% -20% auto auto; width: 70%; aspect-ratio: 1; border-radius: 50%; pointer-events: none;
+                  background: radial-gradient(closest-side, color-mix(in srgb, var(--app-c, var(--p-accent)) 16%, transparent), transparent); }
+  .file__top { display: flex; align-items: center; gap: var(--s-4); }
+  .file__type { width: 56px; height: 64px; border-radius: 10px; display: grid; place-items: end center; padding-bottom: 10px; font: 500 13px/1 var(--font-mono); letter-spacing: .04em;
+                color: #0a0b0e; background: var(--app-c, var(--p-accent)); clip-path: polygon(0 0, 72% 0, 100% 22%, 100% 100%, 0 100%); flex: none; }
+  .file__type--src { background: #3a3f48; color: #eef0f3; }
+  .file__name { font: 400 14px/1.4 var(--font-mono); color: var(--muted); word-break: break-all; }
+  .file h3, #install h3, #community h3 { margin: 0; font: var(--display-weight) clamp(22px, 2vw, 28px)/1.15 var(--font-display); letter-spacing: var(--display-tracking); }
+  .file > p { margin: 0; font-size: 17px; line-height: 1.55; color: #c4c8ce; max-width: 56ch; }
+  .file__facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-3); margin: var(--s-2) 0 0; padding: var(--s-4) 0; border-block: 1px solid rgb(255 255 255 / .08); }
+  .file__facts dt { font-size: 13px; color: var(--muted); } .file__facts dd { margin: 4px 0 0; font: 500 15px/1.3 var(--font-mono); color: var(--ink); }
+  .file__needs { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 15px; color: #c4c8ce; }
+  .file__needs li { display: flex; gap: 10px; } .file__needs li::before { content: ""; width: 6px; height: 6px; margin-top: 8px; border-radius: 50%; background: var(--app-c, var(--p-accent)); flex: none; }
+  .file .btn-row { margin-top: auto; padding-top: var(--s-3); }
+  .file .btn { flex: 1; justify-content: center; }
+  #lowpoly { --app-c: #ff9fc7; }
+  #lowpoly .btn--primary { background: #ff9fc7; color: #0a0b0e; }
+  .posts-to { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .posts-to li { display: grid; grid-template-columns: 32px 1fr; gap: 12px; align-items: center; font-size: 16px; color: #c4c8ce; }
+  .posts-to img { width: 32px; height: 32px; border-radius: 8px; background: #fff; padding: 5px; }
+  .posts-to b { color: var(--ink); font-weight: 500; }
+  #jarvis { --app-c: #ffb38a; }
+  #jarvis .btn--primary { background: #ffb38a; color: #0a0b0e; }
+  #yta { --app-c: #9ecbff; }
+  #yta .btn--primary { --p-action: #9ecbff; background: #9ecbff; color: #0a0b0e; }
+  @media (max-width: 639px) { .file__facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } .file--src .file__facts, .mq-strip { display: none; } .file { padding: 20px; gap: 12px; } .file > p { font-size: 16px; } .app-icon { width: 56px; height: 56px; border-radius: 16px; font-size: 24px; } }
+
+  /* install: three numbered steps and the questions people ask */
+  .how { counter-reset: how; }
+  .how li { counter-increment: how; list-style: none; display: grid; gap: var(--s-2); padding-top: var(--s-4); border-top: 1px solid color-mix(in srgb, currentColor 18%, transparent); }
+  .how li::before { content: counter(how, decimal-leading-zero); font: 500 14px/1 var(--font-mono); color: var(--muted); }
+  .how p { margin: 0; color: var(--ink); opacity: .8; }
+  .how kbd { font: 500 14px/1 var(--font-mono); padding: 2px 6px; border-radius: 6px; background: color-mix(in srgb, currentColor 10%, transparent); }
+  .mq-strip { margin-top: var(--s-7); font: 400 clamp(22px, 2.4vw, 32px)/1.2 var(--font-display); letter-spacing: -0.02em; color: var(--muted); }
+  .mq-strip li::after { content: "·"; margin-left: 1em; color: var(--p-accent); }
+  .community { display: grid; gap: var(--s-6); justify-items: start; }
+  .community__icon { width: 96px; height: 96px; filter: drop-shadow(0 0 32px rgb(141 255 193 / .25)); }
+  .community h2 { max-width: 22ch; }
+  .community__rows { width: 100%; margin-top: var(--s-5); padding-top: var(--s-5); border-top: 1px solid rgb(255 255 255 / .08); }
+  .community__rows p { margin: var(--s-2) 0 0; }
+  /* a locked app: shown, but greyed with a lock until its repo goes public */
+  .lock-ic { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.6; flex: none; }
+  .lock-badge { display: inline-flex; align-items: center; gap: 6px; vertical-align: middle; height: 30px; padding: 0 12px; border-radius: 99px;
+                font: 500 14px/1 var(--font-mono); letter-spacing: 0; color: #ffd48a; background: rgb(255 212 138 / .1); box-shadow: inset 0 0 0 1px rgb(255 212 138 / .3); }
+  h2 .lock-badge { margin-left: 12px; transform: translateY(-4px); }
+  .lock-badge--card { position: absolute; top: clamp(24px, 3vw, 40px); right: clamp(24px, 3vw, 40px); z-index: 1; }
+  .is-locked .app-icon { background: #3a3f48; color: #8b919c; box-shadow: none; }
+  .is-locked .file::before { display: none; }
+  .is-locked .file > :not(.lock-badge):not(.btn-row) { opacity: .55; filter: grayscale(1); }
+  .is-locked .file { box-shadow: inset 0 0 0 1px rgb(255 255 255 / .06); background: repeating-linear-gradient(135deg, var(--surface) 0 14px, #121419 14px 28px); }
+  .btn.btn--locked::after, .btn.btn--locked .m-arrow { display: none; }
+  .is-locked .file__top { padding-right: 110px; }
+  .btn.btn--locked, .btn.btn--locked:hover { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: rgb(255 255 255 / .06); color: #8b919c;
+                    box-shadow: inset 0 0 0 1px rgb(255 255 255 / .1); cursor: not-allowed; transform: none; }
+</style>
+</head>
+<body>
+<!-- type: software (a download hub for two Windows apps)
+     deal: hero centred, nav nav-mega, close close-word, footer footer-statement, rhythm dark-band, buttons pill, mark initial, grounds none
+     palette: the client's own pick, a dark glowing page (brand: bg #0a0b0e, accent mint #8dffc1); type familjen
+     effect: gradient-mesh inside the hero window's frame
+     moments: marquee-row in #clipping (the edit features as a moving row) -->
+
+<header class="nav">
+  <div class="wrap nav__bar">
+    <a class="skip-link" href="#top">Skip to content</a>
+    <a class="nav__logo" href="#top"><span class="mark mark--initial" aria-hidden="true">A</span>Afterglow</a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__item">
+        <a class="nav__link" href="#clipping">Apps <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu">
+          <div class="wrap grid">
+            <div class="menu-col span-3">
+              <p class="t-label">Clipping Studio</p>
+              <a href="#clipping">App package<span>Clip downloader and ClipForge</span></a>
+              <a href="#clipping">Source code<span>The Python project as a zip</span></a>
+            </div>
+            <div class="menu-col span-3">
+              <p class="t-label">YTA and FBA Studio</p>
+              <a href="#yta">Windows installer<span>One setup file, Start menu shortcut</span></a>
+              <a href="#yta">Source code<span>The app's code as a zip</span></a>
+            </div>
+            <div class="menu-col span-3">
+              <p class="t-label">Low Poly Animation</p>
+              <a href="#lowpoly">The app<span>3D shorts, made and posted</span></a>
+              <p class="t-label">Jarvis</p>
+              <a href="#jarvis">Windows installer<span>Voice assistant, sets itself up</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav__item"><a class="nav__link" href="#lowpoly">Low Poly</a></div>
+      <div class="nav__item"><a class="nav__link" href="#jarvis">Jarvis</a></div>
+      <div class="nav__item"><a class="nav__link" href="#install">Install help</a></div>
+      <div class="nav__item"><a class="nav__link" href="#community">Community</a></div>
+    </nav>
+    <div class="nav__actions">
+      <a class="nav__link" href="#community">Discord</a>
+      <a class="btn btn--primary" href="#clipping">Get the apps</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero hero--centred" data-enter aria-labelledby="hero-h">
+    <div class="wrap"><div class="hero-text">
+      <div class="hero__c">
+        <a class="pill" href="#install"><span>4 apps for Windows</span><span class="muted">How to install</span></a>
+        <h1 id="hero-h" aria-label="Windows apps for creators"><span class="ly-mark" aria-hidden="true"></span> Windows apps for creators</h1>
+        <p class="hero__lead">Clipping Studio turns a YouTube link into a captioned vertical short. Low Poly Animation makes and posts 3D shorts, YTA and FBA Studio runs your channel work, and Jarvis answers when you say its name. Every file comes from GitHub Releases.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="#clipping">Get the apps<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a><a class="btn btn--secondary" href="#install">Read install help</a></div>
+      </div>
+      <div class="hero__window" data-fx="gradient-mesh" data-fx-seed="11" data-fx-palette='["#0a0b0e","#12382a","#8dffc1","#1f2de6"]' role="img" aria-label="Clipping Studio editing an interview into a 28-second vertical short with word captions">
+        <div class="ly-piece d-win" aria-hidden="true">
+          <div class="d-win__bar"><span class="d-win__dots"><i></i><i></i><i></i></span><span><b>Clipping Studio</b> · ClipForge</span><span class="sp"></span><span>Claude on</span></div>
+          <div class="d-win__body">
+            <div class="lib">
+              <p>Downloaded clips</p>
+              <span class="is-on"><b>podcast_ep41_cut.mp4</b><time>2:14</time></span>
+              <span><b>stream_highlight_07.mp4</b><time>0:58</time></span>
+              <span><b>interview_raw.mp4</b><time>6:40</time></span>
+              <span><b>funniest_moment.mp4</b><time>0:41</time></span>
+            </div>
+            <div class="forge" data-ly-steps="900">
+              <div class="forge__ask"><span>Under 30 seconds, snappy, hook first</span><i>Edit</i></div>
+              <div class="step" data-step><span>Cut <b>14 pauses</b> and 6 filler words</span></div>
+              <div class="step" data-step><span>Following the speaker, crop held still</span></div>
+              <div class="step" data-step><span>Word captions on, keywords glowing</span></div>
+              <div class="done" data-step>short_0412.mp4 · 0:28 · 9:16</div>
+            </div>
+            <div class="phone"><p>this is the <em>part</em> nobody tells you</p></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- APP 1: Clipping Studio. data-repo is your GitHub user and repo; downloads.js reads the latest release from it.
+       Each .file card is one file: data-asset is a pattern that matches the file's name in the release
+       ("source" means GitHub's own source code zip). Edit the words freely. -->
+  <section class="section g2" id="clipping" aria-labelledby="clipping-h" data-repo="gendesu4work/clipping-studio">
+    <div class="wrap">
+      <div class="group">
+        <div class="app-head">
+          <span class="app-icon" aria-hidden="true">C</span>
+          <div>
+            <h2 id="clipping-h">Clipping Studio</h2>
+            <p>Paste a YouTube link, pick a start and end or let Gemini find the funniest moments, then hand the clip to ClipForge. It cuts the dead air, follows the speaker and burns in word-by-word captions.</p>
+            <div class="app-meta"><span>Latest <b data-f="version">see GitHub</b></span><span>Released <b data-f="date">on GitHub</b></span><span>Windows 10 and 11</span></div>
+          </div>
+        </div>
+        <div class="grid files">
+          <article class="file span-7" data-asset="\.zip$">
+            <div class="file__top"><span class="file__type" aria-hidden="true">ZIP</span><span class="file__name" data-f="name">ClippingStudio-win64.zip</span></div>
+            <h3>The full app, ready to run</h3>
+            <p>Both tabs in one package: the clip downloader and ClipForge. Unzip it anywhere, then open the Creator Studio shortcut; the app starts its own local server and opens in its own window, with no console.</p>
+            <ul class="file__needs">
+              <li>Python 3.10 or newer, then run pip install -r requirements.txt once</li>
+              <li>ffmpeg on your PATH for cutting and loudness</li>
+              <li>A Gemini or Claude key is optional; the built-in rules work without one</li>
+            </ul>
+            <dl class="file__facts">
+              <div><dt>Version</dt><dd data-f="version">latest</dd></div>
+              <div><dt>Size</dt><dd data-f="size">on GitHub</dd></div>
+              <div><dt>Updated</dt><dd data-f="date">on GitHub</dd></div>
+              <div><dt>Downloads</dt><dd data-f="count">on GitHub</dd></div>
+            </dl>
+            <div class="btn-row"><a class="btn btn--primary" data-f="href" href="https://github.com/gendesu4work/clipping-studio/releases/latest">Download Clipping Studio<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a></div>
+          </article>
+          <article class="file file--src span-5" data-asset="source">
+            <div class="file__top"><span class="file__type file__type--src" aria-hidden="true">SRC</span><span class="file__name" data-f="name">clipping-studio-source.zip</span></div>
+            <h3>Source code</h3>
+            <p>The Python project as GitHub packs it for every release. Take this one to read the pipeline, run it from the command line or change the caption style.</p>
+            <dl class="file__facts">
+              <div><dt>Version</dt><dd data-f="version">latest</dd></div>
+              <div><dt>Format</dt><dd>zip</dd></div>
+              <div><dt>Updated</dt><dd data-f="date">on GitHub</dd></div>
+              <div><dt>Language</dt><dd>Python</dd></div>
+            </dl>
+            <div class="btn-row"><a class="btn btn--secondary" data-f="href" href="https://github.com/gendesu4work/clipping-studio/releases/latest">Download the source zip</a></div>
+          </article>
+        </div>
+      </div>
+      <div data-moment="marquee-row" data-moment-opts='{"speed": 30}' class="mq-strip">
+        <ul class="mo-mq__track"><li>No dead air</li><li>Smooth head following</li><li>Word-by-word captions</li><li>Split cam and gameplay</li><li>Music that ducks under the voice</li><li>Mixed to −14 LUFS</li><li>9:16 or square</li><li>Hook first with Claude</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- APP 2: YTA and FBA Studio. Rewrite the description in your own words: it is the one line on this page
+       not taken from the app's own readme. -->
+  <section class="section g2" id="yta" aria-labelledby="yta-h" data-repo="gendesu4work/yta-fba-studio">
+    <div class="wrap"><div class="group">
+      <div class="app-head">
+        <span class="app-icon" aria-hidden="true">Y</span>
+        <div>
+          <h2 id="yta-h">YTA and FBA Studio</h2>
+          <p>A desktop studio for your YouTube automation and FBA work, built on Electron. It installs like any Windows program and keeps everything in one window.</p>
+          <div class="app-meta"><span>Latest <b data-f="version">see GitHub</b></span><span>Released <b data-f="date">on GitHub</b></span><span>Windows 10 and 11, 64-bit</span></div>
+        </div>
+      </div>
+      <div class="grid files">
+        <article class="file span-7" data-asset="\.exe$">
+          <div class="file__top"><span class="file__type" aria-hidden="true">EXE</span><span class="file__name" data-f="name">YTA-and-FBA-Studio-Setup.exe</span></div>
+          <h3>Windows installer</h3>
+          <p>One setup file. Run it and the app installs to Program Files with a Start menu shortcut and its own uninstaller, so removing it later is one click in Windows Settings.</p>
+          <dl class="file__facts">
+            <div><dt>Version</dt><dd data-f="version">latest</dd></div>
+            <div><dt>Size</dt><dd data-f="size">on GitHub</dd></div>
+            <div><dt>Updated</dt><dd data-f="date">on GitHub</dd></div>
+            <div><dt>Downloads</dt><dd data-f="count">on GitHub</dd></div>
+          </dl>
+          <div class="btn-row"><a class="btn btn--primary" data-f="href" href="https://github.com/gendesu4work/yta-fba-studio/releases/latest">Download the installer<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a></div>
+        </article>
+        <article class="file file--src span-5" data-asset="source">
+          <div class="file__top"><span class="file__type file__type--src" aria-hidden="true">SRC</span><span class="file__name" data-f="name">yta-fba-studio-source.zip</span></div>
+          <h3>Source code</h3>
+          <p>The Electron project as GitHub packs it for the release. For building it yourself or checking what changed between versions.</p>
+          <dl class="file__facts">
+            <div><dt>Version</dt><dd data-f="version">latest</dd></div>
+            <div><dt>Format</dt><dd>zip</dd></div>
+            <div><dt>Updated</dt><dd data-f="date">on GitHub</dd></div>
+            <div><dt>Built with</dt><dd>Electron</dd></div>
+          </dl>
+          <div class="btn-row"><a class="btn btn--secondary" data-f="href" href="https://github.com/gendesu4work/yta-fba-studio/releases/latest">Download the source zip</a></div>
+        </article>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- APP: Low Poly Animation (the app calls itself Shorts Studio). No release yet: the card downloads the main branch zip. -->
+  <section class="section g2" id="lowpoly" aria-labelledby="lowpoly-h" data-repo="gendesu4work/lowpolyanimation">
+    <div class="wrap"><div class="group">
+      <div class="app-head">
+        <span class="app-icon" aria-hidden="true">L</span>
+        <div>
+          <h2 id="lowpoly-h">Low Poly Animation</h2>
+          <p>A fully automated low-poly animator. It comes up with "What if…?" ideas and scores them, Claude animates the one you pick in 3D on your PC, and it renders a 1080×1920 MP4 with music and sound. You review it, ask for changes, then post it now or at a time you pick to four platforms. It even replies to new comments.</p>
+          <div class="app-meta"><span>Latest <b data-f="version">main branch</b></span><span>Updated <b data-f="date">on GitHub</b></span><span>Windows, runs locally</span></div>
+        </div>
+      </div>
+      <div class="grid files">
+        <article class="file span-7" data-asset="source">
+          <div class="file__top"><span class="file__type" aria-hidden="true">ZIP</span><span class="file__name" data-f="name">lowpolyanimation-main.zip</span></div>
+          <h3>The app, with all its code</h3>
+          <p>Unzip it, run npm install once, then double-click Shorts Studio.cmd. It opens in your browser at localhost:8800 with five tabs: Create, Dashboard, Trainer, Comments and Models. Add your own .glb or .gltf model packs in Models; free packs from Kenney or Quaternius work well.</p>
+          <ul class="file__needs">
+            <li>Node.js 20 or newer, Google Chrome and ffmpeg on your PATH</li>
+            <li>The Claude Code command line, signed in to a Claude account</li>
+            <li>Buffer, or each platform's own login, for posting</li>
+          </ul>
+          <dl class="file__facts">
+            <div><dt>Branch</dt><dd data-f="version">main</dd></div>
+            <div><dt>Size</dt><dd data-f="size">on GitHub</dd></div>
+            <div><dt>Updated</dt><dd data-f="date">on GitHub</dd></div>
+            <div><dt>Output</dt><dd>1080×1920</dd></div>
+          </dl>
+          <div class="btn-row"><a class="btn btn--primary" data-f="href" href="https://github.com/gendesu4work/lowpolyanimation/archive/refs/heads/main.zip">Download Low Poly Animation<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a></div>
+        </article>
+        <article class="file file--src span-5">
+          <div class="file__top"><span class="file__type file__type--src" aria-hidden="true">4×</span><span class="file__name">platforms</span></div>
+          <h3>One short, four places</h3>
+          <p>Each post is the headline question and a few hashtags. Choose per platform: Buffer, your own login, post it yourself, or off.</p>
+          <ul class="posts-to">
+            <li><img src="assets/icons/youtube.svg" alt="" width="32" height="32"><span><b>YouTube Shorts</b>, with comment replies</span></li>
+            <li><img src="assets/icons/facebook.svg" alt="" width="32" height="32"><span><b>Facebook Reels</b>, with comment replies</span></li>
+            <li><img src="assets/icons/instagram.svg" alt="" width="32" height="32"><span><b>Instagram Reels</b></span></li>
+            <li><img src="assets/icons/tiktok.svg" alt="" width="32" height="32"><span><b>TikTok</b></span></li>
+          </ul>
+        </article>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- APP 3: Jarvis. The installer is small; its setup window downloads the rest. -->
+  <section class="section g2" id="jarvis" aria-labelledby="jarvis-h" data-repo="gendesu4work/jarvis">
+    <div class="wrap"><div class="group">
+      <div class="app-head">
+        <span class="app-icon" aria-hidden="true">J</span>
+        <div>
+          <h2 id="jarvis-h">Jarvis</h2>
+          <p>A voice assistant that lives on your PC. Say "Jarvis", ask anything and it answers out loud. It opens your apps, browses in its own Chrome, looks at your screen when you ask, controls Spotify, keeps notes, and asks before it does anything risky.</p>
+          <div class="app-meta"><span>Latest <b data-f="version">see GitHub</b></span><span>Released <b data-f="date">on GitHub</b></span><span>Windows 10 (2004+) and 11</span></div>
+        </div>
+      </div>
+      <div class="grid files">
+        <article class="file span-7" data-asset="\.exe$">
+          <div class="file__top"><span class="file__type" aria-hidden="true">EXE</span><span class="file__name" data-f="name">Jarvis-Setup.exe</span></div>
+          <h3>Windows installer</h3>
+          <p>A small setup file that does the heavy lifting for you. Leave "Set up Jarvis" ticked on the last screen and a setup window installs the voice, the wake word and the assistant's brain, then restarts Windows once and carries on by itself.</p>
+          <ul class="file__needs">
+            <li>Set aside 15 to 30 minutes, mostly downloads</li>
+            <li>A free Google Gemini API key; the setup walks you through making one</li>
+            <li>A microphone and speakers</li>
+          </ul>
+          <dl class="file__facts">
+            <div><dt>Version</dt><dd data-f="version">latest</dd></div>
+            <div><dt>Size</dt><dd data-f="size">on GitHub</dd></div>
+            <div><dt>Updated</dt><dd data-f="date">on GitHub</dd></div>
+            <div><dt>Downloads</dt><dd data-f="count">on GitHub</dd></div>
+          </dl>
+          <div class="btn-row"><a class="btn btn--primary" data-f="href" href="https://github.com/gendesu4work/jarvis/releases/latest">Download Jarvis<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a></div>
+        </article>
+        <article class="file file--src span-5">
+          <div class="file__top"><span class="file__type file__type--src" aria-hidden="true">1×</span><span class="file__name">during setup</span></div>
+          <h3>Two things you do once</h3>
+          <p>Setup stops twice for you. A black Ubuntu window asks for a lowercase username and a password, typed twice; nothing shows while you type, which is normal. Then a Gemini window opens: create a key in Google AI Studio, paste it and choose Test and Save.</p>
+          <dl class="file__facts">
+            <div><dt>Sandbox</dt><dd>WSL</dd></div>
+            <div><dt>Brain</dt><dd>Gemini</dd></div>
+            <div><dt>Wake word</dt><dd>Jarvis</dd></div>
+            <div><dt>Restarts</dt><dd>1</dd></div>
+          </dl>
+        </article>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="section ground-inverse" id="install" aria-labelledby="install-h">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="install-h">Install help for Windows. <span class="muted">Three steps, about two minutes.</span></h2>
+      </div>
+      <ol class="grid how">
+        <li class="span-4"><h3>Download the file</h3><p>The buttons above fetch the newest release straight from GitHub, so you always get the current build. Nothing to sign up for.</p></li>
+        <li class="span-4"><h3>Allow it in SmartScreen</h3><p>Windows may warn about an app it hasn't seen often. Choose <kbd>More info</kbd>, then <kbd>Run anyway</kbd>. The installer is the same file you see on GitHub.</p></li>
+        <li class="span-4"><h3>Open it from Start</h3><p>The installer adds a Start menu entry. For Clipping Studio, unzip first and open the Creator Studio shortcut; right-click it to pin it to the taskbar.</p></li>
+      </ol>
+      <div class="faq" style="margin-top: var(--s-8)">
+        <div class="faq__item"><h3>Where do updates come from?</h3><p>Each new GitHub release shows up here on its own: the version, size and date on the cards are read live from GitHub.</p></div>
+        <div class="faq__item"><h3>Do my keys leave my PC?</h3><p>No. Clipping Studio keeps your Gemini key, Claude key and YouTube cookies in local files on your machine.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="section" id="community" aria-labelledby="community-h">
+    <div class="wrap">
+      <div class="community">
+        <img class="community__icon" src="assets/icons/discord.svg" alt="Discord" width="96" height="96">
+        <h2 id="community-h">Join the Discord community. <span class="muted">Ask for help, share the shorts you made and say what the apps should do next.</span></h2>
+        <div class="btn-row"><a class="btn btn--primary" href="https://discord.gg/UdpUhgYKcf" target="_blank" rel="noopener">Join the Discord<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a></div>
+        <div class="grid community__rows">
+          <div class="span-4"><h3>Get unstuck</h3><p class="muted">Install trouble, a missing ffmpeg or a key that won't take: post it and get an answer from people running the same apps.</p></div>
+          <div class="span-4"><h3>Show your shorts</h3><p class="muted">Share what came out of ClipForge and swap the instructions that gave the best cut.</p></div>
+          <div class="span-4"><h3>Shape the next build</h3><p class="muted">Ask for features and report bugs where the person who builds the apps reads them.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer closing footer--statement" id="contact" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--word">
+      <div class="section-head--split">
+        <div><h2 id="close-h">Get the newest builds</h2><p class="t-lead">All four apps, straight from GitHub.</p></div>
+        <a class="btn btn--primary" href="#clipping">Get the apps<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+      </div>
+      <p class="close__word" aria-hidden="true">Afterglow</p>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-4 stack-4">
+          <a class="nav__logo" href="#top"><span class="mark mark--initial" aria-hidden="true">A</span>Afterglow</a>
+          <p class="footer__lede">Small Windows tools for people who make videos.</p>
+        </div>
+        <div class="span-2 footer__col"><h3>Apps</h3><ul><li><a href="#clipping">Clipping Studio</a></li><li><a href="#yta">YTA and FBA Studio</a></li><li><a href="#lowpoly">Low Poly Animation</a></li><li><a href="#jarvis">Jarvis</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Help</h3><ul><li><a href="#install">Install steps</a></li><li><a href="https://discord.gg/UdpUhgYKcf" target="_blank" rel="noopener">Discord</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>GitHub</h3><ul><li><a href="https://github.com/gendesu4work/clipping-studio/releases">Clipping releases</a></li><li><a href="https://github.com/gendesu4work/yta-fba-studio/releases">YTA releases</a></li></ul></div>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; 2026 Afterglow</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="assets/system.js"></script>
+<script type="module" src="assets/motion/motion.js"></script>
+<script type="module" src="assets/layout/layout.js"></script>
+<script type="module" src="downloads.js"></script>
+</body>
+</html>
