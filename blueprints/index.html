@@ -223,7 +223,7 @@
           <div class="wrap grid">
             <div class="menu-col span-3">
               <p class="t-label">Clipping Studio</p>
-              <a href="#clipping">App package<span>Clip downloader and ClipForge</span></a>
+              <a href="#clipping">Windows installer<span>Clip downloader and ClipForge</span></a>
               <a href="#clipping">Source code<span>The Python project as a zip</span></a>
             </div>
             <div class="menu-col span-3">
@@ -303,12 +303,12 @@
           </div>
         </div>
         <div class="grid files">
-          <article class="file span-7" data-asset="\.zip$">
-            <div class="file__top"><span class="file__type" aria-hidden="true">ZIP</span><span class="file__name" data-f="name">ClippingStudio-win64.zip</span></div>
-            <h3>The full app, ready to run</h3>
-            <p>Both tabs in one package: the clip downloader and ClipForge. Unzip it anywhere, then open the Creator Studio shortcut; the app starts its own local server and opens in its own window, with no console.</p>
+          <article class="file span-7" data-asset="\.exe$">
+            <div class="file__top"><span class="file__type" aria-hidden="true">EXE</span><span class="file__name" data-f="name">Creator-Studio-Setup.exe</span></div>
+            <h3>Windows installer</h3>
+            <p>Installs the desktop app, Creator Studio, with Desktop and Start menu shortcuts. The first launch sets up its own Python environment and packages, which takes a few minutes. After that, every launch checks GitHub for updates and opens the app in its own window. Your keys, clip library and outputs are kept when you upgrade.</p>
             <ul class="file__needs">
-              <li>Python 3.10 or newer, then run pip install -r requirements.txt once</li>
+              <li>Python 3.10 or newer, with "Add python.exe to PATH" ticked when you install it</li>
               <li>ffmpeg on your PATH for cutting and loudness</li>
               <li>A Gemini or Claude key is optional; the built-in rules work without one</li>
             </ul>
@@ -323,7 +323,7 @@
           <article class="file file--src span-5" data-asset="source">
             <div class="file__top"><span class="file__type file__type--src" aria-hidden="true">SRC</span><span class="file__name" data-f="name">clipping-studio-source.zip</span></div>
             <h3>Source code</h3>
-            <p>The Python project as GitHub packs it for every release. Take this one to read the pipeline, run it from the command line or change the caption style.</p>
+            <p>The whole project as GitHub packs it for every release. Take this one to read the Python pipeline, run it from the command line or build the installer yourself with npm run dist.</p>
             <dl class="file__facts">
               <div><dt>Version</dt><dd data-f="version">latest</dd></div>
               <div><dt>Format</dt><dd>zip</dd></div>
@@ -477,7 +477,7 @@
       <ol class="grid how">
         <li class="span-4"><h3>Download the file</h3><p>The buttons above fetch the newest release straight from GitHub, so you always get the current build. Nothing to sign up for.</p></li>
         <li class="span-4"><h3>Allow it in SmartScreen</h3><p>Windows may warn about an app it hasn't seen often. Choose <kbd>More info</kbd>, then <kbd>Run anyway</kbd>. The installer is the same file you see on GitHub.</p></li>
-        <li class="span-4"><h3>Open it from Start</h3><p>The installer adds a Start menu entry. For Clipping Studio, unzip first and open the Creator Studio shortcut; right-click it to pin it to the taskbar.</p></li>
+        <li class="span-4"><h3>Open it from Start</h3><p>Each installer adds a Start menu entry. Clipping Studio shows up as Creator Studio; right-click any shortcut to pin it to the taskbar.</p></li>
       </ol>
       <div class="faq" style="margin-top: var(--s-8)">
         <div class="faq__item"><h3>Where do updates come from?</h3><p>Each new GitHub release shows up here on its own: the version, size and date on the cards are read live from GitHub.</p></div>
