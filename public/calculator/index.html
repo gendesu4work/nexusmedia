@@ -412,7 +412,7 @@ function status(msg){const s=$('#sync');if(!s)return;if(guest&&!msg){s.textConte
 function save(){if(guest){status();return}if(!uidU)return;wj('ppt-'+uidU,S);setD(new Date().toISOString());status();clearTimeout(timer);timer=setTimeout(trySync,600)}
 async function trySync(){if(!uidU||!dirty||syncing||!navigator.onLine)return;syncing=true;const ts=dirty;
  try{const r=await sb.from('app_data').upsert({user_id:uidU,data:S,updated_at:ts});if(!r.error&&dirty===ts)setD(null)}catch(e){}
- syncing=false;status()}
+ syncing=false;status();if(dirty&&dirty!==ts){clearTimeout(timer);timer=setTimeout(trySync,600)}}
 function load(){}
 function regSW(){if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{})}
 async function start(){regSW();try{localStorage.removeItem('ppt-guest')}catch(e){}renderBrand();$('#fl').src=APPLOGO;$('#fl2').src=APPLOGO;
@@ -439,6 +439,7 @@ async function enter(u){guest=false;clearTimeout(promoT);$('#promo').style.displ
  else useLocal=!!lc;
  if(useLocal){S=Object.assign(S,src);if(!err&&!dirty)setD(new Date().toISOString())}
  else{S=Object.assign(S,row?row.data:{});if(dirty)setD(null)}
+ S.set=S.set||{};S.set.pal=curPal();
  wj('ppt-'+uidU,S);wj('ppt-last',{id:u.id,email:u.email});
  $('#login').style.display='none';$('#shell').style.display='';uEmail=u.email||'';$('#bar').innerHTML=esc(u.email)+' · <a href="#" onclick="doLogout();return false" style="color:var(--ac);font-weight:700">Log out</a>';render();status();trySync()}
 let recovering=false;
@@ -623,7 +624,7 @@ async function doSignup(){const e=$('#se').value.trim(),p=$('#sp1').value,q=$('#
  sm.textContent='Starting payment…';
  try{const r=await fetch(SUPABASE_URL+'/functions/v1/signup',{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY},body:JSON.stringify({email:e,password:p,agreed:POLICY_VERSION})});const j=await r.json();
   if(j.url){location.href=j.url;return}sm.textContent=j.error||'Something went wrong. Please try again.'}catch(x){sm.textContent='Could not connect. Check your internet and try again.'}}
-function showLogin(msg){document.body.classList.remove('inapp');$('#shell').style.display='none';$('#login').style.display='';$('#lmsg').textContent=msg}
+function showLogin(msg){applyPal();document.body.classList.remove('inapp');$('#shell').style.display='none';$('#login').style.display='';$('#lmsg').textContent=msg}
 // Only a 4xx answer means the email/password was checked. No answer or a 5xx means our server is down, so do not blame the password.
 const DOWN='Our server is not responding right now. Your account and data are safe. Please try again in a little while.';
 function loginErr(er){if(!navigator.onLine)return 'You need internet to log in.';const st=+er.status||0;
@@ -941,7 +942,8 @@ sky:{n:'Sky Blue &amp; White',pv:['#0a84c6','#4fb8f0','#eef7fd']},
 coffee:{n:'Coffee',l:['#f6efe8','#fffaf5','#3b2a20','#8a7466','#8b5a3c','#ffffff','#e6d8cb','#4a7c3a','#b3402f','#6f4428','#a9714b'],d:['#1c1511','#2a1f19','#f3e7dc','#b7a090','#d49a6a','#26160c','#3d2e24','#7fbf6a','#ee8a78','#4a2d1a','#7d5236']},
 forest:{n:'Forest Green',l:['#eef6f0','#ffffff','#12301f','#5a7a68','#1f8a57','#ffffff','#d2e6d9','#1f8a57','#c0392b','#17724a','#4cc08a'],d:['#0d1a13','#14281d','#e6f5ec','#8fb5a0','#52c48c','#06251a','#234434','#6fd49d','#f08a7c','#0f4a30','#1e8058']}};
 const PV=['bg','card','tx','mut','ac','on','ln','ok','bad','hd1','hd2'];
-function curPal(){let k=S.set&&S.set.pal;if(!k){try{k=localStorage.getItem('ppt-pal')}catch(e){}}return PAL[k]?k:'sky'}
+// The theme last picked on this device wins (login screen, guest, any account). The account copy only fills in on a new device.
+function curPal(){let k=null;try{k=localStorage.getItem('ppt-pal')}catch(e){}if(!PAL[k])k=S.set&&S.set.pal;return PAL[k]?k:'sky'}
 function applyPal(){const st=document.documentElement.style,k=curPal(),p=PAL[k];PV.forEach(n=>st.removeProperty('--'+n));st.setProperty('--c2',CH[k][effTheme()==='dark'?1:0]);if(!p.l)return;const v=p[effTheme()==='dark'?'d':'l'];PV.forEach((n,i)=>st.setProperty('--'+n,v[i]))}
 function setPal(k){if(!PAL[k])return;S.set.pal=k;try{localStorage.setItem('ppt-pal',k)}catch(e){}save();render()}
 function palCard(){const cur=curPal();return `<div class="card"><h2>Appearance</h2><div class="note" style="margin:-4px 0 10px">Choose a color theme for the app.</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${Object.keys(PAL).map(k=>{const p=PAL[k],pv=p.pv||[p.l[9],p.l[10],p.l[4],p.l[0]],on=cur===k;return `<button class="sw ${on?'on':''}" onclick="setPal('${k}')" aria-pressed="${on}"><span class="pv" style="background:${p.pv?p.pv[2]:p.l[0]}"><span style="background:linear-gradient(135deg,${p.pv?p.pv[0]:p.l[9]},${p.pv?p.pv[1]:p.l[10]})"></span><i style="background:${p.pv?p.pv[0]:p.l[4]}"></i></span><b>${p.n}</b><span class="note">${on?'✓ Selected':'&nbsp;'}</span></button>`}).join('')}</div><div class="note" style="margin-top:10px">Use the ${isPC()?'Dark mode switch in the sidebar':'🌙 button at the top'} for dark mode. Every theme has a light and a dark version.</div></div>`}
