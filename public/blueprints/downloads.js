@@ -51,24 +51,26 @@ function branchApp(section, repo, info) {
   });
 }
 
+// Always ask GitHub fresh (no page cache, no browser cache), so a release published a minute ago is
+// what the button downloads.
+const gh = (path) => fetch(`https://api.github.com/repos/${path}`, { cache: 'no-store', headers: { Accept: 'application/vnd.github+json' } });
+const when = (r) => new Date(r.published_at || r.created_at).getTime();
+
 async function loadApp(section) {
   const repo = section.dataset.repo;
   if (!repo || repo.startsWith('your-github/')) return;
-  const key = 'rel:' + repo;
-  let rel;
-  try { const c = JSON.parse(sessionStorage.getItem(key) || 'null'); if (c && Date.now() - c.t < 6e5) rel = c.rel; } catch {}
+  const res = await gh(`${repo}/releases?per_page=20`);
+  if (res.status === 404) { lockApp(section); return; } // private repo
+  if (!res.ok) return; // GitHub busy or rate-limited: buttons keep their link to GitHub's own latest-release page
+  // the newest published release by date (drafts and pre-releases are not downloads yet)
+  const rel = (await res.json()).filter((r) => !r.draft && !r.prerelease).sort((a, b) => when(b) - when(a))[0];
   if (!rel) {
-    const res = await fetch(`https://api.github.com/repos/${repo}/releases/latest`, { headers: { Accept: 'application/vnd.github+json' } });
-    if (res.status === 404) {
-      // no release: a public repo still offers its source from the default branch; a private one stays locked
-      const repoRes = await fetch(`https://api.github.com/repos/${repo}`, { headers: { Accept: 'application/vnd.github+json' } });
-      if (repoRes.ok) branchApp(section, repo, await repoRes.json()); else if (repoRes.status === 404) lockApp(section);
-      return;
-    }
-    if (!res.ok) return;
-    rel = await res.json();
-    try { sessionStorage.setItem(key, JSON.stringify({ t: Date.now(), rel })); } catch {}
+    // no release: a public repo still offers its source from the default branch
+    const repoRes = await gh(repo);
+    if (repoRes.ok) branchApp(section, repo, await repoRes.json());
+    return;
   }
+  section.dataset.loaded = Date.now();
   const version = rel.tag_name || rel.name;
   const date = fmtDate(rel.published_at);
   section.querySelectorAll('.app-meta').forEach((m) => { fill(m, 'version', version); fill(m, 'date', date); });
@@ -83,7 +85,12 @@ async function loadApp(section) {
     }
     const re = new RegExp(card.dataset.asset, 'i');
     const asset = (rel.assets || []).find((a) => re.test(a.name));
-    if (!asset) return;
+    if (!asset) {
+      // the newest release has no matching file yet (still uploading): send people to that release, never an older one
+      fill(card, 'href', rel.html_url);
+      ['size', 'count'].forEach((f) => fill(card, f, 'uploading'));
+      return;
+    }
     fill(card, 'href', asset.browser_download_url);
     fill(card, 'name', asset.name);
     fill(card, 'size', fmtSize(asset.size));
@@ -91,4 +98,11 @@ async function loadApp(section) {
   });
 }
 
-document.querySelectorAll('[data-repo]').forEach((s) => loadApp(s).catch(() => {}));
+const loadAll = () => document.querySelectorAll('[data-repo]').forEach((s) => loadApp(s).catch(() => {}));
+loadAll();
+// a tab left open: check again when the visitor comes back to it after two minutes or more
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  const s = document.querySelector('[data-repo][data-loaded]');
+  if (s && Date.now() - +s.dataset.loaded > 12e4) loadAll();
+});
