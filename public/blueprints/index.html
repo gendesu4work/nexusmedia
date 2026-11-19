@@ -79,8 +79,8 @@
   .app-head > div { min-width: 0; }
   .files > *, .grid > * { min-width: 0; }
   .mq-strip { overflow: hidden; max-width: 100%; min-width: 0; }
-  .app-icon { width: 72px; height: 72px; border-radius: 20px; display: grid; place-items: center; font: 500 30px/1 var(--font-display); color: #0a0b0e;
-              background: var(--app-c, var(--p-accent)); box-shadow: 0 0 40px -6px color-mix(in srgb, var(--app-c, var(--p-accent)) 55%, transparent); }
+  .app-icon { width: 88px; height: 88px; border-radius: 22px; object-fit: cover; display: block;
+              box-shadow: 0 0 0 1px rgb(255 255 255 / .08), 0 0 48px -8px color-mix(in srgb, var(--app-c, var(--p-accent)) 60%, transparent); }
   .app-head h2 { margin: 0; }
   .app-head p { margin: var(--s-3) 0 0; max-width: 62ch; color: var(--muted); font-size: 18px; line-height: 1.5; }
   .app-meta { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); margin-top: var(--s-4); font: 400 14px/1.4 var(--font-mono); color: var(--muted); }
@@ -105,6 +105,13 @@
   .file .btn { flex: 1; justify-content: center; }
   .nm-logo { width: 28px; height: 28px; border-radius: 7px; background: #fff; padding: 3px; margin-right: 10px; flex: none; }
   .nm-sub { color: var(--muted); font-weight: 400; margin-left: 6px; }
+  @media (max-width: 1100px) { .nav .nm-sub { display: none; } }
+  /* compact rhythm: sections fit their content instead of filling whole screens */
+  main > .section:not(.hero) { height: auto !important; min-height: 0 !important; padding-block: clamp(48px, 5vw, 72px) !important; }
+  #lowpoly, #yta, #jarvis { border-top: 1px solid rgb(255 255 255 / .07); }
+  main > .section:not(.hero) > .wrap { display: block !important; height: auto !important; }
+  footer.closing { height: auto !important; min-height: 0 !important; }
+  #clipping { --app-c: #ff8a3d; }
   #lowpoly { --app-c: #ff9fc7; }
   #lowpoly .btn--primary { background: #ff9fc7; color: #0a0b0e; }
   .posts-to { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
@@ -136,7 +143,7 @@
                 font: 500 14px/1 var(--font-mono); letter-spacing: 0; color: #ffd48a; background: rgb(255 212 138 / .1); box-shadow: inset 0 0 0 1px rgb(255 212 138 / .3); }
   h2 .lock-badge { margin-left: 12px; transform: translateY(-4px); }
   .lock-badge--card { position: absolute; top: clamp(24px, 3vw, 40px); right: clamp(24px, 3vw, 40px); z-index: 1; }
-  .is-locked .app-icon { background: #3a3f48; color: #8b919c; box-shadow: none; }
+  .is-locked .app-icon { filter: grayscale(1); opacity: .5; box-shadow: none; }
   .is-locked .file::before { display: none; }
   .is-locked .file > :not(.lock-badge):not(.btn-row) { opacity: .55; filter: grayscale(1); }
   .is-locked .file { box-shadow: inset 0 0 0 1px rgb(255 255 255 / .06); background: repeating-linear-gradient(135deg, var(--surface) 0 14px, #121419 14px 28px); }
@@ -184,7 +191,6 @@
       <div class="nav__item"><a class="nav__link" href="#lowpoly">Low Poly</a></div>
       <div class="nav__item"><a class="nav__link" href="#jarvis">Jarvis</a></div>
       <div class="nav__item"><a class="nav__link" href="#install">Install help</a></div>
-      <div class="nav__item"><a class="nav__link" href="#community">Community</a></div>
     </nav>
     <div class="nav__actions">
       <a class="nav__link" href="#community">Discord</a>
@@ -233,11 +239,11 @@
   <!-- APP 1: Clipping Studio. data-repo is your GitHub user and repo; downloads.js reads the latest release from it.
        Each .file card is one file: data-asset is a pattern that matches the file's name in the release
        ("source" means GitHub's own source code zip). Edit the words freely. -->
-  <section class="section g2" id="clipping" aria-labelledby="clipping-h" data-repo="gendesu4work/clipping-studio">
+  <section class="section" id="clipping" aria-labelledby="clipping-h" data-repo="gendesu4work/clipping-studio">
     <div class="wrap">
       <div class="group">
         <div class="app-head">
-          <span class="app-icon" aria-hidden="true">C</span>
+          <img class="app-icon" src="logos/clipping.png" alt="Clipping Studio logo" width="88" height="88">
           <div>
             <h2 id="clipping-h">Clipping Studio</h2>
             <p>Paste a YouTube link, pick a start and end or let Gemini find the funniest moments, then hand the clip to ClipForge. It cuts the dead air, follows the speaker and burns in word-by-word captions.</p>
@@ -284,10 +290,10 @@
 
   <!-- APP 2: YTA and FBA Studio. Rewrite the description in your own words: it is the one line on this page
        not taken from the app's own readme. -->
-  <section class="section g2" id="yta" aria-labelledby="yta-h" data-repo="gendesu4work/yta-fba-studio">
+  <section class="section" id="yta" aria-labelledby="yta-h" data-repo="gendesu4work/yta-fba-studio">
     <div class="wrap"><div class="group">
       <div class="app-head">
-        <span class="app-icon" aria-hidden="true">Y</span>
+        <img class="app-icon" src="logos/yta.png" alt="YTA and FBA Studio logo" width="88" height="88">
         <div>
           <h2 id="yta-h">YTA and FBA Studio</h2>
           <p>A desktop studio for your YouTube automation and FBA work, built on Electron. It installs like any Windows program and keeps everything in one window.</p>
@@ -324,10 +330,10 @@
   </section>
 
   <!-- APP: Low Poly Animation (the app calls itself Shorts Studio). No release yet: the card downloads the main branch zip. -->
-  <section class="section g2" id="lowpoly" aria-labelledby="lowpoly-h" data-repo="gendesu4work/lowpolyanimation">
+  <section class="section" id="lowpoly" aria-labelledby="lowpoly-h" data-repo="gendesu4work/lowpolyanimation">
     <div class="wrap"><div class="group">
       <div class="app-head">
-        <span class="app-icon" aria-hidden="true">L</span>
+        <img class="app-icon" src="logos/lowpoly.png" alt="Low Poly Animation logo" width="88" height="88">
         <div>
           <h2 id="lowpoly-h">Low Poly Animation</h2>
           <p>A fully automated low-poly animator. It comes up with "What if…?" ideas and scores them, Claude animates the one you pick in 3D on your PC, and it renders a 1080×1920 MP4 with music and sound. You review it, ask for changes, then post it now or at a time you pick to four platforms. It even replies to new comments.</p>
@@ -368,10 +374,10 @@
   </section>
 
   <!-- APP 3: Jarvis. The installer is small; its setup window downloads the rest. -->
-  <section class="section g2" id="jarvis" aria-labelledby="jarvis-h" data-repo="gendesu4work/jarvis">
+  <section class="section" id="jarvis" aria-labelledby="jarvis-h" data-repo="gendesu4work/jarvis">
     <div class="wrap"><div class="group">
       <div class="app-head">
-        <span class="app-icon" aria-hidden="true">J</span>
+        <img class="app-icon" src="logos/jarvis.png" alt="Jarvis logo" width="88" height="88">
         <div>
           <h2 id="jarvis-h">Jarvis</h2>
           <p>A voice assistant that lives on your PC. Say "Jarvis", ask anything and it answers out loud. It opens your apps, browses in its own Chrome, looks at your screen when you ask, controls Spotify, keeps notes, and asks before it does anything risky.</p>
