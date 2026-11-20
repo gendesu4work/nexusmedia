@@ -197,16 +197,24 @@
   .flow-step small{color:var(--muted);font-size:.8rem}
   .prod.feat:hover .flow-step:nth-child(2){transform:translateX(8px)}
   .prod.feat:hover .flow-step:nth-child(3){transform:translateX(16px)}
-  .flow.tight{gap:8px}
-  .flow.tight .flow-step{padding:8px 12px}
-  .flow.tight .flow-step i{width:26px;height:26px;font-size:.78rem}
+  /* tidy grid: every row the same height, every step the same size */
+  .prods{grid-auto-rows:1fr}
+  .flow{align-self:center}
+  .flow,.flow.tight{gap:10px}
+  .flow-step{height:52px;padding:0 14px}
+  .flow-step b,.flow-step small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
   .prod.feat:hover .flow.tight .flow-step:nth-child(4){transform:translateX(24px)}
   .prod.feat:hover .flow.tight .flow-step:nth-child(5){transform:translateX(32px)}
+  .prod.feat{align-items:stretch}
+  .prod.feat .feat-info{display:flex;flex-direction:column;align-items:flex-start;height:100%}
+  .prod.feat .feat-info > .btn{margin-top:auto}
+  .prod p{flex:none}
+  .prod .foot{margin-top:auto;padding-top:20px}
+  .prod.feat h4{white-space:nowrap}
   .new{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;background:var(--blue);color:#fff;font-size:.66rem;letter-spacing:.08em;vertical-align:2px}
-  .plat{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
-  .plat li{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--blue-line);border-radius:999px;padding:5px 12px;font-size:.8rem;font-weight:600}
-  .plat img{height:14px;width:auto}
-  .plat-label{font-size:.78rem;font-weight:600;color:var(--muted);margin-bottom:8px}
+  .plat{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:22px;width:100%;max-width:300px}
+  .plat li{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--blue-line);border-radius:999px;height:34px;padding:0 14px;font-size:.84rem;font-weight:600}
+  .plat img{width:16px;height:16px;object-fit:contain;flex:none}
   .prod .ticks.one{grid-template-columns:1fr;margin:14px 0 0}
   .prod .ticks.one li{font-size:.86rem}
 
@@ -236,7 +244,9 @@
     .stat:nth-child(-n+2){border-bottom:1px solid var(--blue-line)}
     .steps{grid-template-columns:1fr 1fr;row-gap:40px}
     .steps::before{display:none}
-    .prods{grid-template-columns:1fr 1fr}
+    .prods{grid-template-columns:1fr 1fr;grid-auto-rows:auto}
+    .prod.feat{order:1;min-height:370px}
+    .prod:not(.feat){order:2}
     .cta{grid-template-columns:1fr;padding:40px 28px}
   }
   @media (max-width:720px){
@@ -247,6 +257,9 @@
     .ticks{grid-template-columns:1fr}
     .ov,.prods{grid-template-columns:1fr}
     .prod.feat{grid-column:auto;grid-template-columns:1fr}
+    .prod.feat{min-height:0}
+    .prod.feat h4{white-space:normal}
+    .flow{align-self:stretch}
     .svc-tab span{display:none}
     .kpis{gap:18px}
     .kpi b{font-size:1.4rem}
@@ -481,9 +494,8 @@
     <div class="prods reveal">
       <a href="/blueprints/" class="prod feat">
         <div class="feat-info">
-          <span class="type">Creators · Windows apps<span class="new">NEW</span></span><h4>Blueprints: YTA &amp; FBA Studio</h4>
-          <p>Faceless YouTube and Facebook automation in one click. It makes 2D and 3D animated shorts from start to finish: it comes up with the idea, writes the prompts, generates and edits the video, then uploads it for you.</p>
-          <p class="plat-label">Auto uploads to</p>
+          <span class="type">Blueprints · Windows app<span class="new">NEW</span></span><h4>YTA &amp; FBA Studio</h4>
+          <p>2D and 3D animated shorts in one click. It finds the idea, writes the prompts, generates and edits the video, then uploads it to all four platforms for you.</p>
           <ul class="plat">
             <li><img src="/blueprints/assets/icons/youtube.svg" alt="">YouTube</li>
             <li><img src="/blueprints/assets/icons/facebook.svg" alt="">Facebook</li>
@@ -494,23 +506,23 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
         </div>
         <div class="flow tight" aria-hidden="true">
-          <div class="flow-step"><i>1</i><b>Auto ideas</b><small>Finds and scores video ideas</small></div>
-          <div class="flow-step"><i>2</i><b>Auto prompts</b><small>Writes every scene's prompt</small></div>
-          <div class="flow-step"><i>3</i><b>Auto generate</b><small>2D or 3D animation, music, sound</small></div>
-          <div class="flow-step"><i>4</i><b>Auto edit</b><small>Cut, captioned, 9:16 ready</small></div>
+          <div class="flow-step"><i>1</i><b>Auto ideas</b><small>Finds the best idea</small></div>
+          <div class="flow-step"><i>2</i><b>Auto prompts</b><small>Writes every scene</small></div>
+          <div class="flow-step"><i>3</i><b>Auto generate</b><small>2D or 3D animation</small></div>
+          <div class="flow-step"><i>4</i><b>Auto edit</b><small>Cut, captioned, 9:16</small></div>
           <div class="flow-step"><i>5</i><b>Auto upload</b><small>Posted to 4 platforms</small></div>
         </div>
       </a>
       <a href="/blueprints/#clipping" class="prod">
         <div class="thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/></svg></div>
-        <span class="type">Podcasters · Streamers<span class="new">NEW</span></span><h4>Auto Clipping Tool</h4>
-        <p>Paste a podcast or stream link and get short, captioned clips back, ready for Shorts, Reels and TikTok.</p>
+        <span class="type">Blueprints · Windows app<span class="new">NEW</span></span><h4>Auto Clipping Tool</h4>
+        <p>For podcasters and streamers. Paste a link and get short, captioned clips back, ready to post.</p>
         <ul class="ticks one">
-          <li>Finds the best moments with AI</li>
-          <li>Cuts dead air, follows the speaker</li>
+          <li>Finds the best moments</li>
+          <li>Cuts out the dead air</li>
           <li>Word-by-word captions</li>
         </ul>
-        <div class="foot"><span class="buy">Get the clipping tool →</span></div>
+        <div class="foot"><span class="buy">Get Auto Clipping Tool →</span></div>
       </a>
       <a href="/calculator/" class="prod feat">
         <div class="feat-info">
