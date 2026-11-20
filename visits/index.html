@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Site Visits</title>
+<link rel="icon" href="/favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --page:#f4f6f8; --surface-1:#fcfcfb; --line:#e3e6ea; --grid:#eceef1;
+  --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#7a7974;
+  --accent:#0070E0; --danger:#c62f2f;
+  --series-1:#2a78d6; --series-2:#eb6834; --series-3:#1baf7a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --page:#111110; --surface-1:#1a1a19; --line:#2e2e2c; --grid:#262624;
+    --text-primary:#f0efec; --text-secondary:#c3c2b7; --text-muted:#8e8d86;
+    --accent:#4aa8ff; --danger:#ff7b7b;
+    --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --page:#111110; --surface-1:#1a1a19; --line:#2e2e2c; --grid:#262624;
+  --text-primary:#f0efec; --text-secondary:#c3c2b7; --text-muted:#8e8d86;
+  --accent:#4aa8ff; --danger:#ff7b7b;
+  --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--page);color:var(--text-primary);font:15px/1.5 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 16px 64px}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+h1{font-size:1.5rem;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--text-secondary);font-size:.9rem}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;background:var(--surface-1);border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg button{border:0;background:none;color:var(--text-secondary);font:inherit;font-size:.85rem;font-weight:500;padding:6px 12px;border-radius:7px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.btn{border:1px solid var(--line);background:var(--surface-1);color:var(--text-primary);font:inherit;font-size:.85rem;font-weight:500;padding:7px 12px;border-radius:10px;cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;width:100%;padding:10px}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.card{background:var(--surface-1);border:1px solid var(--line);border-radius:14px;padding:18px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+.tile .name{display:flex;align-items:center;gap:8px;color:var(--text-secondary);font-size:.85rem;font-weight:500}
+.sw{width:10px;height:10px;border-radius:3px;flex:none}
+.tile .num{font-size:2rem;font-weight:700;letter-spacing:-.02em;margin-top:4px;font-variant-numeric:tabular-nums}
+.tile .meta{color:var(--text-muted);font-size:.8rem}
+.chart-card h2,.card h2{font-size:1rem;font-weight:600}
+.chart-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:10px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.82rem;color:var(--text-secondary)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.chart{position:relative}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart text{fill:var(--text-muted);font-size:11px;font-family:inherit}
+.tip{position:absolute;pointer-events:none;background:var(--surface-1);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:.8rem;box-shadow:0 6px 20px rgb(0 0 0 / .12);min-width:150px;opacity:0;transition:opacity .1s}
+.tip b{display:block;margin-bottom:4px;color:var(--text-primary)}
+.tip div{display:flex;align-items:center;gap:6px;color:var(--text-secondary)}
+.tip div em{font-style:normal;margin-left:auto;color:var(--text-primary);font-weight:600;font-variant-numeric:tabular-nums}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.list{list-style:none;margin-top:10px}
+.list li{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--grid);font-size:.88rem}
+.list li:first-child{border-top:0}
+.list em{font-style:normal;font-weight:600;font-variant-numeric:tabular-nums}
+.empty{color:var(--text-muted);font-size:.88rem;margin-top:10px}
+details summary{cursor:pointer;font-weight:600;font-size:1rem}
+.tbl-wrap{overflow-x:auto;margin-top:10px;max-height:340px;overflow-y:auto}
+table{border-collapse:collapse;width:100%;font-size:.85rem;font-variant-numeric:tabular-nums}
+th,td{text-align:right;padding:6px 8px;border-bottom:1px solid var(--grid);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--text-secondary);font-weight:600;position:sticky;top:0;background:var(--surface-1)}
+#login{max-width:360px;margin:12vh auto 0}
+#login h1{margin-bottom:4px}
+#login form{display:grid;gap:10px;margin-top:16px}
+#login label{display:grid;gap:4px;font-size:.85rem;color:var(--text-secondary)}
+#login input{font:inherit;color:var(--text-primary);background:var(--page);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+#login input:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+.msg{font-size:.85rem;color:var(--danger);min-height:1.2em}
+.banner{background:var(--surface-1);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;font-size:.82rem;color:var(--text-secondary);margin-bottom:12px}
+[hidden]{display:none!important}
+@media (max-width:760px){.tiles{grid-template-columns:1fr 1fr}.row2{grid-template-columns:1fr}.tile .num{font-size:1.6rem}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <section id="login" class="card" hidden>
+    <h1>Site visits</h1>
+    <p class="sub">Sign in with your Nexus Media admin account.</p>
+    <form id="loginForm">
+      <label>Email<input id="email" type="email" autocomplete="username" required></label>
+      <label>Password<input id="password" type="password" autocomplete="current-password" required></label>
+      <p class="msg" id="loginMsg" role="alert"></p>
+      <button class="btn primary" type="submit">Sign in</button>
+    </form>
+  </section>
+
+  <main id="app" hidden>
+    <header>
+      <div>
+        <h1>Site visits</h1>
+        <p class="sub" id="rangeLabel">Philippine time</p>
+      </div>
+      <div class="controls">
+        <div class="seg" role="group" aria-label="Date range">
+          <button data-days="7">7 days</button>
+          <button data-days="30" aria-pressed="true">30 days</button>
+          <button data-days="90">90 days</button>
+        </div>
+        <button class="btn" id="refresh">Refresh</button>
+        <button class="btn" id="signout">Sign out</button>
+      </div>
+    </header>
+    <p class="banner" id="demoBanner" hidden>Sample data. This is how the page looks once visits are coming in.</p>
+    <p class="msg" id="appMsg" role="alert"></p>
+
+    <section class="tiles" id="tiles"></section>
+
+    <section class="card chart-card">
+      <div class="chart-head">
+        <h2>Visits per day</h2>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="chart" id="chart"><div class="tip" id="tip"></div></div>
+    </section>
+
+    <section class="row2">
+      <div class="card">
+        <h2>Where visitors come from</h2>
+        <ul class="list" id="sources"></ul>
+      </div>
+      <div class="card">
+        <details>
+          <summary>Daily numbers</summary>
+          <div class="tbl-wrap"><table id="table"></table></div>
+        </details>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const SUPABASE_URL='https://oytgbzaukedyfifavvlq.supabase.co',SUPABASE_KEY='sb_publishable_Anms_YAih0GhtNJ3fVYEnA_wMsv8TA9';
+const SITES=[
+  {key:'home',label:'nexusmediaph.com',color:'var(--series-1)'},
+  {key:'calculator',label:'/calculator',color:'var(--series-2)'},
+  {key:'blueprints',label:'/blueprints',color:'var(--series-3)'},
+];
+const DEMO=/[?&]demo\b/.test(location.search);
+const $=id=>document.getElementById(id);
+const fmt=n=>Number(n).toLocaleString('en-US');
+let sb=null,days=30,data=null;
+
+// Day keys in Philippine time (UTC+8, no DST).
+function phDay(offset){const d=new Date(Date.now()+8*3600e3);d.setUTCDate(d.getUTCDate()-offset);return d.toISOString().slice(0,10)}
+function dayList(n){const out=[];for(let i=n-1;i>=0;i--)out.push(phDay(i));return out}
+function shortDate(k){const [y,m,d]=k.split('-').map(Number);return new Date(Date.UTC(y,m-1,d)).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'})}
+
+function demoData(n){
+  const daily=[],totals={};let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+  const base={home:42,calculator:18,blueprints:27};
+  dayList(n).forEach((day,i)=>SITES.forEach(s=>{
+    const v=Math.max(0,Math.round(base[s.key]*(0.7+0.6*rnd())*(1+i/n*0.4)));const u=Math.round(v*0.72);
+    daily.push({day,site:s.key,visits:v,visitors:u});
+    totals[s.key]=totals[s.key]||{site:s.key,visits:0,visitors:0};totals[s.key].visits+=v;totals[s.key].visitors+=Math.round(u*0.6);
+  }));
+  return {daily,totals:Object.values(totals),sources:[
+    {source:'Direct / unknown',visits:640},{source:'facebook.com',visits:410},{source:'nexusmediaph.com',visits:220},
+    {source:'google.com',visits:180},{source:'m.facebook.com',visits:95},{source:'youtube.com',visits:41}]};
+}
+
+async function load(){
+  $('appMsg').textContent='';
+  if(DEMO){data=demoData(days);render();return}
+  const {data:res,error}=await sb.rpc('visit_stats',{p_days:days});
+  if(error){
+    $('appMsg').textContent=error.code==='42501'
+      ?'This account is not on the admin list. Add it with the last line of supabase/visits-schema.sql.'
+      :error.code==='PGRST202'||/visit_stats/.test(error.message)
+        ?'The visits database is not set up yet. Run supabase/visits-schema.sql in the Supabase SQL Editor.'
+        :'Could not load visits: '+error.message;
+    data={daily:[],totals:[],sources:[]};render();return;
+  }
+  data=res;render();
+}
+
+function render(){
+  const keys=dayList(days);
+  $('rangeLabel').textContent=`${shortDate(keys[0])} – ${shortDate(keys[keys.length-1])} · Philippine time`;
+  const tot=Object.fromEntries((data.totals||[]).map(t=>[t.site,t]));
+  const all=SITES.reduce((a,s)=>a+(+tot[s.key]?.visits||0),0);
+  $('tiles').innerHTML=
+    `<div class="card tile"><div class="name">All sites</div><div class="num">${fmt(all)}</div><div class="meta">visits in ${days} days</div></div>`+
+    SITES.map(s=>{const t=tot[s.key]||{visits:0,visitors:0};return `<div class="card tile"><div class="name"><i class="sw" style="background:${s.color}"></i>${s.label}</div><div class="num">${fmt(t.visits)}</div><div class="meta">${fmt(t.visitors)} unique visitors</div></div>`}).join('');
+  $('legend').innerHTML=SITES.map(s=>`<span><i class="sw" style="background:${s.color}"></i>${s.label}</span>`).join('');
+
+  // series[site][dayIndex]
+  const idx=Object.fromEntries(keys.map((k,i)=>[k,i]));
+  const series=Object.fromEntries(SITES.map(s=>[s.key,keys.map(()=>({visits:0,visitors:0}))]));
+  (data.daily||[]).forEach(r=>{const i=idx[r.day];if(i!=null&&series[r.site])series[r.site][i]={visits:+r.visits,visitors:+r.visitors}});
+  drawChart(keys,series);
+
+  const src=data.sources||[];
+  $('sources').innerHTML=src.length?src.map(s=>`<li><span>${esc(s.source)}</span><em>${fmt(s.visits)}</em></li>`).join(''):'';
+  if(!src.length)$('sources').innerHTML='<li class="empty">No visits yet in this range.</li>';
+
+  $('table').innerHTML=`<thead><tr><th>Day</th>${SITES.map(s=>`<th>${s.label}</th>`).join('')}<th>Total</th></tr></thead><tbody>`+
+    keys.slice().reverse().map(k=>{const i=idx[k];const vals=SITES.map(s=>series[s.key][i].visits);return `<tr><td>${shortDate(k)}</td>${vals.map(v=>`<td>${fmt(v)}</td>`).join('')}<td>${fmt(vals.reduce((a,b)=>a+b,0))}</td></tr>`}).join('')+'</tbody>';
+}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+function niceMax(v){if(v<=4)return 4;const p=Math.pow(10,Math.floor(Math.log10(v)));const f=v/p;return (f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*p}
+
+function drawChart(keys,series){
+  const box=$('chart'),tip=$('tip');
+  const W=Math.max(300,box.clientWidth),H=W<500?220:280;
+  const m={t:12,r:16,b:26,l:40};const iw=W-m.l-m.r,ih=H-m.t-m.b;
+  const max=niceMax(Math.max(1,...SITES.flatMap(s=>series[s.key].map(p=>p.visits))));
+  const x=i=>m.l+(keys.length===1?iw/2:i*iw/(keys.length-1));
+  const y=v=>m.t+ih-v/max*ih;
+  let g='';
+  for(let i=0;i<=4;i++){const v=max*i/4,yy=y(v);g+=`<line x1="${m.l}" x2="${W-m.r}" y1="${yy}" y2="${yy}" stroke="var(--grid)" stroke-width="1"/><text x="${m.l-8}" y="${yy+4}" text-anchor="end">${fmt(Math.round(v))}</text>`}
+  const step=Math.ceil(keys.length/(W<500?4:7));
+  keys.forEach((k,i)=>{if((keys.length-1-i)%step===0)g+=`<text x="${x(i)}" y="${H-6}" text-anchor="middle">${shortDate(k)}</text>`});
+  const lines=SITES.map(s=>{const pts=series[s.key].map((p,i)=>`${x(i).toFixed(1)},${y(p.visits).toFixed(1)}`).join(' ');
+    return `<polyline points="${pts}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`}).join('');
+  box.querySelector('svg')?.remove();
+  box.insertAdjacentHTML('afterbegin',`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Daily visits per site; full numbers are in the Daily numbers table">${g}${lines}<g id="hover" style="display:none"><line id="cross" y1="${m.t}" y2="${m.t+ih}" stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="3 3"/>${SITES.map(s=>`<circle data-s="${s.key}" r="4.5" fill="${s.color}" stroke="var(--surface-1)" stroke-width="2"/>`).join('')}</g><rect x="${m.l}" y="0" width="${iw}" height="${H}" fill="transparent" id="hit"/></svg>`);
+  const svg=box.querySelector('svg'),hover=svg.querySelector('#hover'),cross=svg.querySelector('#cross');
+  const move=e=>{
+    const r=svg.getBoundingClientRect(),px=(e.clientX-r.left)*W/r.width;
+    const i=Math.max(0,Math.min(keys.length-1,Math.round((px-m.l)/(iw/Math.max(1,keys.length-1)))));
+    hover.style.display='';cross.setAttribute('x1',x(i));cross.setAttribute('x2',x(i));
+    SITES.forEach(s=>{const c=svg.querySelector(`circle[data-s="${s.key}"]`);c.setAttribute('cx',x(i));c.setAttribute('cy',y(series[s.key][i].visits))});
+    tip.innerHTML=`<b>${shortDate(keys[i])}</b>`+SITES.map(s=>`<div><i class="sw" style="background:${s.color}"></i>${s.label}<em>${fmt(series[s.key][i].visits)}</em></div>`).join('');
+    const sx=x(i)*r.width/W;tip.style.opacity=1;
+    tip.style.left=Math.min(Math.max(0,sx+12+(sx>r.width*0.6?-tip.offsetWidth-24:0)),r.width-tip.offsetWidth)+'px';
+    tip.style.top='8px';
+  };
+  const leave=()=>{hover.style.display='none';tip.style.opacity=0};
+  svg.addEventListener('pointermove',move);svg.addEventListener('pointerleave',leave);
+}
+
+document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>{
+  days=+b.dataset.days;document.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed',x===b));load();
+}));
+$('refresh').addEventListener('click',load);
+let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>data&&render(),120)});
+
+function showApp(){$('login').hidden=true;$('app').hidden=false;load()}
+function showLogin(msg){$('app').hidden=true;$('login').hidden=false;$('loginMsg').textContent=msg||''}
+
+(async()=>{
+  if(DEMO){$('demoBanner').hidden=false;$('signout').hidden=true;showApp();return}
+  if(!window.supabase){showLogin('Could not load. Check your internet connection and reload.');return}
+  sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+  const {data:{session}}=await sb.auth.getSession();
+  session?showApp():showLogin();
+  $('loginForm').addEventListener('submit',async e=>{
+    e.preventDefault();$('loginMsg').textContent='';
+    const {error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});
+    error?showLogin('Wrong email or password.'):showApp();
+  });
+  $('signout').addEventListener('click',async()=>{await sb.auth.signOut();showLogin()});
+})();
+</script>
+</body>
+</html>
