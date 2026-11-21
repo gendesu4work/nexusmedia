@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Unsubscribe – NEXUSMEDIA</title>
+<link rel="icon" href="/favicon.png" type="image/png">
+<style>
+:root{color-scheme:light;--page:#f4f6f8;--card:#fcfcfb;--line:#e3e6ea;--tx:#0b0b0b;--mut:#52514e;--ac:#0a84c6;--bad:#c62f2f}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--page:#111110;--card:#1a1a19;--line:#2e2e2c;--tx:#f0efec;--mut:#c3c2b7;--ac:#4fb8f0;--bad:#ff7b7b}}
+:root[data-theme="dark"]{color-scheme:dark;--page:#111110;--card:#1a1a19;--line:#2e2e2c;--tx:#f0efec;--mut:#c3c2b7;--ac:#4fb8f0;--bad:#ff7b7b}
+*{box-sizing:border-box;margin:0}
+body{background:var(--page);color:var(--tx);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:16px}
+.card{max-width:440px;margin:14vh auto 0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px}
+h1{font-size:1.3rem;margin-bottom:8px}
+p{color:var(--mut)}
+a{color:var(--ac)}
+.err{color:var(--bad)}
+</style>
+</head>
+<body>
+<main class="card">
+  <h1 id="h">Unsubscribing…</h1>
+  <p id="p">One moment.</p>
+</main>
+<script>
+(async function(){
+  var h=document.getElementById('h'),p=document.getElementById('p');
+  var t=new URLSearchParams(location.search).get('t')||'';
+  function done(title,msg,bad){h.textContent=title;p.textContent=msg;if(bad)p.className='err'}
+  if(!/^[0-9a-f-]{36}$/i.test(t)){done('Link not complete','This unsubscribe link is missing part of its code. Reply to the email and write "STOP", and we will remove you.',true);return}
+  try{
+    var r=await fetch('https://oytgbzaukedyfifavvlq.supabase.co/rest/v1/rpc/lead_unsubscribe',{method:'POST',
+      headers:{'Content-Type':'application/json',apikey:'sb_publishable_Anms_YAih0GhtNJ3fVYEnA_wMsv8TA9'},
+      body:JSON.stringify({p_token:t})});
+    if(!r.ok)throw 0;
+    var email=await r.json();
+    if(email)done('You’re unsubscribed','We won’t email '+email+' again. Sorry for the bother, and thanks for trying Product Calculator.');
+    else done('Already removed','This email isn’t on our list anymore. You won’t get more emails from us.');
+  }catch(e){done('Something went wrong','We couldn’t unsubscribe you just now. Please try the link again, or reply to the email and write "STOP".',true)}
+})();
+</script>
+</body>
+</html>

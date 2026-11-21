@@ -6,6 +6,8 @@ The database setup for both apps lives here, so it can be rebuilt if a project i
 |---|---|---|
 | `calculator-schema.sql` | `public/calculator` | `oytgbzaukedyfifavvlq` |
 | `planner-schema.sql` | `public/planner` | set in `public/planner/config.js` |
+| `visits-schema.sql` | `public/track.js`, `public/visits` | `oytgbzaukedyfifavvlq` |
+| `leads-schema.sql` | calculator guide email box, Leads section of `public/visits`, `public/unsubscribe` | `oytgbzaukedyfifavvlq` (run after `visits-schema.sql`) |
 
 To use one, open the project in Supabase, go to **SQL Editor**, paste the file and click **Run**. Both files are safe to run more than once.
 
@@ -29,6 +31,14 @@ In SikatPay (**Developers → Add webhook**), the URL is `https://pay.nexusmedia
 To test: use the `mk_test_` key and `SIKATPAY_ALLOW_TEST=true`, sign up with a new email, press "Simulate successful payment", then log in. To go live: switch to the live key, delete `SIKATPAY_ALLOW_TEST`, and set the webhook to "Live only".
 
 The old PayMongo functions were replaced. Copies are in `Downloads/2-function-signup.ts` and `3-function-paymongo-webhook.ts` on the original PC.
+
+## Calculator leads: follow-up emails (Resend)
+
+Guests can leave their email at the end of the costing guide. They land in `calc_leads` (see `leads-schema.sql`) and show in the **Leads** section of nexusmediaph.com/visits, with a follow-up due every 3 days.
+
+The **Email your leads** box there calls the `send-leads` edge function (Verify JWT **on**, source in `supabase/functions/send-leads/`). It only works for accounts in `visit_admins`, sends at most 100 emails per run (Resend's free daily limit), fills in `{{business}}` and `{{product}}`, and adds an unsubscribe link to `nexusmediaph.com/unsubscribe/?t=<token>`.
+
+Secrets: `RESEND_API_KEY`, `RESEND_FROM` (e.g. `NEXUSMEDIA <hello@nexusmediaph.com>`), `REPLY_TO`. The sending domain must be verified in Resend (its DNS records go in GoDaddy).
 
 ## Backups
 

@@ -263,7 +263,8 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 .gtch button{border:1.5px solid var(--ln);background:var(--card);color:var(--tx);border-radius:999px;padding:7px 13px;font:inherit;font-size:13.5px;cursor:pointer}
 .gtch button:hover{border-color:var(--ac)}.gtch button.on{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 12%,var(--card));color:var(--ac);font-weight:700}
 .gtx{position:absolute;top:14px;right:12px;border:0;background:none;color:var(--mut);font:inherit;font-size:13px;font-weight:600;cursor:pointer;padding:6px 8px;border-radius:8px}.gtx:hover{background:var(--bg);color:var(--tx)}
-.gtcol{display:flex;flex-direction:column;gap:8px}.gtcol .btn{width:100%;padding:12px 16px;font-weight:700}
+.gtcol{display:flex;flex-direction:column;gap:8px}
+.gtlead{border:1px solid var(--ln);border-radius:12px;padding:12px 14px;margin:0 0 14px;background:var(--card)}.gtlead b{display:block;font-size:14px;margin-bottom:2px}.gtlead p{font-size:13px;color:var(--mut);margin:0 0 10px}.gtlead input[type=email]{width:100%;margin-bottom:8px}.gtlead .btn{width:100%}.gtlead .gtlm{font-size:12.5px;margin-top:6px;min-height:1em}.gtlead.ok{border-color:color-mix(in srgb,var(--ok) 50%,var(--ln))}.gtcol .btn{width:100%;padding:12px 16px;font-weight:700}
 .gtf{display:flex;gap:8px;margin-top:4px}.gtf .btn{padding:12px 16px;font-weight:700}.gtf .btn.ghost{flex:0 0 auto;width:auto}
 .gtn{font-size:12.5px;color:var(--mut);text-align:center;margin-top:12px}.gtn a{color:var(--ac);font-weight:600}
 .gtex{font-size:13px;background:var(--bg);border:1px dashed var(--ln);border-radius:10px;padding:9px 12px;margin:0 0 16px;color:var(--mut);line-height:1.5}.gtex b{color:var(--tx)}
@@ -377,6 +378,7 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 <ul>
 <li><b>Account:</b> your email address and your password (hashed).</li>
 <li><b>Your business data:</b> what you type in: products, recipes, ingredients, stock, sales, refunds, expenses, rent, staff names, roles, salaries and photos, your business name and logo, and settings.</li>
+<li><b>Email for follow-ups (optional):</b> if you leave your email at the end of the costing guide and tick the box, we keep it with your business name, business type and the product you costed, so we can send you tips and check in. We only email you about Product Calculator. Reply or write to us anytime to stop, and we will delete it if you ask.</li>
 <li><b>Payment record:</b> whether you paid, when, and SikatPay's payment reference number. No wallet or card details.</li>
 <li><b>Ad measurement:</b> we use the Meta Pixel to count visits to this page, sign-ups started and payments completed, so we can see which of our Facebook and Instagram ads work. Meta receives your browser and device details and these events, and may use cookies to do this. It never receives your email, password or business data.</li>
 <li>We don't track your location.</li>
@@ -734,9 +736,26 @@ function gtShow(){const c=$('#gtc'),x=`<button class="gtx" onclick="gtSkip()">${
  const s=gtSaved;c.innerHTML=`${x}<p class="gtk">Saved to your Products</p><h3 id="gtt">${esc(s.name)} is costed! 🎉</h3>
   <p>You can open its recipe anytime to change the price or ingredients. Add your other products the same way to see which ones earn you the most.</p>
   <div class="gtwarn"><b>Remember: guest mode saves nothing.</b> If you refresh or close this page, your products are erased. Sign up for a one-time ₱99 to keep them and use them on any device.</div>
+  ${gtLeadBox()}
   <div class="gtcol"><button class="btn" onclick="gtNew()">Add another product</button><button class="btn ghost" onclick="gtSkip()">Go to the app</button></div>
   <div class="gtn"><a href="#" onclick="gtClose();openPackage();return false">Sign up to save my data</a></div>`;
  setTimeout(()=>{const b=c.querySelector('.gtcol .btn');if(b)b.focus({preventScroll:true})},50)}
+// Optional email at the end of the guide, so NEXUSMEDIA can follow up (supabase/leads-schema.sql).
+const LEAD_OK='It’s okay for NEXUSMEDIA to email me about Product Calculator, like tips and offers. I can ask them to stop anytime.';
+let gtLeadSent='';
+function gtLeadBox(){if(gtLeadSent)return `<div class="gtlead ok"><b>✓ Thanks! We’ll email you at ${esc(gtLeadSent)}</b><p style="margin:0">Check your inbox for tips on costing the rest of your menu.</p></div>`;
+ return `<div class="gtlead" id="gtlead"><b>Want help costing the rest of your menu?</b><p>Leave your email and we’ll send you tips and check in on how it’s going. Optional.</p>
+  <input type="email" id="gtem" maxlength="200" placeholder="you@email.com" autocomplete="email" inputmode="email" onkeydown="if(event.key==='Enter')gtLead()">
+  <label class="agree"><input type="checkbox" id="gtok"><span>${LEAD_OK}</span></label>
+  <button class="btn ghost" id="gtlb" onclick="gtLead()">Send me tips</button><div class="gtlm" id="gtlm" role="status"></div></div>`}
+async function gtLead(){const e=$('#gtem').value.trim(),mm=$('#gtlm'),b=$('#gtlb');
+ if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)){mm.textContent='Enter a valid email address.';return}
+ if(!$('#gtok').checked){mm.textContent='Tick the box so we’re allowed to email you.';return}
+ if(!sb){mm.textContent='Could not connect. Check your internet and try again.';return}
+ b.disabled=true;mm.textContent='Sending…';const s=gtSaved||{};
+ try{const r=await sb.rpc('add_lead',{p_email:e,p_business:gtName||null,p_biz_type:gtBiz||null,p_product:s.name||null,p_cost:isFinite(+s.cost)?+s.cost:null,p_price:isFinite(+s.price)?+s.price:null,p_consent:LEAD_OK});
+  if(r.error)throw r.error;gtLeadSent=e;try{fbq('track','Lead')}catch(x){}const box=$('#gtlead');if(box)box.outerHTML=gtLeadBox()}
+ catch(x){b.disabled=false;mm.textContent=navigator.onLine?'Something went wrong. Please try again.':'You’re offline. Connect to the internet and try again.'}}
 addEventListener('keydown',e=>{if(gtI>=0&&e.key==='Escape'){e.preventDefault();gtSkip()}});
 async function doSignup(){const e=$('#se').value.trim(),p=$('#sp1').value,q=$('#sp2').value,sm=$('#smsg');
  if(!e||p.length<8){sm.textContent='Enter your email and a password of at least 8 characters.';return}
