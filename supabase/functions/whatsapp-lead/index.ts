@@ -58,7 +58,8 @@ Deno.serve(async (req) => {
   const rawDc = d.analysis?.data_collection_results || d.analysis?.data_collection || {};
   const dc: Record<string, any> = {};
   for (const [k, r] of Object.entries<any>(Array.isArray(rawDc) ? Object.fromEntries(rawDc.map((r: any, i: number) => [i, r])) : rawDc)) {
-    const name = r?.data_collection_id || r?.name || r?.id || k;
+    // Shared (workspace library) fields are keyed by an internal id; the field name is in r.name.
+    const name = r?.name || r?.data_collection_id || r?.id || k;
     dc[name] = r && typeof r === "object" ? r : { value: r };
   }
   const lead = {
