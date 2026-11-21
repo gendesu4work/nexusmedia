@@ -63,33 +63,53 @@
       box.replaceChild(a, btn);
     }
 
+    function fail(err) {
+      var why = String((err && (err.message || err.reason)) || err || 'unknown error');
+      if (window.console) console.warn('[Nexus call]', err);
+      convo = null;
+      set('idle', 'Call our AI assistant');
+      var mic = /permission|notallowed|denied|microphone/i.test(why);
+      box.querySelector('small').textContent = (mic
+        ? 'Microphone access was blocked. Allow the microphone for this site and try again, or message us on WhatsApp.'
+        : 'Could not connect the call (' + why.slice(0, 80) + '). Please try again or message us on WhatsApp.');
+    }
+
     btn.addEventListener('click', function () {
       if (state === 'live' && convo) { convo.endSession(); return; }
       if (state !== 'idle') return;
       set('connecting', 'Connecting…');
-      navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
-        stream.getTracks().forEach(function (t) { t.stop(); });
-        return import(SDK);
-      }).then(function (mod) {
+      var connected = false;
+      loadSdk().then(function (mod) {
         return mod.Conversation.startSession({
           agentId: AGENT_ID,
-          onConnect: function () { bump(); set('live', 'On call · tap to end'); },
-          onDisconnect: function () { done('Call ended. Thanks! Message us on WhatsApp for anything else; our team replies within 24 hours.'); },
-          onError: function () {}
+          connectionType: 'websocket',
+          onConnect: function () { connected = true; bump(); set('live', 'On call · tap to end'); },
+          onDisconnect: function (d) {
+            if (connected) done('Call ended. Thanks! Message us on WhatsApp for anything else; our team replies within 24 hours.');
+            else fail((d && d.reason) || 'disconnected');
+          },
+          onError: function (msg) { if (!connected) fail(msg); }
         });
-      }).then(function (c) { convo = c; })
-        .catch(function () {
-          set('idle', 'Call our AI assistant');
-          box.querySelector('small').textContent = 'Could not start the call (microphone blocked or line busy). Please message us on WhatsApp instead.';
-        });
+      }).then(function (c) { convo = c; }).catch(fail);
     });
+  }
+
+  var sdkPromise = null;
+  function loadSdk() { return sdkPromise || (sdkPromise = import(SDK).catch(function (e) { sdkPromise = null; throw e; })); }
+
+  function preloadWhenVisible(el) {
+    if (!('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (entries) {
+      if (entries.some(function (e) { return e.isIntersecting; })) { io.disconnect(); loadSdk().catch(function () {}); }
+    }, { rootMargin: '400px' });
+    io.observe(el);
   }
 
   function init() {
     var boxes = document.querySelectorAll('[data-nm-call]');
     if (!boxes.length) return;
     var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
-    for (var i = 0; i < boxes.length; i++) render(boxes[i]);
+    for (var i = 0; i < boxes.length; i++) { render(boxes[i]); if (used() < CALLS_PER_DAY) preloadWhenVisible(boxes[i]); }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
