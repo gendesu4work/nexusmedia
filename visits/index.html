@@ -164,6 +164,13 @@ th{color:var(--text-secondary);font-weight:600;position:sticky;top:0;background:
       </div>
     </section>
 
+    <section class="card leads" id="waCard">
+      <div class="head"><h2>Leads from WhatsApp</h2><span class="hint">Clients the WhatsApp assistant talked to, saved after each chat</span></div>
+      <div class="chips" id="waChips"></div>
+      <p class="msg" id="waMsg" role="alert"></p>
+      <div class="tbl-wrap" style="max-height:420px"><table class="ltbl" id="waTable"></table></div>
+    </section>
+
     <section class="card leads" id="leadsCard">
       <div class="head"><h2>Leads from the calculator</h2><span class="hint">People who left their email at the end of the costing guide</span></div>
       <div class="chips" id="leadChips"></div>
@@ -377,6 +384,38 @@ $('leadTable').addEventListener('change',async e=>{const s=e.target.closest('sel
   if(DEMO){l.status=s.value;renderLeads();return}
   const {error}=await sb.rpc('lead_update',{p_id:id,p_status:s.value,p_contacted:false,p_note:null});
   if(error){$('leadMsg').textContent='Could not change status: '+error.message;s.value=l.status}else{l.status=s.value;renderLeads()}});
+// ---------- WhatsApp leads ----------
+const WA_STATUSES=[['new','New'],['contacted','Contacted'],['quoted','Quoted'],['won','Won'],['lost','Lost']];
+let waLeads=[];
+function demoWa(){const now=Date.now(),d=x=>new Date(now-x*864e5).toISOString();return [
+ {id:1,channel:'whatsapp',phone:'+14155550123',client_name:'Sarah',email:'sarah@example.com',company_country:'Glow Skincare, USA',service:'video editing',project_details:'12 TikTok edits a month from raw clips',budget:'1,500 USD a month',timeline:'Start next month',summary:'Sarah runs a skincare brand and wants monthly TikTok edits.',status:'new',created_at:d(0.3)},
+ {id:2,channel:'whatsapp',phone:'+447700900123',client_name:'Tom',email:'tom@example.co.uk',company_country:'Bright Plumbing, UK',service:'web development',project_details:'New 5-page site with booking form',budget:null,timeline:'Within 6 weeks',summary:'Tom needs a new website with online booking.',status:'quoted',created_at:d(3)}]}
+async function loadWa(){
+  $('waMsg').textContent='';
+  if(DEMO){waLeads=demoWa();renderWa();return}
+  const {data:res,error}=await sb.rpc('agent_lead_list');
+  if(error){waLeads=[];$('waMsg').textContent=error.code==='PGRST202'||/agent_lead_list/.test(error.message)?'The WhatsApp leads database is not set up yet. Run supabase/agent-leads-schema.sql in the Supabase SQL Editor.':error.code==='42501'?'This account is not on the admin list.':'Could not load WhatsApp leads: '+error.message}
+  else waLeads=res||[];
+  renderWa();
+}
+function renderWa(){
+  const count=k=>waLeads.filter(l=>l.status===k).length;
+  $('waChips').innerHTML=[['Total',waLeads.length],['New',count('new')],['Quoted',count('quoted')],['Won',count('won')]]
+    .map(([k,v])=>`<span class="chip">${k} <b>${fmt(v)}</b></span>`).join('');
+  if(!waLeads.length){$('waTable').innerHTML='<tbody><tr><td class="empty">No WhatsApp leads yet. They appear here a few minutes after a chat with the assistant ends.</td></tr></tbody>';return}
+  const wa=p=>{const n=String(p||'').replace(/\D/g,'');return n?`<a href="https://wa.me/${n}" target="_blank" rel="noopener" style="color:var(--accent)">${esc(p)}</a>`:'—'};
+  $('waTable').innerHTML=`<thead><tr><th>Added</th><th>Name · Company</th><th>Contact</th><th>Service</th><th>Project</th><th>Budget</th><th>Timeline</th><th>Status</th></tr></thead><tbody>`+
+   waLeads.map(l=>`<tr><td>${dmy(l.created_at)}</td><td><b>${esc(l.client_name||'—')}</b>${l.company_country?` <span class="hint">· ${esc(l.company_country)}</span>`:''}</td>
+    <td>${l.email?`<a href="mailto:${esc(l.email)}" style="color:var(--accent)">${esc(l.email)}</a><br>`:''}${wa(l.phone)}</td>
+    <td>${esc(l.service||'—')}</td><td style="white-space:normal;min-width:220px" title="${esc(l.summary||'')}">${esc(l.project_details||l.summary||'—')}</td>
+    <td>${esc(l.budget||'—')}</td><td>${esc(l.timeline||'—')}</td>
+    <td><select data-id="${l.id}" aria-label="Status for ${esc(l.client_name||l.email||'lead')}">${WA_STATUSES.map(([k,v])=>`<option value="${k}"${k===l.status?' selected':''}>${v}</option>`).join('')}</select></td></tr>`).join('')+'</tbody>';
+}
+$('waTable').addEventListener('change',async e=>{const s=e.target.closest('select');if(!s)return;const id=+s.dataset.id,l=waLeads.find(x=>x.id===id);
+  if(DEMO){l.status=s.value;renderWa();return}
+  const {error}=await sb.rpc('agent_lead_update',{p_id:id,p_status:s.value,p_note:null});
+  if(error){$('waMsg').textContent='Could not change status: '+error.message;s.value=l.status}else{l.status=s.value;renderWa()}});
+
 $('tpl').innerHTML=TEMPLATES.map((t,i)=>`<option value="${i}">${esc(t.name)}</option>`).join('');
 function useTpl(i){$('subj').value=TEMPLATES[i].subject;$('body').value=TEMPLATES[i].body}
 $('tpl').addEventListener('change',e=>useTpl(+e.target.value));useTpl(0);
@@ -403,10 +442,10 @@ $('sendAll').addEventListener('click',()=>sendMail(false));
 document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>{
   days=+b.dataset.days;document.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed',x===b));load();
 }));
-$('refresh').addEventListener('click',()=>{load();loadLeads()});
+$('refresh').addEventListener('click',()=>{load();loadLeads();loadWa()});
 let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>data&&render(),120)});
 
-function showApp(){$('login').hidden=true;$('app').hidden=false;load();loadLeads()}
+function showApp(){$('login').hidden=true;$('app').hidden=false;load();loadLeads();loadWa()}
 function showLogin(msg){$('app').hidden=true;$('login').hidden=false;$('loginMsg').textContent=msg||''}
 
 (async()=>{
