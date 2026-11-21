@@ -11,7 +11,7 @@ nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.92);backdrop-f
 .btn{display:inline-flex;align-items:center;gap:10px;padding:13px 22px;border-radius:999px;font-weight:600;font-size:.95rem;transition:transform .2s,background .2s}
 .btn-primary{background:var(--blue);color:#fff;box-shadow:0 10px 30px -10px rgba(0,163,255,.7)}
 .btn-primary:hover{transform:translateY(-2px);background:var(--blue-deep)}
-.btn-ghost{border:1.5px solid var(--blue-line);background:#fff}
+.btn-ghost{border:1.5px solid var(--blue-line);background:#fff;color:var(--ink)}
 .btn-ghost:hover{border-color:var(--blue);color:var(--blue-deep)}
 .nav-in .btn{padding:9px 16px;font-size:.86rem}
 .crumbs{font-size:.84rem;color:var(--muted);padding-top:28px}.crumbs a:hover{color:var(--blue-deep)}
