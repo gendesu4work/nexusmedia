@@ -8,6 +8,7 @@ The database setup for both apps lives here, so it can be rebuilt if a project i
 | `planner-schema.sql` | `public/planner` | set in `public/planner/config.js` |
 | `visits-schema.sql` | `public/track.js`, `public/visits` | `oytgbzaukedyfifavvlq` |
 | `leads-schema.sql` | calculator guide email box, Leads section of `public/visits`, `public/unsubscribe` | `oytgbzaukedyfifavvlq` (run after `visits-schema.sql`) |
+| `agent-leads-schema.sql` | WhatsApp agent leads in `public/visits` | `oytgbzaukedyfifavvlq` (run after `visits-schema.sql`) |
 
 To use one, open the project in Supabase, go to **SQL Editor**, paste the file and click **Run**. Both files are safe to run more than once.
 
@@ -39,6 +40,17 @@ Guests can leave their email at the end of the costing guide. They land in `calc
 The **Email your leads** box there calls the `send-leads` edge function (Verify JWT **on**, source in `supabase/functions/send-leads/`). It only works for accounts in `visit_admins`, sends at most 100 emails per run (Resend's free daily limit), fills in `{{business}}` and `{{product}}`, and adds an unsubscribe link to `nexusmediaph.com/unsubscribe/?t=<token>`.
 
 Secrets: `RESEND_API_KEY`, `RESEND_FROM` (e.g. `NEXUSMEDIA <hello@nexusmediaph.com>`), `REPLY_TO`. The sending domain must be verified in Resend (its DNS records go in GoDaddy).
+
+## WhatsApp agent leads (ElevenLabs)
+
+Every chat with the Nexus Media Assistant on WhatsApp ends with ElevenLabs sending a post-call webhook. The `whatsapp-lead` edge function (Verify JWT **off**, source in `supabase/functions/whatsapp-lead/`) checks the `ElevenLabs-Signature`, reads the data-collection fields (`client_name`, `email`, `company_country`, `service`, `project_details`, `budget`, `timeline`) and saves one row per conversation to `agent_leads`. They show in **Leads from WhatsApp** on nexusmediaph.com/visits. Chats where nothing was collected are skipped.
+
+Setup:
+1. Run `agent-leads-schema.sql` in the SQL Editor.
+2. Create the edge function `whatsapp-lead` with the source above and **Verify JWT off**.
+3. In ElevenLabs: **Agents → Settings (workspace) → Webhooks → Post-call webhook → Create**, URL `https://oytgbzaukedyfifavvlq.supabase.co/functions/v1/whatsapp-lead`, type transcription (no audio). Copy the secret it shows.
+4. Supabase **Edge Functions → Secrets**: add `ELEVENLABS_WEBHOOK_SECRET` with that secret.
+5. Make sure the agent uses the workspace post-call webhook (agent **Advanced/Webhooks** setting) and has the data-collection fields from `marketing/whatsapp-agent/agent-settings.md`.
 
 ## Backups
 
