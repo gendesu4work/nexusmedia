@@ -47,10 +47,20 @@ Deno.serve(async (req) => {
   let event: any;
   try { event = JSON.parse(raw); } catch { return new Response("bad json", { status: 400 }); }
   // Audio webhooks and anything else: just say OK.
-  if (event.type !== "post_call_transcription") return new Response("ok", { status: 200 });
+  if (event.type !== "post_call_transcription") {
+    console.log("ignored event type", event.type);
+    return new Response("ok", { status: 200 });
+  }
 
   const d = event.data || {};
-  const dc = d.analysis?.data_collection_results || {};
+  // data_collection_results can come as { client_name: {value} } or as a list / map of
+  // { data_collection_id: "client_name", value }. Normalise to { client_name: {value} }.
+  const rawDc = d.analysis?.data_collection_results || d.analysis?.data_collection || {};
+  const dc: Record<string, any> = {};
+  for (const [k, r] of Object.entries<any>(Array.isArray(rawDc) ? Object.fromEntries(rawDc.map((r: any, i: number) => [i, r])) : rawDc)) {
+    const name = r?.data_collection_id || r?.name || r?.id || k;
+    dc[name] = r && typeof r === "object" ? r : { value: r };
+  }
   const lead = {
     conversation_id: String(d.conversation_id || ""),
     client_name: val(dc, "client_name", 80),
@@ -64,7 +74,10 @@ Deno.serve(async (req) => {
   };
   if (!lead.conversation_id) return new Response("no conversation id", { status: 200 });
   // Hellos and spam with nothing collected stay out of the list.
-  if (!lead.client_name && !lead.email && !lead.service) return new Response("no lead", { status: 200 });
+  if (!lead.client_name && !lead.email && !lead.service) {
+    console.log("no lead", lead.conversation_id, "analysis keys:", Object.keys(d.analysis || {}), "dc:", JSON.stringify(rawDc).slice(0, 800));
+    return new Response("no lead", { status: 200 });
+  }
 
   const meta = d.metadata || {};
   const vars = d.conversation_initiation_client_data?.dynamic_variables || {};
