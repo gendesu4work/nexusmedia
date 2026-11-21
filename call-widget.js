@@ -7,7 +7,7 @@
   var AGENT_ID = 'agent_4001m7z74r68eh0v920zbcxr8kat';
   var SDK = 'https://cdn.jsdelivr.net/npm/@elevenlabs/client@1.34.0/+esm';
   var WHATSAPP = 'https://wa.me/639939258293?text=' + encodeURIComponent('Hi Nexus Media, I would like a quote.');
-  var KEY = 'nm_call_day';
+  var KEY = 'nm_call_day_v2';
   var CALLS_PER_DAY = 1;
 
   function today() { return new Date().toISOString().slice(0, 10); }
