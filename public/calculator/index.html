@@ -1182,11 +1182,16 @@ requestAnimationFrame(tick)})();
   if(ios)return '<ol><li>Open this page in <b>Safari</b></li><li>Tap <b>Share</b> '+share+', then <b>Add to Home Screen</b></li></ol><div class="ia"><button class="btn" onclick="insClose()">Got it</button></div>';
   return '';
  }
- function show(){if(hidden||standalone||!mobile)return;if(busy()){setTimeout(show,15000);return}
-  const h=body();if(!h)return;$i('insB').innerHTML=h;$i('ins').classList.add('on')}
+ // Guests only: count time spent in guest mode, show after DELAY when nothing else is open; hide if they log in.
+ function isGuest(){try{return typeof guest!=='undefined'&&guest===true}catch(e){return false}}
+ let gt=0,shown=false,timer=null;
+ function tick(){const on=$i('ins').classList.contains('on');
+  if(!isGuest()){gt=0;if(on)$i('ins').classList.remove('on');shown=false;return}
+  if(hidden||shown)return;gt+=3000;if(gt<DELAY||busy())return;
+  const h=body();if(!h){clearInterval(timer);return}$i('insB').innerHTML=h;$i('ins').classList.add('on');shown=true}
  window.insClose=function(done){$i('ins').classList.remove('on');hidden=true;try{localStorage.setItem(K,String(done?Date.now()+3650*864e5:Date.now()))}catch(e){}};
  window.insGo=async function(){if(!deferred)return;deferred.prompt();try{const r=await deferred.userChoice;deferred=null;if(r&&r.outcome==='accepted')insClose(true);else insClose()}catch(e){insClose()}};
- if(!hidden&&!standalone&&mobile)setTimeout(show,DELAY);
+ if(!hidden&&!standalone&&mobile)timer=setInterval(tick,3000);
 })();
 </script>
 </body></html>
