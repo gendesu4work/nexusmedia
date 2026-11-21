@@ -470,6 +470,8 @@ async function start(){regSW();try{localStorage.removeItem('ppt-guest')}catch(e)
  let ss=null;try{const r=await sb.auth.getSession();ss=r.data&&r.data.session}catch(e){}
  if(recovering)return;if(ss)return enter(ss.user);
  const last=rj('ppt-last');if(last&&rj('ppt-'+last.id)&&!navigator.onLine)return enter(last);
+ const go=new URLSearchParams(location.search).get('start');
+ if(go==='guest'||go==='signup'){history.replaceState(null,'',location.pathname);startGuest();if(go==='signup'){gtClose();openPackage()}return}
  showLogin('')}
 async function enter(u){guest=false;clearTimeout(promoT);$('#promo').style.display='none';uidU=u.id;S=EMPTY();const lc=rj('ppt-'+uidU);let paid=null;
  try{const pr=await sb.from('profiles').select('paid').eq('user_id',uidU).maybeSingle();if(!pr.error)paid=!!(pr.data&&pr.data.paid)}catch(e){}
