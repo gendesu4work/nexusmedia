@@ -83,6 +83,27 @@ th{color:var(--text-secondary);font-weight:600;position:sticky;top:0;background:
 #login input:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
 .msg{font-size:.85rem;color:var(--danger);min-height:1.2em}
 .banner{background:var(--surface-1);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;font-size:.82rem;color:var(--text-secondary);margin-bottom:12px}
+.leads{margin-top:12px}
+.leads .head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:.8rem;color:var(--text-secondary)}
+.chip b{color:var(--text-primary);font-variant-numeric:tabular-nums}
+.ltbl td,.ltbl th{text-align:left}
+.ltbl td.n,.ltbl th.n{text-align:right}
+.ltbl select{font:inherit;font-size:.8rem;color:var(--text-primary);background:var(--page);border:1px solid var(--line);border-radius:8px;padding:3px 6px}
+.due{color:var(--danger);font-weight:600}
+.compose{display:grid;gap:10px;margin-top:12px}
+.compose label{display:grid;gap:4px;font-size:.85rem;color:var(--text-secondary)}
+.compose input,.compose textarea,.compose select{font:inherit;font-size:.9rem;color:var(--text-primary);background:var(--page);border:1px solid var(--line);border-radius:10px;padding:9px 11px;width:100%}
+.compose textarea{min-height:240px;resize:vertical;line-height:1.5}
+.aud{display:flex;gap:16px;flex-wrap:wrap;font-size:.88rem}
+.aud label{display:flex;gap:6px;align-items:center;color:var(--text-primary)}
+.aud input{width:auto}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn.send{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:disabled{opacity:.55;cursor:default}
+.hint{font-size:.8rem;color:var(--text-muted)}
+.msg.ok{color:var(--series-3)}
 [hidden]{display:none!important}
 @media (max-width:760px){.tiles{grid-template-columns:1fr 1fr}.row2{grid-template-columns:1fr}.tile .num{font-size:1.6rem}}
 </style>
@@ -140,6 +161,32 @@ th{color:var(--text-secondary);font-weight:600;position:sticky;top:0;background:
           <summary>Daily numbers</summary>
           <div class="tbl-wrap"><table id="table"></table></div>
         </details>
+      </div>
+    </section>
+
+    <section class="card leads" id="leadsCard">
+      <div class="head"><h2>Leads from the calculator</h2><span class="hint">People who left their email at the end of the costing guide</span></div>
+      <div class="chips" id="leadChips"></div>
+      <p class="msg" id="leadMsg" role="alert"></p>
+      <div class="tbl-wrap" style="max-height:420px"><table class="ltbl" id="leadTable"></table></div>
+    </section>
+
+    <section class="card leads">
+      <div class="head"><h2>Email your leads</h2><span class="hint">Each person gets their own email, with an unsubscribe link</span></div>
+      <div class="compose">
+        <label>Start from a template<select id="tpl"></select></label>
+        <label>Subject<input id="subj" maxlength="150"></label>
+        <label>Message<textarea id="body" maxlength="5000"></textarea></label>
+        <p class="hint">{{business}} and {{product}} are replaced with each person's business name and the product they costed.</p>
+        <div class="aud" role="radiogroup" aria-label="Who gets it">
+          <label><input type="radio" name="aud" value="due" checked> <span id="audDue">Due for follow-up</span></label>
+          <label><input type="radio" name="aud" value="all"> <span id="audAll">Everyone active</span></label>
+        </div>
+        <div class="actions">
+          <button class="btn" id="sendTest">Send a test to me</button>
+          <button class="btn send" id="sendAll">Send</button>
+        </div>
+        <p class="msg" id="sendMsg" role="status"></p>
       </div>
     </section>
   </main>
@@ -247,13 +294,119 @@ function drawChart(keys,series){
   svg.addEventListener('pointermove',move);svg.addEventListener('pointerleave',leave);
 }
 
+// ---------- Leads ----------
+const DUE_DAYS=3;
+const STATUSES=[['new','New'],['following_up','Following up'],['signed_up','Signed up'],['not_interested','Not interested'],['unsubscribed','Unsubscribed']];
+const ACTIVE=['new','following_up'];
+const TEMPLATES=[
+ {name:'1 · Check-in (day 3)',subject:'Kumusta ang costing ng {{business}}?',body:`Hi!
+
+Salamat sa pag-try ng Product Calculator. Nakita naming na-cost mo na ang {{product}}. Nice start!
+
+Na-try mo na rin bang i-cost ang iba mong products? Pastry, kape, ulam o party trays, pare-pareho lang ang steps. Makikita mo agad kung alin ang may pinakamalaking kita at alin ang kailangan mong taasan ng presyo.
+
+Balikan mo dito: https://nexusmediaph.com/calculator/?start=guest
+
+Kung may tanong ka, reply ka lang dito.
+
+NEXUSMEDIA`},
+ {name:'2 · Inventory (day 6)',subject:'Want to have a hassle-free inventory check?',body:`Hi!
+
+Want to have a hassle-free inventory check?
+
+Sa Product Calculator, every sale automatically deducts your ingredients from stock. Makikita mo agad kung ano ang paubos na bago ka pa maubusan sa gitna ng rush, whether it's flour, coffee beans or rice.
+
+No more manual counting sa notebook o Excel.
+
+Try it here: https://nexusmediaph.com/calculator/?start=guest
+
+NEXUSMEDIA`},
+ {name:'3 · Save your data (day 9)',subject:'Huwag mawala ang costing mo',body:`Hi!
+
+Paalala lang: sa guest mode, nabubura ang lahat pag ni-refresh o sinara ang page.
+
+Para ma-save ang products, stock at sales ng {{business}}, mag-sign up for a one-time ₱99. Walang monthly fee, gumagana kahit offline, at magagamit mo sa phone, tablet o computer.
+
+Sign up here: https://nexusmediaph.com/calculator/?start=signup
+
+NEXUSMEDIA`},
+ {name:'4 · Last check-in (day 12)',subject:'Last check-in from NEXUSMEDIA',body:`Hi!
+
+Ito na ang last follow-up namin. Ayaw naming maging istorbo.
+
+Kung gusto mo pa ring malaman ang tunay na puhunan at kita ng bawat product mo, nandito lang ang Product Calculator: https://nexusmediaph.com/calculator/?start=guest
+
+Kung may tanong ka o gusto mo ng tulong mag-setup, reply ka lang dito. Salamat!
+
+NEXUSMEDIA`},
+ {name:'Blank',subject:'',body:''}];
+let leads=[];
+function nextDue(l){const b=new Date(l.last_contacted||l.created_at);return new Date(b.getTime()+DUE_DAYS*864e5)}
+function isDue(l){return ACTIVE.includes(l.status)&&(!l.last_contacted||nextDue(l)<=new Date())}
+function dmy(d){return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'Asia/Manila'})}
+function peso(n){return n==null?'':'₱'+Number(n).toLocaleString('en-US',{maximumFractionDigits:2})}
+function demoLeads(){const now=Date.now(),d=x=>new Date(now-x*864e5).toISOString();return [
+ {id:1,email:'nena@example.com',business:"Aling Nena's Bakery",biz_type:'bakery',product:'Ube pandesal',cost:17.7,price:30,status:'new',contacts:0,last_contacted:null,created_at:d(1)},
+ {id:2,email:'kape@example.com',business:'Kape ni Juan',biz_type:'coffee',product:'Iced latte',cost:34.2,price:95,status:'following_up',contacts:1,last_contacted:d(4),created_at:d(7)},
+ {id:3,email:'ulam@example.com',business:'',biz_type:'food',product:'Chicken adobo',cost:58,price:120,status:'following_up',contacts:2,last_contacted:d(1),created_at:d(9)},
+ {id:4,email:'trays@example.com',business:'Party Trays PH',biz_type:'other',product:'Pancit canton tray',cost:410,price:650,status:'signed_up',contacts:3,last_contacted:d(2),created_at:d(12)}]}
+async function loadLeads(){
+  $('leadMsg').textContent='';
+  if(DEMO){leads=demoLeads();renderLeads();return}
+  const {data:res,error}=await sb.rpc('lead_list');
+  if(error){leads=[];$('leadMsg').textContent=error.code==='PGRST202'||/lead_list/.test(error.message)?'The leads database is not set up yet. Run supabase/leads-schema.sql in the Supabase SQL Editor.':error.code==='42501'?'This account is not on the admin list.':'Could not load leads: '+error.message}
+  else leads=res||[];
+  renderLeads();
+}
+function renderLeads(){
+  const active=leads.filter(l=>ACTIVE.includes(l.status)),due=leads.filter(isDue);
+  const count=k=>leads.filter(l=>l.status===k).length;
+  $('leadChips').innerHTML=[['Total',leads.length],['Due for follow-up',due.length],['Active',active.length],['Signed up',count('signed_up')],['Unsubscribed',count('unsubscribed')]]
+    .map(([k,v])=>`<span class="chip">${k} <b>${fmt(v)}</b></span>`).join('');
+  $('audDue').textContent=`Due for follow-up (${due.length})`;$('audAll').textContent=`Everyone active (${active.length})`;
+  updSendBtn();
+  if(!leads.length){$('leadTable').innerHTML='<tbody><tr><td class="empty">No leads yet. They appear here when a guest leaves their email at the end of the costing guide.</td></tr></tbody>';return}
+  $('leadTable').innerHTML=`<thead><tr><th>Email</th><th>Business</th><th>Costed</th><th>Added</th><th class="n">Emails</th><th>Last emailed</th><th>Next follow-up</th><th>Status</th></tr></thead><tbody>`+
+   leads.map(l=>{const act=ACTIVE.includes(l.status),dd=isDue(l);
+    return `<tr><td><a href="mailto:${esc(l.email)}" style="color:var(--accent)">${esc(l.email)}</a></td><td>${esc(l.business||'—')}${l.biz_type?` <span class="hint">· ${esc(l.biz_type)}</span>`:''}</td>
+    <td>${esc(l.product||'—')}${l.price!=null?` <span class="hint">${peso(l.cost)} → ${peso(l.price)}</span>`:''}</td><td>${dmy(l.created_at)}</td><td class="n">${l.contacts}</td>
+    <td>${l.last_contacted?dmy(l.last_contacted):'—'}</td><td>${!act?'—':dd?'<span class="due">Due now</span>':dmy(nextDue(l))}</td>
+    <td><select data-id="${l.id}" aria-label="Status for ${esc(l.email)}">${STATUSES.map(([k,v])=>`<option value="${k}"${k===l.status?' selected':''}>${v}</option>`).join('')}</select></td></tr>`}).join('')+'</tbody>';
+}
+$('leadTable').addEventListener('change',async e=>{const s=e.target.closest('select');if(!s)return;const id=+s.dataset.id,l=leads.find(x=>x.id===id);
+  if(DEMO){l.status=s.value;renderLeads();return}
+  const {error}=await sb.rpc('lead_update',{p_id:id,p_status:s.value,p_contacted:false,p_note:null});
+  if(error){$('leadMsg').textContent='Could not change status: '+error.message;s.value=l.status}else{l.status=s.value;renderLeads()}});
+$('tpl').innerHTML=TEMPLATES.map((t,i)=>`<option value="${i}">${esc(t.name)}</option>`).join('');
+function useTpl(i){$('subj').value=TEMPLATES[i].subject;$('body').value=TEMPLATES[i].body}
+$('tpl').addEventListener('change',e=>useTpl(+e.target.value));useTpl(0);
+const aud=()=>document.querySelector('input[name=aud]:checked').value;
+function recipients(){return aud()==='due'?leads.filter(isDue):leads.filter(l=>ACTIVE.includes(l.status))}
+function updSendBtn(){const n=Math.min(100,recipients().length);$('sendAll').textContent=n?`Send to ${n} ${n===1?'person':'people'}`:'No one to send to';$('sendAll').disabled=!n}
+document.querySelectorAll('input[name=aud]').forEach(r=>r.addEventListener('change',updSendBtn));
+async function sendMail(test){
+  const subject=$('subj').value.trim(),body=$('body').value.trim(),m=$('sendMsg');m.className='msg';
+  if(!subject||!body){m.textContent='Write a subject and a message first.';return}
+  const n=Math.min(100,recipients().length);
+  if(!test&&!confirm(`Send "${subject}" to ${n} ${n===1?'person':'people'}? This can't be undone.`))return;
+  if(DEMO){m.className='msg ok';m.textContent=test?'Sample mode: a test would go to your admin email.':'Sample mode: nothing was sent.';return}
+  $('sendAll').disabled=$('sendTest').disabled=true;m.textContent=test?'Sending a test…':`Sending to ${n}… this takes about ${Math.ceil(n*0.6)} seconds. Keep this page open.`;
+  const {data:res,error}=await sb.functions.invoke('send-leads',{body:{subject,body,audience:aud(),test}});
+  $('sendTest').disabled=false;
+  if(error||res?.error){let t=res?.error;if(!t&&error?.context?.json){try{t=(await error.context.json()).error}catch(x){}}m.textContent='Not sent: '+(t||error.message);updSendBtn();return}
+  m.className='msg ok';m.textContent=test?`Test sent to ${res.to}. Check your inbox (and spam).`:`Sent to ${res.sent} of ${res.total}.`+(res.failed?` ${res.failed} failed: ${(res.errors||[]).join('; ')}`:'');
+  if(!test)await loadLeads();else updSendBtn();
+}
+$('sendTest').addEventListener('click',()=>sendMail(true));
+$('sendAll').addEventListener('click',()=>sendMail(false));
+
 document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>{
   days=+b.dataset.days;document.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed',x===b));load();
 }));
-$('refresh').addEventListener('click',load);
+$('refresh').addEventListener('click',()=>{load();loadLeads()});
 let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>data&&render(),120)});
 
-function showApp(){$('login').hidden=true;$('app').hidden=false;load()}
+function showApp(){$('login').hidden=true;$('app').hidden=false;load();loadLeads()}
 function showLogin(msg){$('app').hidden=true;$('login').hidden=false;$('loginMsg').textContent=msg||''}
 
 (async()=>{
