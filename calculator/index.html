@@ -1135,4 +1135,58 @@ if(matchMedia('(prefers-reduced-motion:reduce)').matches){el.forEach((e,i)=>e.te
 const L=12000,t0=performance.now();
 function tick(now){const lg=document.getElementById('login');if(lg&&lg.style.display!=='none'){const p=((now-t0)%L)/L;const k=p<.1?0:p<.45?(p-.1)/.35:p<.92?1:0;const e=1-Math.pow(1-k,3);el.forEach((x,i)=>x.textContent=f(T[i]*e))}requestAnimationFrame(tick)}
 requestAnimationFrame(tick)})();
-</script></body></html>
+</script>
+<style>
+#ins{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:440px;margin:0 auto;z-index:250;background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:16px;padding:14px;box-shadow:0 12px 36px rgba(0,0,0,.3);display:none;animation:insUp .35s ease-out}
+#ins.on{display:block}
+@keyframes insUp{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){#ins{animation:none}}
+#ins .ih{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+#ins .ih img{width:48px;height:48px;border-radius:12px;flex:0 0 auto}
+#ins .it{font-weight:700;font-size:16px}
+#ins .is{font-size:13px;color:var(--mut);margin-top:2px}
+#ins ol{margin:0 0 10px;padding-left:20px;font-size:14px;line-height:1.6}
+#ins ol b{color:var(--ac)}
+#ins .ix{position:absolute;top:8px;right:10px;background:none;border:0;color:var(--mut);font-size:20px;cursor:pointer;padding:4px 6px;line-height:1}
+#ins .ia{display:flex;gap:8px;align-items:center}
+#ins .ia .btn{flex:1}
+#ins .il{background:none;border:0;color:var(--ac);font:inherit;font-size:13px;cursor:pointer;padding:8px}
+#ins svg{width:16px;height:16px;vertical-align:-3px}
+</style>
+<div id="ins" role="dialog" aria-labelledby="insT">
+ <button class="ix" aria-label="Close" onclick="insClose()">×</button>
+ <div class="ih"><img src="icon-192.png" alt=""><div><div class="it" id="insT">Add Product Calculator to your phone</div><div class="is">Opens like an app, right from your home screen.</div></div></div>
+ <div id="insB"></div>
+</div>
+<script>
+(function(){
+ const K='pc-install-hide',DAYS=14,DELAY=25000;
+ const ua=navigator.userAgent||'';
+ const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+ const mobile=/Android|iPhone|iPad|iPod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+ const ios=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+ const inapp=/FBAN|FBAV|FB_IAB|Instagram|Messenger|Line\/|TikTok|musical_ly/i.test(ua);
+ const iosSafari=ios&&!inapp&&!/CriOS|FxiOS|EdgiOS|OPiOS/i.test(ua);
+ let hidden=false;try{const t=+localStorage.getItem(K)||0;hidden=Date.now()-t<DAYS*864e5}catch(e){}
+ let deferred=null;
+ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e});
+ window.addEventListener('appinstalled',()=>{insClose(true);try{fbq('trackCustom','AppInstalled')}catch(e){}});
+ const $i=id=>document.getElementById(id);
+ const share='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>';
+ function busy(){const a=document.activeElement;const vis=id=>{const x=$i(id);return x&&x.style.display!=='none'&&getComputedStyle(x).display!=='none'};
+  return (a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName))||vis('promo')||vis('pk')||vis('gt')||vis('pol')}
+ function body(){
+  if(deferred)return '<div class="ia"><button class="btn" onclick="insGo()">Install app</button><button class="il" onclick="insClose()">Not now</button></div>';
+  if(inapp)return '<ol><li>Tap the <b>⋯</b> menu at the top or bottom of this screen</li><li>Choose <b>Open in '+(ios?'Safari':'browser')+'</b></li><li>Come back here and add it to your home screen</li></ol><div class="ia"><button class="btn" onclick="insClose()">Got it</button></div>';
+  if(iosSafari)return '<ol><li>Tap the <b>Share</b> button '+share+' in Safari’s toolbar</li><li>Scroll down and tap <b>Add to Home Screen</b></li><li>Tap <b>Add</b></li></ol><div class="ia"><button class="btn" onclick="insClose()">Got it</button></div>';
+  if(ios)return '<ol><li>Open this page in <b>Safari</b></li><li>Tap <b>Share</b> '+share+', then <b>Add to Home Screen</b></li></ol><div class="ia"><button class="btn" onclick="insClose()">Got it</button></div>';
+  return '';
+ }
+ function show(){if(hidden||standalone||!mobile)return;if(busy()){setTimeout(show,15000);return}
+  const h=body();if(!h)return;$i('insB').innerHTML=h;$i('ins').classList.add('on')}
+ window.insClose=function(done){$i('ins').classList.remove('on');hidden=true;try{localStorage.setItem(K,String(done?Date.now()+3650*864e5:Date.now()))}catch(e){}};
+ window.insGo=async function(){if(!deferred)return;deferred.prompt();try{const r=await deferred.userChoice;deferred=null;if(r&&r.outcome==='accepted')insClose(true);else insClose()}catch(e){insClose()}};
+ if(!hidden&&!standalone&&mobile)setTimeout(show,DELAY);
+})();
+</script>
+</body></html>
