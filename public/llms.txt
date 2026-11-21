@@ -1,11 +1,12 @@
 # Nexus Media
 
-> Nexus Media (NEXUS MEDIA) is a digital agency based in the Philippines offering online services: web development, system automation, video editing and social media management. It works fully online with businesses, brands and creators in the Philippines and abroad. Website: https://nexusmediaph.com
+> Nexus Media (NEXUS MEDIA) is an agency in Manila, Philippines that businesses abroad (US, UK, Canada, Australia, Europe) outsource to for video editing, social media management, web development and business/system automation. Clients get agency-quality work at Philippine rates, much lower than local agencies in those countries. All services are delivered online. Website: https://nexusmediaph.com
 
 Nexus Media is one connected team for web, automation, social media and video. Clients get a free quote within 24 hours through the contact form at https://nexusmediaph.com/#contact.
 
 ## Services
 
+- [Outsourcing agency in the Philippines](https://nexusmediaph.com/outsourcing-agency-philippines/): one Manila team for video editing, social media, web development and automation, for clients worldwide at Philippine rates.
 - [Web development agency in the Philippines](https://nexusmediaph.com/web-development-agency-philippines/): custom websites, landing pages, e-commerce stores and web apps; responsive, SEO-ready, typical launch in 2–4 weeks.
 - [System automation agency in the Philippines](https://nexusmediaph.com/system-automation-agency-philippines/): business process and workflow automation, custom business systems, inventory and sales tracking, lead capture and automated follow-up emails, content posting automation.
 - [Video editing agency in the Philippines](https://nexusmediaph.com/video-editing-agency-philippines/): reels, TikToks, YouTube Shorts and long-form, video ads, motion graphics, captions, colour grading; reels delivered in about 48 hours.
@@ -18,8 +19,8 @@ Nexus Media is one connected team for web, automation, social media and video. C
 
 ## Key facts
 
-- Location: Philippines
+- Location: Manila, Philippines (UTC+8)
 - Facebook: https://www.facebook.com/NEXUSMEDIAPHILIPPINES/
 - LinkedIn: https://www.linkedin.com/company/nexus-media-ph/
-- Service area: Philippines and worldwide, delivered online
-- Best for: small and growing businesses, brands, creators, podcasters and food businesses that want web, automation, video or social media handled by one agency
+- Service area: worldwide, delivered online; main markets US, UK, Canada, Australia, Europe and the Philippines
+- Best for: businesses, brands, creators and agencies abroad that want to outsource video editing, social media management, web development or automation to the Philippines at lower rates, handled by one English-fluent agency
