@@ -448,7 +448,10 @@ let S={shifts:[],buys:[],refunds:[],rcpt:[],rno:0,inv:[],brand:{},staff:[],produ
 let tab='dash',month=lday().slice(0,7),dbRef=null,timer=null;
 const $=s=>document.querySelector(s),uid=()=>Math.random().toString(36).slice(2,9);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const m=n=>{n=+n||0;return(n<0?'-':'')+'₱'+Math.abs(n).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2})};
+// Display currency. Default is Philippine peso; the user can switch in Settings. Only the symbol and decimals change, amounts are never converted.
+const CUR={PHP:['₱','Philippine peso',2],USD:['$','US dollar',2],EUR:['€','Euro',2],GBP:['£','British pound',2],AUD:['A$','Australian dollar',2],CAD:['C$','Canadian dollar',2],NZD:['NZ$','New Zealand dollar',2],SGD:['S$','Singapore dollar',2],HKD:['HK$','Hong Kong dollar',2],JPY:['¥','Japanese yen',0],KRW:['₩','South Korean won',0],CNY:['CN¥','Chinese yuan',2],INR:['₹','Indian rupee',2],IDR:['Rp','Indonesian rupiah',0],MYR:['RM','Malaysian ringgit',2],THB:['฿','Thai baht',2],VND:['₫','Vietnamese dong',0],AED:['AED ','UAE dirham',2],SAR:['SAR ','Saudi riyal',2],QAR:['QAR ','Qatari riyal',2],KWD:['KWD ','Kuwaiti dinar',3]};
+const ccy=()=>CUR[S.set&&S.set.ccy]?S.set.ccy:'PHP',cs=()=>CUR[ccy()][0],cd=()=>CUR[ccy()][2];
+const m=n=>{n=+n||0;const d=cd();return(n<0?'-':'')+cs()+Math.abs(n).toLocaleString('en-PH',{minimumFractionDigits:d,maximumFractionDigits:d})};
 const pct=(a,b)=>b>0?(a/b*100).toFixed(1)+'%':'–';
 const cls=n=>n>=0?'pos':'neg';
 // ===== SETUP: paste your two Supabase values here =====
@@ -602,11 +605,11 @@ function shiftCard(){const sh=curShift(),H=S.shifts||[],rp=shRep&&H.find(x=>x.id
  const head=on=>`<div class="shh"><h2>🕒 Shift</h2><span class="badge${on?' on':''}">${on?'Open':'Closed'}</span></div>`;
  if(!sh)return rep+`<div class="card shc">${head(0)}<div class="note shd">Open a shift when you start selling. Every sale and refund after that is counted in the shift report, so you can check the cash when you close.</div>
  <div class="li"><span>Status</span><b>No shift open</b></div><div class="li"><span>Date</span><b>${fmtD(lday())}</b></div>
- ${shHist(H)}<div class="shsp"></div><label class="shl" for="sc0">Opening cash (₱)</label><input id="sc0" type="number" placeholder="0.00" inputmode="decimal" style="margin-bottom:10px" onkeydown="if(event.key==='Enter')openShift()"><button class="btn" onclick="openShift()">Open shift</button></div>`;
+ ${shHist(H)}<div class="shsp"></div><label class="shl" for="sc0">Opening cash (${cs()})</label><input id="sc0" type="number" placeholder="0.00" inputmode="decimal" style="margin-bottom:10px" onkeydown="if(event.key==='Enter')openShift()"><button class="btn" onclick="openShift()">Open shift</button></div>`;
  const t=shTot(sh.openTs);
  return rep+`<div class="card shc" style="border-color:var(--ok)">${head(1)}<div class="note shd">Opened ${fmtTs(sh.openTs)}</div>
  <div class="li"><span>Opening cash</span><b>${m(sh.openCash)}</b></div><div class="li"><span>Gross sales this shift</span><b>${m(t.g)}</b></div><div class="li"><span>− Refunds</span><span class="${t.rf?'neg':''}">${m(t.rf)}</span></div><div class="li"><b>Net sales</b><b>${m(t.net)}</b></div>
- <div class="shsp"></div>${shClose?`<div style="margin-top:12px"><label class="shl" for="sc1">Cash counted in the drawer (₱)</label><input id="sc1" type="number" placeholder="0.00" inputmode="decimal" style="margin-bottom:10px"><label class="shl" for="sc2">GCash, card or other non-cash sales (optional)</label><input id="sc2" type="number" placeholder="0.00" inputmode="decimal" style="margin-bottom:10px"><div class="row"><button class="btn" onclick="closeShift()">Close shift</button><button class="btn ghost" onclick="shClose=false;render()">Cancel</button></div></div>`:`<button class="btn" style="margin-top:12px" onclick="shClose=true;render()">Close shift</button>`}</div>`}
+ <div class="shsp"></div>${shClose?`<div style="margin-top:12px"><label class="shl" for="sc1">Cash counted in the drawer (${cs()})</label><input id="sc1" type="number" placeholder="0.00" inputmode="decimal" style="margin-bottom:10px"><label class="shl" for="sc2">GCash, card or other non-cash sales (optional)</label><input id="sc2" type="number" placeholder="0.00" inputmode="decimal" style="margin-bottom:10px"><div class="row"><button class="btn" onclick="closeShift()">Close shift</button><button class="btn ghost" onclick="shClose=false;render()">Cancel</button></div></div>`:`<button class="btn" style="margin-top:12px" onclick="shClose=true;render()">Close shift</button>`}</div>`}
 function refundCard(){
  if(!rfOpen)return `<div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><b>↩️ Refund</b><div class="note">Optional. A refund is taken off your gross sales.</div></div><button class="btn" style="width:auto;padding:8px 14px;flex:0 0 auto" onclick="rfOpen=true;render()">Add a refund</button></div>`;
  return `<div class="card"><h2>↩️ Add a refund</h2>${S.products.length?`<div class="row"><select id="rfp">${S.products.map(p=>`<option value="${p.id}">${esc(p.name)} (${m(p.price)})</option>`).join('')}</select><input id="rfq" type="number" min="1" value="1" inputmode="numeric" style="flex:0 0 70px"></div><input id="rfa" type="number" placeholder="Refund amount (leave blank for full price)" inputmode="decimal" style="margin-bottom:8px"><input id="rfr" placeholder="Reason (optional)" style="margin-bottom:8px"><div class="note" style="margin:-4px 0 8px">The ingredients go back into your inventory. A refund cannot be deleted once it is added.</div><div class="row"><button class="btn" onclick="addRefund()">Add refund</button><button class="btn" style="background:transparent;color:var(--ac);border:1px solid var(--ac)" onclick="rfOpen=false;render()">Cancel</button></div>`:'<div class="note">Add a product first (Products tab).</div>'}</div>`}
@@ -635,7 +638,7 @@ function receiptCard(nr){
  <label class="t"><input type="checkbox" ${rRec?'checked':''} onchange="rRec=this.checked"> Also record these as sales and take the items out of stock</label>
  <div class="note" style="margin:-4px 0 8px">Leave this off if you already recorded this sale.</div>
  <select onchange="rDK=this.value;if(rDK==='none')rDV='';render()" style="margin-bottom:8px">${discOpts(rDK)}</select>
- ${rDK==='pct'||rDK==='amt'?`<input type="number" min="0" value="${rDV}" placeholder="${rDK==='pct'?'Discount percent':'Discount amount (₱)'}" inputmode="decimal" onchange="rDV=this.value;render()" style="margin-bottom:8px">`:''}
+ ${rDK==='pct'||rDK==='amt'?`<input type="number" min="0" value="${rDV}" placeholder="${rDK==='pct'?'Discount percent':'Discount amount ('+cs()+')'}" inputmode="decimal" onchange="rDV=this.value;render()" style="margin-bottom:8px">`:''}
  ${rDK==='pwd'?`<input value="${esc(rDno)}" placeholder="PWD ID number (optional)" oninput="rDno=this.value" style="margin-bottom:8px">`:''}
  ${rDisc()?`<div class="li"><span>Subtotal</span><span>${m(rTotal())}</span></div><div class="li"><span>${discName(rDK,rDV)}</span><span class="neg">−${m(rDisc())}</span></div>`:''}
  <div class="li"><b>Total</b><b>${m(rTotal()-rDisc())}</b></div>
@@ -709,16 +712,16 @@ function gtShow(){const c=$('#gtc'),x=`<button class="gtx" onclick="gtSkip()">${
   setTimeout(()=>{const e=$('#gtnm');if(e&&!matchMedia('(pointer:coarse)').matches)e.focus()},50);return}
  if(gtI===1){c.innerHTML=`${x}<p class="gtk">Step 1 of 3 · Your product</p><h3 id="gtt">What do you sell?</h3>${P.ex?`<div class="gtex">We filled in an example: <b>${esc(P.name)}</b>. Keep it to see how it works, or change it to your own product.</div>`:'<p>Type one of your own products.</p>'}
   <label for="gtpn">Product name</label><input id="gtpn" value="${esc(P.name)}" placeholder="e.g. Ube pandesal" oninput="gtSet(-1,'name',this.value)">
-  <div class="gt2"><div><label for="gtpp">You sell 1 for (₱)</label><input id="gtpp" type="number" min="0" inputmode="decimal" value="${esc(P.price)}" placeholder="e.g. 8" oninput="gtSet(-1,'price',this.value)"></div>
+  <div class="gt2"><div><label for="gtpp">You sell 1 for (${cs()})</label><input id="gtpp" type="number" min="0" inputmode="decimal" value="${esc(P.price)}" placeholder="e.g. 8" oninput="gtSet(-1,'price',this.value)"></div>
   <div><label for="gtpb">Pieces from 1 batch</label><input id="gtpb" type="number" min="1" inputmode="numeric" value="${esc(P.batch)}" placeholder="e.g. 30" oninput="gtSet(-1,'batch',this.value)"></div></div>
   <div class="gtex" style="margin-top:-4px">“Batch” means one round of cooking or baking. For a single drink or meal made one at a time, put <b>1</b>.</div>
   ${er}<div class="gtf"><button class="btn ghost" onclick="gtGo(0)">Back</button><button class="btn" onclick="gtGo(2)">Next: ingredients</button></div>`;return}
  if(gtI===2){const n=+P.batch||1;c.innerHTML=`${x}<p class="gtk">Step 2 of 3 · Ingredients</p><h3 id="gtt">What goes into ${n>1?'one batch':'it'}?</h3><p>For each ingredient, write how much you use and how you buy it.</p>
-  <div class="gtex">Example: you use <b>500 g</b> of flour, and you buy it in a <b>1,000 g</b> pack for <b>₱60</b>. That's ₱30 of flour.</div>
+  <div class="gtex">Example: you use <b>500 g</b> of flour, and you buy it in a <b>1,000 g</b> pack for <b>${cs()}60</b>. That's ${cs()}30 of flour.</div>
   ${P.ing.map((r,k)=>`<div class="gtr"><div class="gtr1"><input aria-label="Ingredient name" value="${esc(r.name)}" placeholder="Ingredient, e.g. Flour" oninput="gtSet(${k},'name',this.value)"><button class="x" aria-label="Remove ingredient" onclick="gtDelRow(${k})">×</button></div>
    <div class="gtr2"><label>You use<div class="gtu"><input type="number" min="0" inputmode="decimal" value="${esc(r.g)}" oninput="gtSet(${k},'g',this.value)"><select aria-label="Unit" onchange="gtP.ing[${k}].u=this.value;gtShow()">${['g','ml','pcs'].map(o=>`<option ${u(r)===o?'selected':''}>${o}</option>`).join('')}</select></div></label>
    <label>Pack size (${u(r)})<input type="number" min="0" inputmode="decimal" value="${esc(r.pack)}" oninput="gtSet(${k},'pack',this.value)"></label>
-   <label>Pack price (₱)<input type="number" min="0" inputmode="decimal" value="${esc(r.pc)}" oninput="gtSet(${k},'pc',this.value)"></label></div>
+   <label>Pack price (${cs()})<input type="number" min="0" inputmode="decimal" value="${esc(r.pc)}" oninput="gtSet(${k},'pc',this.value)"></label></div>
    <div class="gtlc">Cost: <b id="gtl${k}">${m(gtLine(r))}</b></div></div>`).join('')}
   <button class="gtadd" onclick="gtAddRow()">+ Add another ingredient</button>
   <div class="gtsum"><div><span>${n>1?'One batch costs':'Ingredients cost'}</span><b id="gtt1">${m(gtTot())}</b></div><div style="text-align:right"><span>÷ <span id="gtt3" style="display:inline">${n}</span> = cost of 1</span><b id="gtt2">${m(gtPer())}</b></div></div>
@@ -819,7 +822,7 @@ const catList=()=>Array.isArray(S.set.cats)?S.set.cats:['Pastry','Drinks','Meals
 const pCat=p=>p.cat&&catList().includes(p.cat)?p.cat:'Uncategorized';
 function discAmt(k,v,sub){if(k==='pwd')return +(sub*.2).toFixed(2);v=+v||0;if(k==='pct')return +(sub*Math.min(Math.max(v,0),100)/100).toFixed(2);if(k==='amt')return +Math.min(Math.max(v,0),sub).toFixed(2);return 0}
 const discName=(k,v)=>k==='pwd'?'PWD discount (20%)':(k==='pct'?'Discount ('+(+v||0)+'%)':'Discount');
-const discOpts=k=>[['none','No discount'],['pwd','PWD discount (20%)'],['pct','Custom discount (%)'],['amt','Custom discount (₱)']].map(o=>`<option value="${o[0]}" ${k===o[0]?'selected':''}>${o[1]}</option>`).join('');
+const discOpts=k=>[['none','No discount'],['pwd','PWD discount (20%)'],['pct','Custom discount (%)'],['amt','Custom discount ('+cs()+')']].map(o=>`<option value="${o[0]}" ${k===o[0]?'selected':''}>${o[1]}</option>`).join('');
 function usedCats(){const o=catList().concat(['Uncategorized']);return o.map(c=>({c,L:S.products.filter(p=>pCat(p)===c)})).filter(x=>x.L.length)}
 function sPrev(){const e=$('#spv');if(!e)return;const p=gp(sPid),q=+(($('#sq')||{}).value)||0,sub=p?p.price*q:0,d=discAmt(sDK,sDV,sub);
  e.innerHTML=`<div class="li"><span>Subtotal</span><span>${m(sub)}</span></div>${d?`<div class="li"><span>${discName(sDK,sDV)}</span><span class="neg">−${m(d)}</span></div>`:''}<div class="li"><b>Total</b><b>${m(sub-d)}</b></div>`}
@@ -834,7 +837,7 @@ function salesForm(){
  ${p&&sCat?`<div class="sel"><div class="li" style="border:0;padding:0 0 8px"><b>${esc(p.name)}</b><span>${m(p.price)} each</span></div>
  <input type="number" id="sq" min="1" value="${sQty}" placeholder="Qty sold" inputmode="numeric" oninput="sQty=this.value;sPrev()" onkeydown="if(event.key==='Enter')addSale()" style="margin-bottom:8px">
  <select onchange="sDK=this.value;if(sDK==='none')sDV='';render();setTimeout(()=>{const e=$(sDK==='pct'||sDK==='amt'?'#sdv':'#sdn');if(e)e.focus()},30)" style="margin-bottom:8px">${discOpts(sDK)}</select>
- ${sDK==='pct'||sDK==='amt'?`<input type="number" id="sdv" min="0" value="${sDV}" placeholder="${sDK==='pct'?'Discount percent':'Discount amount (₱)'}" inputmode="decimal" oninput="sDV=this.value;sPrev()" style="margin-bottom:8px">`:''}
+ ${sDK==='pct'||sDK==='amt'?`<input type="number" id="sdv" min="0" value="${sDV}" placeholder="${sDK==='pct'?'Discount percent':'Discount amount ('+cs()+')'}" inputmode="decimal" oninput="sDV=this.value;sPrev()" style="margin-bottom:8px">`:''}
  ${sDK==='pwd'?`<input id="sdn" value="${esc(sDno)}" placeholder="PWD ID number (optional)" oninput="sDno=this.value" style="margin-bottom:8px">`:''}
  <select id="spm" onchange="sPay=this.value;render()" style="margin-bottom:8px"><option value="cash" ${sPay==='cash'?'selected':''}>💵 Cash</option><option value="gcash" ${sPay==='gcash'?'selected':''}>GCash</option><option value="paymaya" ${sPay==='paymaya'?'selected':''}>PayMaya</option><option value="other" ${sPay==='other'?'selected':''}>Other</option></select>
  ${sPay==='other'?`<input id="spt" maxlength="40" value="${esc(sPayNote)}" placeholder="Mode of payment (e.g. bank transfer)" oninput="sPayNote=this.value" style="margin-bottom:8px">`:''}
@@ -903,7 +906,7 @@ const chd=(t,sub)=>`<div class="chd"><h2>${t}</h2><span>${sub||''}</span></div>`
 function lowBar(){const L=S.inv.filter(v=>v.qty<=0||(v.low>0&&v.qty<=v.low));if(!L.length)return '';return `<div class="lowbar"><b>⚠️ Low stock</b>${L.map(v=>`<span class="chip">${esc(v.name)} · ${+(+v.qty).toFixed(1)} ${v.u} left</span>`).join('')}<button class="btn ghost" onclick="tab='inv';render();scrollTo(0,0)">View inventory</button></div>`}
 const ymAdd=(ym,k)=>{let y=+ym.slice(0,4),mo=+ym.slice(5,7)+k;while(mo<1){mo+=12;y--}while(mo>12){mo-=12;y++}return y+'-'+String(mo).padStart(2,'0')};
 const mName=(ym,f)=>new Date(+ym.slice(0,4),+ym.slice(5,7)-1,1).toLocaleDateString('en-PH',f?{month:'long',year:'numeric'}:{month:'short'});
-const km=n=>{const a=Math.abs(n),s=n<0?'−':'';return s+'₱'+(a>=1e6?+(a/1e6).toFixed(1)+'M':a>=1e3?+(a/1e3).toFixed(1)+'k':+a.toFixed(a%1?1:0))};
+const km=n=>{const a=Math.abs(n),s=n<0?'−':'';return s+cs()+(a>=1e6?+(a/1e6).toFixed(1)+'M':a>=1e3?+(a/1e3).toFixed(1)+'k':+a.toFixed(a%1?1:0))};
 function nice(x){const e=10**Math.floor(Math.log10(x)),f=x/e;return(f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*e}
 // bar path with rounded data-end, anchored at the baseline y0
 function bp(x,w,y0,y1){const h=Math.abs(y1-y0);if(h<.5)return '';const r=Math.min(4,w/2,h),e=y1<y0?y1+r:y1-r;return `M${x},${y0}V${e}Q${x},${y1} ${x+r},${y1}H${x+w-r}Q${x+w},${y1} ${x+w},${e}V${y0}Z`}
@@ -994,7 +997,7 @@ exp(){const c=calc(),by={};S.expenses.filter(e=>inM(e.date)).forEach(e=>by[e.cat
  +col(8,card('By category',mName(month,1),cats.length?`<div class="fill">${hbars(cats.map(x=>({n:x[0],v:x[1],t:m(x[1]),s:pct(x[1],c.ops)+' of other expenses'})))}</div>`:empty('No expenses in '+mName(month,1)+' yet.')))+col(4,expForm())
  +col(8,expList('Expenses in '+mName(month,1)),'lim')+col(4,fixedCard())+`</div>`},
 set(){const ac=acctCard()||`<div class="card">${chd('Save your data','Guest mode')}<div class="note" style="font-size:14px">You are in guest mode, so nothing is saved. Sign up to keep your data online and use it on your phone, tablet and computer.</div><div class="row" style="margin:auto 0 0;padding-top:16px"><button class="btn" onclick="openPackage()">Sign up to save online</button><button class="btn ghost" onclick="leaveGuest()">Log in</button></div></div>`;
- return pHead('Settings','Business profile, tax, appearance and sales reset')+`<div class="dg">`+col(6,brandCard())+col(6,palCard())+col(6,taxSet())+col(6,ac)+col(12,dlCard())+col(12,resetCard())+`</div>`}};
+ return pHead('Settings','Business profile, currency, tax, appearance and sales reset')+`<div class="dg">`+col(6,brandCard()+curCard())+col(6,palCard())+col(6,taxSet())+col(6,ac)+col(12,dlCard())+col(12,resetCard())+`</div>`}};
 const col=(sp,h,x)=>`<div class="col s${sp}${x?' '+x:''}">${h}</div>`;
 const card=(t,sub,h)=>`<div class="card">${chd(t,sub)}${h}</div>`;
 document.addEventListener('mousemove',e=>{const tp=$('#tip'),t=e.target.closest&&e.target.closest('[data-tip]');if(!t){tp.style.display='none';return}
@@ -1059,7 +1062,7 @@ function recipe(p){if(p.items)return `<div class="card" style="margin:8px 0 0"><
  <button class="btn" onclick="addIng('${p.id}')">Add ingredient</button>
  <div class="row" style="margin-top:10px;align-items:center"><span class="k">Servings per batch (1 for a single drink)</span><input type="number" min="1" value="${p.batch||12}" onchange="setBatch('${p.id}',this.value);render()"></div>
  <div class="k" style="margin-top:6px"><b>Packaging</b> (bag, box, sticker)</div><div class="row"><input id="pkp" type="number" value="${p.pk||''}" placeholder="Price of one pack" onchange="setExtra('${p.id}')"><input id="pkq" type="number" value="${p.pkn||''}" placeholder="Pieces in that pack" onchange="setExtra('${p.id}')"></div>
- <div class="k"><b>Utilities per batch</b> (electricity, water, gas)</div><input id="utv" type="number" value="${p.ut||''}" placeholder="Cost for one batch" onchange="setExtra('${p.id}')" style="margin-bottom:4px"><div class="note" style="margin-bottom:8px">Estimate: monthly bill ÷ number of batches you bake that month. Example: ₱3,000 ÷ 30 batches = ₱100 per batch. Leave blank to skip.</div>
+ <div class="k"><b>Utilities per batch</b> (electricity, water, gas)</div><input id="utv" type="number" value="${p.ut||''}" placeholder="Cost for one batch" onchange="setExtra('${p.id}')" style="margin-bottom:4px"><div class="note" style="margin-bottom:8px">Estimate: monthly bill ÷ number of batches you bake that month. Example: ${cs()}3,000 ÷ 30 batches = ${cs()}100 per batch. Leave blank to skip.</div>
  <div class="k">Target margin: <b id="rtv">${S.set.tm??40}%</b></div><input type="range" min="0" max="90" value="${S.set.tm??40}" oninput="setRM(this.value,'${p.id}')" style="padding:0">
  <div id="rr">${recInner(p)}</div></div>`}
 function setRM(v,id){S.set.tm=+v;$('#rtv').textContent=v+'%';$('#rr').innerHTML=recInner(gp(id));save()}
@@ -1133,6 +1136,7 @@ function buyList(h){const L=(S.buys||[]).filter(b=>inM(b.date)).sort((a,b)=>b.da
 function useOf(p,q){const n=p.batch||12,o={};if(p.items){p.items.forEach(i=>{const c=gp(i.pid);if(c&&!c.items){const u=useOf(c,q*i.q);Object.keys(u).forEach(k=>o[k]=(o[k]||0)+u[k])}});return o}(p.ing||[]).forEach(i=>{const v=lk(i);if(v)o[v.id]=(o[v.id]||0)+q*i.g/n});return o}
 function lowCard(){const L=S.inv.filter(v=>v.qty<=0||(v.low>0&&v.qty<=v.low));if(!L.length)return '';return `<div class="card" style="border-color:var(--bad)"><h2>⚠️ Low stock</h2>${L.map(v=>`<div class="li"><span>${esc(v.name)}</span><b class="neg">${+(+v.qty).toFixed(1)} ${v.u} left</b></div>`).join('')}</div>`}
 function renderBrand(){const b=S.brand||{};$('#brand').innerHTML=`<img class="bl" alt="" src="${b.logo||APPLOGO}"><div style="min-width:0"><div class="bn">${esc(b.name||'Product Calculator')}</div><div class="bs">${b.name?'Powered by NEXUSMEDIA':'Cost, stock & profit tracker'}</div></div>`}
+function curCard(){const k=ccy();return `<div class="card"><h2>Currency</h2><div class="note" style="margin:-4px 0 10px">The money sign used across the app and on receipts. Changing it does not convert amounts you already entered.</div><select aria-label="Currency" onchange="S.set.ccy=this.value;save();render()">${Object.keys(CUR).map(c=>`<option value="${c}" ${k===c?'selected':''}>${CUR[c][0].trim()} · ${CUR[c][1]} (${c})</option>`).join('')}</select></div>`}
 function brandCard(){const b=S.brand||{};return `<div class="card"><h2>Business profile</h2><input value="${esc(b.name||'')}" placeholder="Your business name (optional)" onchange="bSet('name',this.value)"><div class="row" style="margin-top:8px;align-items:center"><label class="av" style="border-radius:12px;width:64px;height:64px;flex:0 0 64px">${b.logo?`<img src="${b.logo}" alt="">`:'Logo'}<input type="file" accept="image/*" hidden onchange="bLogo(this)"></label><div class="note">Tap the box to add your logo (optional). It shows at the top of the app.${b.logo?` <a href="#" onclick="bSet('logo','');return false" style="color:var(--ac)">Remove logo</a>`:''}</div></div></div>`}
 function bSet(k,v){S.brand=S.brand||{};S.brand[k]=v;save();render()}
 function shrink(file,sz,sq,cb){const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{let sx=0,sy=0,sw=im.width,sh=im.height,cw,ch;
