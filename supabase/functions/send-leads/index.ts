@@ -114,8 +114,7 @@ Deno.serve(async (req) => {
   if (!subject || !body) return json({ error: "Write a subject and a message first." }, 400);
 
   // Inbox preview text: the first line after the greeting.
-  const preview = (t: string) => (t.split(/
-+/).map((x) => x.trim()).filter(Boolean)[1] || "").slice(0, 140);
+  const preview = (t: string) => (t.split(/\n+/).map((x) => x.trim()).filter(Boolean)[1] || "").slice(0, 140);
 
   const send = async (to: string, l: any, token: string | null) => {
     const unsub = token ? `${site}/unsubscribe/?t=${token}` : `${site}/unsubscribe/`;
