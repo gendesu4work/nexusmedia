@@ -119,7 +119,23 @@
   .intro__clean { opacity: 0; filter: drop-shadow(0 0 24px rgb(0 163 255 / .45)); }
   /* compact rhythm: sections fit their content instead of filling whole screens */
   main > .section:not(.hero) { height: auto !important; min-height: 0 !important; padding-block: clamp(48px, 5vw, 72px) !important; }
-  #lowpoly, #yta, #jarvis { border-top: 1px solid rgb(255 255 255 / .07); }
+  #lowpoly, #yta, #jarvis, #tutorials { border-top: 1px solid rgb(255 255 255 / .07); }
+  /* tutorials: one big player for the published video, quiet placeholders for the ones in progress */
+  .tuts { margin-top: var(--s-7); row-gap: var(--s-5); }
+  .tuts > * { min-width: 0; }
+  .tut { display: flex; flex-direction: column; border-radius: var(--r-lg, 20px); background: var(--surface); overflow: hidden; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .06); }
+  .tut__video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #000; }
+  .tut__info { display: flex; align-items: center; gap: var(--s-4); padding: clamp(16px, 2vw, 24px); }
+  .tut__info img { width: 48px; height: 48px; border-radius: 12px; flex: none; }
+  .tut__info > div { flex: 1; min-width: 0; }
+  .tut__info h3 { margin: 0; font: var(--display-weight) clamp(20px, 1.8vw, 24px)/1.2 var(--font-display); letter-spacing: var(--display-tracking); }
+  .tut__info p { margin: 4px 0 0; color: var(--muted); font-size: 15px; }
+  .tut__len { font: 500 14px/1 var(--font-mono); color: var(--app-c); padding: 8px 12px; border-radius: 99px; background: color-mix(in srgb, var(--app-c) 12%, transparent); }
+  .tut__soon { aspect-ratio: 16 / 9; display: grid; place-content: center; justify-items: center; gap: 12px;
+               background: repeating-linear-gradient(135deg, var(--surface) 0 14px, #121419 14px 28px); border-bottom: 1px solid rgb(255 255 255 / .06); }
+  .tut__soon img { border-radius: 14px; filter: grayscale(1); opacity: .5; }
+  .tut__soon span { font: 500 13px/1 var(--font-mono); color: #ffd48a; padding: 7px 12px; border-radius: 99px; background: rgb(255 212 138 / .1); box-shadow: inset 0 0 0 1px rgb(255 212 138 / .3); }
+  @media (max-width: 1023px) { .tut.is-soon { grid-column: span 12; } .tut.is-soon .tut__soon { display: none; } .tut.is-soon .tut__info::after { content: "In progress"; font: 500 13px/1 var(--font-mono); color: #ffd48a; } }
   main > .section:not(.hero) > .wrap { display: block !important; height: auto !important; }
   footer.closing { height: auto !important; min-height: 0 !important; }
   #clipping { --app-c: #ff8a3d; }
@@ -243,6 +259,7 @@
       </div>
       <div class="nav__item"><a class="nav__link" href="#lowpoly">Low Poly</a></div>
       <div class="nav__item"><a class="nav__link" href="#jarvis">Jarvis</a></div>
+      <div class="nav__item"><a class="nav__link" href="#tutorials">Tutorials</a></div>
       <div class="nav__item"><a class="nav__link" href="#install">Install help</a></div>
     </nav>
     <div class="nav__actions">
@@ -470,6 +487,41 @@
     </div></div>
   </section>
 
+  <!-- TUTORIALS: one card per video. To publish one that is "in progress", swap its .tut__soon block
+       for a <video> like the Clipping Studio card and drop the is-soon class. Videos live in tutorials/. -->
+  <section class="section" id="tutorials" aria-labelledby="tutorials-h">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="tutorials-h">Tutorials. <span class="muted">Short walkthroughs of each app, from install to first result.</span></h2>
+      </div>
+      <div class="grid tuts">
+        <article class="tut span-12" style="--app-c: #ff8a3d">
+          <video class="tut__video" controls preload="metadata" playsinline poster="tutorials/clipping-studio.jpg">
+            <source src="tutorials/clipping-studio.mp4" type="video/mp4">
+            <track kind="captions" src="tutorials/clipping-studio.vtt" srclang="en" label="English">
+          </video>
+          <div class="tut__info">
+            <img src="logos/clipping.png" alt="" width="48" height="48">
+            <div><h3>Clipping Studio</h3><p>From a YouTube link to a captioned vertical short in ClipForge.</p></div>
+            <span class="tut__len">3:35</span>
+          </div>
+        </article>
+        <article class="tut is-soon span-4" style="--app-c: #9ecbff">
+          <div class="tut__soon"><img src="logos/yta.png" alt="" width="56" height="56"><span>In progress</span></div>
+          <div class="tut__info"><div><h3>YTA and FBA Studio</h3><p>Coming soon.</p></div></div>
+        </article>
+        <article class="tut is-soon span-4" style="--app-c: #ff9fc7">
+          <div class="tut__soon"><img src="logos/lowpoly.png" alt="" width="56" height="56"><span>In progress</span></div>
+          <div class="tut__info"><div><h3>Low Poly Animation</h3><p>Coming soon.</p></div></div>
+        </article>
+        <article class="tut is-soon span-4" style="--app-c: #ffb38a">
+          <div class="tut__soon"><img src="logos/jarvis.png" alt="" width="56" height="56"><span>In progress</span></div>
+          <div class="tut__info"><div><h3>Jarvis</h3><p>Coming soon.</p></div></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <section class="section ground-inverse" id="install" aria-labelledby="install-h">
     <div class="wrap">
       <div class="section-head">
@@ -518,7 +570,7 @@
           <p class="footer__lede">Windows apps made by Nexus Media. <a class="link" href="/">Visit nexusmediaph.com</a></p>
         </div>
         <div class="span-2 footer__col"><h3>Apps</h3><ul><li><a href="#clipping">Clipping Studio</a></li><li><a href="#yta">YTA and FBA Studio</a></li><li><a href="#lowpoly">Low Poly Animation</a></li><li><a href="#jarvis">Jarvis</a></li></ul></div>
-        <div class="span-2 footer__col"><h3>Help</h3><ul><li><a href="#install">Install steps</a></li><li><a href="https://discord.gg/UdpUhgYKcf" target="_blank" rel="noopener">Discord</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Help</h3><ul><li><a href="#tutorials">Tutorials</a></li><li><a href="#install">Install steps</a></li><li><a href="https://discord.gg/UdpUhgYKcf" target="_blank" rel="noopener">Discord</a></li></ul></div>
         <div class="span-2 footer__col"><h3>GitHub</h3><ul><li><a href="https://github.com/gendesu4work/clipping-studio/releases">Clipping releases</a></li><li><a href="https://github.com/gendesu4work/yta-fba-studio/releases">YTA releases</a></li></ul></div>
       </div>
       <div class="footer__legal">

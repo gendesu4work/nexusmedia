@@ -1,0 +1,345 @@
+WEBVTT
+
+1
+00:00:01.500 --> 00:00:03.300
+This is Creator Studio.
+
+2
+00:00:03.460 --> 00:00:05.220
+It finds the best moments in your streams,
+
+3
+00:00:05.240 --> 00:00:07.710
+and turns them into ready-to-post shorts.
+
+4
+00:00:08.060 --> 00:00:10.230
+Let's set it up, then make your first clip.
+
+5
+00:00:11.870 --> 00:00:13.670
+First, install it.
+
+6
+00:00:13.870 --> 00:00:16.720
+Download the Creator Studio setup file, and run it.
+
+7
+00:00:16.790 --> 00:00:18.230
+You'll also need Python,
+
+8
+00:00:18.250 --> 00:00:20.480
+version 3.10 or newer.
+
+9
+00:00:20.730 --> 00:00:24.100
+When you install Python, tick: Add python to PATH.
+
+10
+00:00:24.410 --> 00:00:26.840
+The first launch sets everything up by itself.
+
+11
+00:00:27.050 --> 00:00:29.540
+It takes a few minutes, and it only happens once.
+
+12
+00:00:31.360 --> 00:00:33.160
+The app has four tabs:
+
+13
+00:00:33.420 --> 00:00:35.270
+Clip downloader, Twitch clips,
+
+14
+00:00:35.560 --> 00:00:37.470
+ClipForge, and My shorts.
+
+15
+00:00:37.960 --> 00:00:39.760
+Start in the Clip downloader.
+
+16
+00:00:39.820 --> 00:00:42.090
+Scroll down to Find moments with Gemini.
+
+17
+00:00:42.540 --> 00:00:44.080
+This is the YouTube analyzer,
+
+18
+00:00:44.100 --> 00:00:46.310
+and it needs a free Gemini key.
+
+19
+00:00:46.600 --> 00:00:48.550
+Click the link to Google AI Studio,
+
+20
+00:00:48.760 --> 00:00:50.670
+create a key, and copy it.
+
+21
+00:00:50.780 --> 00:00:52.580
+Paste it here, and press Connect.
+
+22
+00:00:52.800 --> 00:00:54.460
+When the badge turns green,
+
+23
+00:00:54.480 --> 00:00:56.280
+Gemini is ready.
+
+24
+00:00:57.250 --> 00:00:58.190
+Next, open ClipForge.
+
+25
+00:00:58.210 --> 00:01:00.890
+In the top right, click AI director.
+
+26
+00:01:00.910 --> 00:01:03.490
+With a free Coarena key,
+
+27
+00:01:03.510 --> 00:01:05.490
+the AI reads your clip and follows your instructions.
+
+28
+00:01:05.510 --> 00:01:08.680
+Click: Get a free Coarena key.
+
+29
+00:01:09.010 --> 00:01:11.240
+Copy it, paste it in, and press Save.
+
+30
+00:01:11.390 --> 00:01:14.220
+The badge now says free. And that's the whole setup.
+
+31
+00:01:16.030 --> 00:01:16.830
+Now let's make a clip.
+
+32
+00:01:16.850 --> 00:01:19.790
+Copy the link to your stream VOD on YouTube,
+
+33
+00:01:19.810 --> 00:01:22.850
+and paste it at the top of the Clip downloader.
+
+34
+00:01:22.870 --> 00:01:24.110
+In the Gemini section,
+
+35
+00:01:24.130 --> 00:01:26.540
+choose Best moments or Funniest moments,
+
+36
+00:01:26.830 --> 00:01:29.840
+pick how many, and add extra instructions if you want.
+
+37
+00:01:30.150 --> 00:01:31.950
+Then press Analyze video.
+
+38
+00:01:32.090 --> 00:01:34.450
+Gemini watches the stream, and gives you a list of moments,
+
+39
+00:01:34.470 --> 00:01:36.730
+each with its time stamps,
+
+40
+00:01:36.750 --> 00:01:38.560
+a score, and why it works.
+
+41
+00:01:38.870 --> 00:01:40.610
+Hit Download on the one you like.
+
+42
+00:01:40.630 --> 00:01:43.260
+You can also preview it, or adjust the times first.
+
+43
+00:01:43.690 --> 00:01:45.070
+Got a Twitch clip instead?
+
+44
+00:01:45.090 --> 00:01:47.800
+Open the Twitch clips tab, and paste the clip link.
+
+45
+00:01:47.870 --> 00:01:50.300
+It downloads right away, in the best quality.
+
+46
+00:01:50.730 --> 00:01:52.530
+Then press Edit in ClipForge.
+
+47
+00:01:54.330 --> 00:01:57.030
+In ClipForge, every clip you download shows up
+
+48
+00:01:57.050 --> 00:02:00.080
+under Downloaded clips. Click one to load it.
+
+49
+00:02:00.250 --> 00:02:02.180
+Now tell the AI what you want.
+
+50
+00:02:02.510 --> 00:02:06.220
+Type it in plain words, or tap a quick idea, like Hook first.
+
+51
+00:02:06.470 --> 00:02:08.010
+If a part must stay in,
+
+52
+00:02:08.030 --> 00:02:11.180
+add a must-show moment, with its start and end time.
+
+53
+00:02:11.550 --> 00:02:13.640
+Then pick the layout that fits your video.
+
+54
+00:02:14.030 --> 00:02:15.230
+Full frame, with face follow,
+
+55
+00:02:15.250 --> 00:02:17.700
+is for podcasts and talking videos.
+
+56
+00:02:17.870 --> 00:02:20.880
+The crop glides smoothly to keep the speaker in the middle.
+
+57
+00:02:21.090 --> 00:02:24.920
+Split, reaction cam plus gameplay, is for gaming streamers.
+
+58
+00:02:24.950 --> 00:02:27.640
+The facecam goes on top, and the gameplay below.
+
+59
+00:02:27.750 --> 00:02:29.050
+It finds the facecam by itself,
+
+60
+00:02:29.070 --> 00:02:31.720
+and you can drag the boxes to fix it.
+
+61
+00:02:31.850 --> 00:02:33.760
+Meme frame is for funny clips.
+
+62
+00:02:33.890 --> 00:02:35.430
+Add a title on top and your handle,
+
+63
+00:02:35.450 --> 00:02:37.700
+and it looks like a classic meme post.
+
+64
+00:02:37.950 --> 00:02:40.430
+Turn on Heavy edit for punch-in zooms,
+
+65
+00:02:40.450 --> 00:02:42.420
+shakes, flashes, circles,
+
+66
+00:02:42.650 --> 00:02:44.390
+arrows and emoji pops.
+
+67
+00:02:44.410 --> 00:02:46.190
+Below that, choose the format,
+
+68
+00:02:46.210 --> 00:02:47.850
+how tightly to cut the pauses,
+
+69
+00:02:47.870 --> 00:02:48.690
+where the captions go,
+
+70
+00:02:48.710 --> 00:02:52.380
+and the caption font. You can even drop in background music.
+
+71
+00:02:52.450 --> 00:02:54.320
+It ducks under the voice automatically.
+
+72
+00:02:54.710 --> 00:02:56.940
+When you're happy, press Edit my video.
+
+73
+00:02:58.780 --> 00:03:01.010
+Your finished shorts land in My shorts.
+
+74
+00:03:01.160 --> 00:03:03.710
+Download them, or delete the ones you don't need.
+
+75
+00:03:04.000 --> 00:03:06.850
+Press the pencil button, and the AI writes a caption,
+
+76
+00:03:06.960 --> 00:03:10.030
+a description with hashtags, and the best time to post.
+
+77
+00:03:10.400 --> 00:03:12.270
+Each one has its own copy button.
+
+78
+00:03:14.040 --> 00:03:15.460
+A few more things.
+
+79
+00:03:15.480 --> 00:03:18.370
+If a video is age-restricted or members-only,
+
+80
+00:03:18.420 --> 00:03:20.890
+turn on YouTube sign-in with a cookies file.
+
+81
+00:03:21.100 --> 00:03:23.040
+The version badge at the top shows if you're up
+
+82
+00:03:23.060 --> 00:03:25.230
+to date, and the app updates itself.
+
+83
+00:03:25.640 --> 00:03:28.080
+If you get stuck, click Join our community for
+
+84
+00:03:28.100 --> 00:03:29.680
+tutorials and help.
+
+85
+00:03:29.700 --> 00:03:30.380
+That's it.
+
+86
+00:03:30.400 --> 00:03:32.200
+Go make your first short.
