@@ -9,6 +9,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Product Calculator">
 <title>Product Calculator – NEXUSMEDIA</title>
+<!-- Meta Pixel: measures which Facebook/Instagram ads bring visitors, sign-ups and payments. autoConfig off so it never reads form fields. -->
+<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('set','autoConfig',false,'1068020629590907');fbq('init','1068020629590907');fbq('track','PageView');</script>
 <style>
 :root{--bg:#eef7fd;--card:#fff;--tx:#0f2a3d;--mut:#5a778a;--ac:#0a84c6;--on:#fff;--hd1:#0a84c6;--hd2:#4fb8f0;--ln:#d3e6f2;--ok:#1b8a4e;--bad:#c0392b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1620;--card:#12232f;--tx:#e8f3fa;--mut:#8fb0c4;--ac:#4fb8f0;--on:#06202f;--hd1:#0d4a6e;--hd2:#1b7fb3;--ln:#223646;--ok:#5fd08f;--bad:#f08a7c}}
@@ -375,7 +378,8 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 <li><b>Account:</b> your email address and your password (hashed).</li>
 <li><b>Your business data:</b> what you type in: products, recipes, ingredients, stock, sales, refunds, expenses, rent, staff names, roles, salaries and photos, your business name and logo, and settings.</li>
 <li><b>Payment record:</b> whether you paid, when, and SikatPay's payment reference number. No wallet or card details.</li>
-<li>We don't track your location, and we don't use advertising or tracking cookies.</li>
+<li><b>Ad measurement:</b> we use the Meta Pixel to count visits to this page, sign-ups started and payments completed, so we can see which of our Facebook and Instagram ads work. Meta receives your browser and device details and these events, and may use cookies to do this. It never receives your email, password or business data.</li>
+<li>We don't track your location.</li>
 </ul>
 <p><b>About your staff's information:</b> if you enter details about other people (like your staff's names, photos or salaries), you are responsible for having their permission and for keeping it accurate. Only add what you need.</p>
 
@@ -386,6 +390,7 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 <li><b>Your own device</b>: keeps a copy so the app works offline. Logging out removes it from that device.</li>
 <li><b>SikatPay / Bonggot Tech</b>: processes your payment and sends us a payment confirmation.</li>
 <li><b>Netlify</b>: passes SikatPay's payment confirmation on to our server. It doesn't store your business data.</li>
+<li><b>Meta (Facebook)</b>: measures our ads with the Meta Pixel, as described in section 5.</li>
 <li><b>GitHub</b>: holds an <b>encrypted</b> nightly backup of the database for 30 days, so we can recover from accidents. Nobody can read it without our private key.</li>
 </ul>
 <p>Some of these providers keep data on servers outside the Philippines. They protect it with security measures that meet industry standards.</p>
@@ -466,7 +471,7 @@ async function start(){regSW();try{localStorage.removeItem('ppt-guest')}catch(e)
  sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
  sb.auth.onAuthStateChange((ev)=>{if(ev==='PASSWORD_RECOVERY'){recovering=true;showReset()}});
  if(/error(_code)?=/.test(location.hash)){history.replaceState(null,'',location.pathname);showLogin('That link has expired or was already used. Please ask for a new one.');return}
- if(location.search.includes('paid=1')){history.replaceState(null,'',location.pathname);showLogin('Thank you! Your payment is being confirmed. Please wait a minute, then log in with your email and password.');return}
+ if(location.search.includes('paid=1')){history.replaceState(null,'',location.pathname);try{fbq('track','Purchase',{value:99,currency:'PHP'})}catch(x){}showLogin('Thank you! Your payment is being confirmed. Please wait a minute, then log in with your email and password.');return}
  let ss=null;try{const r=await sb.auth.getSession();ss=r.data&&r.data.session}catch(e){}
  if(recovering)return;if(ss)return enter(ss.user);
  const last=rj('ppt-last');if(last&&rj('ppt-'+last.id)&&!navigator.onLine)return enter(last);
@@ -739,7 +744,7 @@ async function doSignup(){const e=$('#se').value.trim(),p=$('#sp1').value,q=$('#
  if(!$('#sagree').checked){sm.textContent='Please read the Terms of Use and Privacy Policy and tick the box to continue.';return}
  sm.textContent='Starting payment…';
  try{const r=await fetch(SUPABASE_URL+'/functions/v1/signup',{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY},body:JSON.stringify({email:e,password:p,agreed:POLICY_VERSION})});const j=await r.json();
-  if(j.url){location.href=j.url;return}sm.textContent=j.error||'Something went wrong. Please try again.'}catch(x){sm.textContent='Could not connect. Check your internet and try again.'}}
+  if(j.url){try{fbq('track','InitiateCheckout',{value:99,currency:'PHP'})}catch(x){}setTimeout(()=>{location.href=j.url},300);return}sm.textContent=j.error||'Something went wrong. Please try again.'}catch(x){sm.textContent='Could not connect. Check your internet and try again.'}}
 function showLogin(msg){applyPal();document.body.classList.remove('inapp');$('#shell').style.display='none';$('#login').style.display='';$('#lmsg').textContent=msg}
 // Only a 4xx answer means the email/password was checked. No answer or a 5xx means our server is down, so do not blame the password.
 const DOWN='Our server is not responding right now. Your account and data are safe. Please try again in a little while.';
