@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /visits/
+Disallow: /unsubscribe/
+
+Sitemap: https://nexusmediaph.com/sitemap.xml
