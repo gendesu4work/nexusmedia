@@ -25,7 +25,7 @@ Nexus Media is one connected team for web, automation, social media and video. C
 ## Digital products
 
 - [Blueprints](https://nexusmediaph.com/blueprints/): Windows apps for creators, including YTA & FBA Studio (one-click 2D/3D animated shorts posted to YouTube, Facebook, Instagram and TikTok) and an Auto Clipping Tool for podcasts and streams.
-- [Product Calculator](https://nexusmediaph.com/calculator/): web app for food businesses covering product costing, inventory and daily sales and profit.
+- [POS System](https://nexusmediaph.com/pos/): ₱99 one-time POS web app for food businesses: orders, Cash/GCash/Maya, receipts, shifts, staff, inventory, product costing and daily sales and profit.
 
 ## Key facts
 
