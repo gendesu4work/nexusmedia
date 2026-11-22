@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>POS FB Ads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=block" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b1620; --bg2:#0f1e2b; --card:#12232f; --ln:#223646;
+  --tx:#e8f3fa; --mut:#8fb0c4; --ac:#4fb8f0; --ac2:#0a84c6; --ok:#5fd08f; --bad:#f08a7c;
+  --paper:#eef7fd; --ink:#0f2a3d; --ink2:#5a778a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1350px;overflow:hidden;background:var(--bg)}
+body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;color:var(--tx);-webkit-font-smoothing:antialiased}
+.ad{display:none;width:1080px;height:1350px;position:relative;overflow:hidden;padding:84px 80px}
+.ad.on{display:block}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+.peso{font-feature-settings:"tnum"}
+
+/* shared bits */
+.brand{display:flex;align-items:center;gap:16px;font-weight:700;font-size:26px;letter-spacing:.02em}
+.brand img{width:52px;height:52px;border-radius:14px;background:#fff;padding:6px}
+.brand small{display:block;font-weight:500;font-size:18px;color:var(--mut);letter-spacing:.08em;text-transform:uppercase}
+.eyebrow{display:inline-block;font-size:22px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ac)}
+.cta{position:absolute;left:80px;right:80px;bottom:76px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.btn{background:var(--ac);color:#06202f;font-weight:800;font-size:30px;padding:26px 40px;border-radius:999px;white-space:nowrap}
+.url{font-size:24px;color:var(--mut);font-weight:500}
+.url b{color:var(--tx);font-weight:700;display:block;font-size:28px;margin-top:4px}
+.ad .brand,.ad h1,.ad .sub,.ad .grid,.ad .q,.ad .ans,.ad .p,.ad .big,.ad .once,.ad .nos,.ad .free{position:relative;z-index:1}
+.glow{position:absolute;border-radius:50%;filter:blur(120px);opacity:.55;pointer-events:none}
+
+/* phone mockup */
+.phone{width:430px;height:690px;border-radius:64px;background:#05101a;padding:16px;
+  box-shadow:0 0 0 2px #2a4152,0 60px 120px -30px rgba(0,0,0,.7),0 0 120px -20px rgba(79,184,240,.35)}
+.screen{width:100%;height:100%;border-radius:50px;background:var(--bg);overflow:hidden;padding:56px 28px 28px;position:relative}
+.notch{position:absolute;top:16px;left:50%;transform:translateX(-50%);width:120px;height:32px;border-radius:20px;background:#05101a}
+.app-title{font-size:24px;font-weight:800;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center}
+.app-title span{font-size:15px;font-weight:600;color:var(--mut)}
+.tabs{display:flex;gap:8px;margin-bottom:20px}
+.tabs i{font-style:normal;font-size:14px;font-weight:600;padding:8px 13px;border-radius:999px;color:var(--mut);background:var(--card)}
+.tabs i.a{background:var(--ac);color:#06202f}
+.live{display:flex;justify-content:space-between;align-items:center;font-size:15px;color:var(--mut);margin-bottom:12px}
+.live b{color:var(--ok);font-weight:700;display:flex;align-items:center;gap:6px}
+.live b:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ok)}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.stat{background:var(--card);border:1px solid var(--ln);border-radius:18px;padding:14px 12px}
+.stat small{display:block;font-size:13px;color:var(--mut);font-weight:600;margin-bottom:6px}
+.stat b{font-size:22px;font-weight:800}
+.stat.p b{color:var(--ok)}
+.tbl{background:var(--card);border:1px solid var(--ln);border-radius:20px;padding:6px 16px}
+.row{display:grid;grid-template-columns:1fr 64px 62px;align-items:center;padding:14px 0;border-bottom:1px solid var(--ln);font-size:16px}
+.row:last-child{border-bottom:0}
+.row.h{font-size:12px;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:10px 0}
+.row span:nth-child(n+2){text-align:right}
+.pill{justify-self:end;background:rgba(95,208,143,.14);color:var(--ok);font-weight:700;font-size:14px;padding:4px 8px;border-radius:8px}
+.toast{position:absolute;left:28px;right:28px;bottom:28px;background:#183244;border:1px solid #2b4d63;border-radius:18px;padding:16px 18px;display:flex;gap:14px;align-items:center;font-size:15px}
+.toast .ic{width:36px;height:36px;border-radius:50%;background:var(--ok);color:#06202f;display:grid;place-items:center;font-weight:800;font-size:20px}
+.toast b{display:block;font-size:16px}
+.toast small{color:var(--mut)}
+
+/* ---------- AD 1: hero ---------- */
+#a1 h1{font-size:80px;line-height:1.02;font-weight:800;letter-spacing:-.035em;margin:34px 0 26px;max-width:880px}
+#a1 h1 em{font-style:normal;color:var(--ac)}
+#a1 p.sub{font-size:30px;line-height:1.4;color:var(--mut);max-width:520px}
+#a1 .phone{position:absolute;right:78px;top:440px;transform:rotate(4deg)}
+#a1 .chips{position:absolute;left:80px;top:760px;display:flex;flex-direction:column;gap:16px}
+#a1 .chip{display:flex;align-items:center;gap:14px;font-size:26px;font-weight:600}
+#a1 .chip i{width:40px;height:40px;border-radius:12px;background:rgba(79,184,240,.15);color:var(--ac);display:grid;place-items:center;font-style:normal;font-weight:800;font-size:20px}
+
+/* ---------- AD 2: receipt / costing ---------- */
+#a2{background:var(--paper);color:var(--ink)}
+#a2 .brand small{color:var(--ink2)}
+#a2 .brand img{box-shadow:0 0 0 2px #d3e6f2}
+#a2 h1{font-size:76px;line-height:1.04;font-weight:800;letter-spacing:-.035em;margin:30px 0 0}
+#a2 h1 s{text-decoration-thickness:6px;text-decoration-color:var(--bad);color:#8aa3b4}
+#a2 h1 em{font-style:normal;color:var(--ac2)}
+#a2 .receipt{position:absolute;left:80px;right:80px;top:400px;background:#fff;border-radius:28px;padding:44px 52px;
+  box-shadow:0 40px 80px -40px rgba(15,42,61,.35),0 0 0 1px #d3e6f2}
+#a2 .rh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:22px}
+#a2 .rh b{font-size:36px;font-weight:800}
+#a2 .rh span{font-size:22px;color:var(--ink2);font-weight:600}
+#a2 .li{display:flex;justify-content:space-between;font-size:27px;padding:16px 0;border-bottom:1px dashed #d3e6f2}
+#a2 .li span:first-child{color:var(--ink2)}
+#a2 .li span:last-child{font-weight:700}
+#a2{--mixln:#d3e6f2;--mixmut:#5a778a}
+#a2 .mix .c{color:#5a778a}
+#a2 .mix .r{padding:18px 0}
+#a2 .mix .r.h{padding:0 0 12px}
+#a2 .mix .m{background:#e3f6eb;color:#1b8a4e}
+#a2 .tot{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:30px}
+#a2 .tot div{background:var(--paper);border-radius:20px;padding:20px 22px}
+#a2 .tot small{display:block;font-size:19px;color:var(--ink2);font-weight:600;margin-bottom:6px}
+#a2 .tot b{font-size:42px;font-weight:800;letter-spacing:-.02em}
+#a2 .tot .g{background:#e3f6eb}
+#a2 .tot .g b{color:#1b8a4e}
+#a2 .btn{background:var(--ac2);color:#fff}
+#a2 .url{color:var(--ink2)}
+#a2 .url b{color:var(--ink)}
+
+/* product mix table */
+.mix .r{display:grid;grid-template-columns:1fr 150px 130px 120px;align-items:center;padding:22px 0;border-bottom:1px dashed var(--mixln)}
+.mix .r:last-child{border-bottom:0}
+.mix .r.h{font-size:19px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:0 0 14px;color:var(--mixmut)}
+.mix .r span:nth-child(n+2){text-align:right}
+.mix .nm{font-size:30px;font-weight:700}
+.mix .nm small{display:block;font-size:19px;font-weight:600;color:var(--mixmut);margin-top:2px}
+.mix .c,.mix .pr{font-size:30px;font-weight:700}
+.mix .m{justify-self:end;font-size:26px;font-weight:800;padding:6px 14px;border-radius:12px}
+
+/* ---------- AD 3: price ---------- */
+#a3{display:none;text-align:center;padding-top:96px}
+#a3.on{display:block}
+#a3 .brand{justify-content:center}
+#a3 .big{font-size:340px;font-weight:800;letter-spacing:-.06em;line-height:1;margin-top:96px;
+  background:linear-gradient(180deg,#e8f3fa 20%,#4fb8f0 100%);-webkit-background-clip:text;color:transparent}
+#a3 .big sup{font-size:150px;vertical-align:top;position:relative;top:44px;margin-right:8px;letter-spacing:0}
+#a3 .once{font-size:54px;font-weight:800;letter-spacing:-.02em;margin-top:10px}
+#a3 .once span{color:var(--ac)}
+#a3 .nos{display:flex;justify-content:center;gap:16px;margin-top:44px;flex-wrap:wrap}
+#a3 .nos i{font-style:normal;font-size:24px;font-weight:600;padding:14px 24px;border-radius:999px;border:1.5px solid var(--ln);background:var(--card);color:var(--tx)}
+#a3 .nos i b{color:var(--ok);margin-right:8px}
+#a3 .free{margin-top:56px;font-size:28px;color:var(--mut);line-height:1.45}
+#a3 .free b{color:var(--tx)}
+
+/* ---------- AD 4: features ---------- */
+#a4 h1{font-size:70px;line-height:1.05;font-weight:800;letter-spacing:-.035em;margin:30px 0 50px;max-width:900px}
+#a4 h1 em{font-style:normal;color:var(--ac)}
+#a4 .grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+#a4 .f{background:var(--card);border:1px solid var(--ln);border-radius:30px;padding:40px 36px;min-height:330px;position:relative}
+#a4 .f .n{font-size:20px;color:var(--mut);font-weight:700}
+#a4 .f h3{font-size:38px;font-weight:800;letter-spacing:-.02em;margin:18px 0 12px}
+#a4 .f p{font-size:25px;line-height:1.45;color:var(--mut)}
+#a4 .f svg{position:absolute;right:32px;top:32px}
+
+/* ---------- AD 5: Taglish question ---------- */
+#a5{background:linear-gradient(160deg,#0a84c6 0%,#075f90 55%,#06324f 100%)}
+#a5 .brand small{color:rgba(255,255,255,.7)}
+#a5 .q{font-size:88px;line-height:1.03;font-weight:800;letter-spacing:-.04em;margin-top:60px;max-width:920px}
+#a5 .q em{font-style:normal;color:#ffd66b}
+#a5 .ans{margin-top:56px;background:rgba(6,32,47,.45);border:1px solid rgba(255,255,255,.18);border-radius:32px;padding:30px 44px;--mixln:rgba(255,255,255,.18);--mixmut:rgba(255,255,255,.7)}
+#a5 .mix .r{padding:16px 0}
+#a5 .mix .r.h{padding:0 0 10px}
+#a5 .mix .m{background:rgba(127,240,173,.16);color:#7ff0ad}
+#a5 .ans .k{font-size:22px;color:rgba(255,255,255,.75);font-weight:600}
+#a5 .ans .v{font-size:76px;font-weight:800;letter-spacing:-.03em;line-height:1}
+#a5 .ans .sep{width:1px;align-self:stretch;background:rgba(255,255,255,.2)}
+#a5 .ans .m{color:#7ff0ad}
+#a5 .p{font-size:32px;line-height:1.45;margin-top:44px;color:rgba(255,255,255,.88);max-width:900px}
+#a5 .btn{background:#fff;color:#06324f}
+#a5 .url{color:rgba(255,255,255,.75)}
+#a5 .url b{color:#fff}
+
+/* POS sell screen */
+.order{background:var(--card);border:1px solid var(--ln);border-radius:20px;padding:4px 16px;margin-bottom:14px}
+.ol{display:grid;grid-template-columns:30px 1fr auto;align-items:center;padding:12px 0;border-bottom:1px solid var(--ln);font-size:16px}
+.ol:last-child{border-bottom:0}
+.ol i{font-style:normal;color:var(--ac);font-weight:800}
+.ol small{color:var(--ok);font-weight:700}
+.tot2{display:flex;justify-content:space-between;align-items:baseline;margin:6px 4px 14px}
+.tot2 span{font-size:15px;color:var(--mut);font-weight:600}
+.tot2 b{font-size:34px;font-weight:800}
+.pay{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.pay i{font-style:normal;text-align:center;font-size:15px;font-weight:700;padding:12px 0;border-radius:14px;background:var(--card);border:1px solid var(--ln);color:var(--mut)}
+.pay i.a{background:var(--ac);color:#06202f;border-color:var(--ac)}
+/* receipt (ad 2) */
+#a2 .rc .ln{display:flex;justify-content:space-between;font-size:28px;padding:13px 0}
+#a2 .rc .ln span:last-child{font-weight:700}
+#a2 .rc .ln.d span{color:#1b8a4e}
+#a2 .rc hr{border:0;border-top:2px dashed #d3e6f2;margin:12px 0}
+#a2 .rc .ln.t{font-size:40px;font-weight:800;padding-top:16px}
+#a2 .tags{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+#a2 .tags i{font-style:normal;font-size:22px;font-weight:700;padding:10px 18px;border-radius:999px;background:#e3f6eb;color:#1b8a4e}
+#a2 .tags i.b{background:#e2f1fb;color:var(--ac2)}
+/* shift report (ad 5) */
+#a5 .sr{display:grid;grid-template-columns:1fr auto;row-gap:18px;font-size:32px}
+#a5 .sr span{color:rgba(255,255,255,.8);font-weight:600}
+#a5 .sr b{font-weight:800;text-align:right}
+#a5 .sr .tt{border-top:1px solid rgba(255,255,255,.2);padding-top:18px;font-size:40px;color:#fff}
+#a5 .sr b.tt{color:#7ff0ad}
+#a5 .srh{display:flex;justify-content:space-between;font-size:22px;color:rgba(255,255,255,.7);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px}
+</style>
+</head>
+<body>
+
+<!-- AD 1 — hero: a POS for your food business -->
+<section class="ad" id="a1">
+  <div class="glow" style="width:700px;height:700px;background:#0a84c6;right:-200px;top:380px"></div>
+  <div class="brand"><img src="../../public/logo.png" alt=""><div>POS System<small>by NEXUSMEDIA</small></div></div>
+  <h1>A full <em>POS system</em> for your food business.</h1>
+  <p class="sub">Take orders, accept Cash, GCash or Maya, and close your shift with the totals already counted.</p>
+  <div class="chips">
+    <div class="chip"><i>₱</i>Cash, GCash, Maya</div>
+    <div class="chip"><i>%</i>PWD &amp; custom discounts</div>
+    <div class="chip"><i>✓</i>Receipts &amp; refunds</div>
+    <div class="chip"><i>⏱</i>Shift reports</div>
+  </div>
+  <div class="phone"><div class="screen"><div class="notch"></div>
+    <div class="app-title">New order <span>Counter</span></div>
+    <div class="order">
+      <div class="ol"><i>2×</i><span>Iced latte</span><b class="peso">₱190</b></div>
+      <div class="ol"><i>1×</i><span>Chicken adobo</span><b class="peso">₱120</b></div>
+      <div class="ol"><i>3×</i><span>Ube pandesal</span><b class="peso">₱90</b></div>
+      <div class="ol"><i>1×</i><span>Leche flan</span><b class="peso">₱120</b></div>
+      <div class="ol"><i></i><small>PWD discount</small><small class="peso">−₱24</small></div>
+    </div>
+    <div class="tot2"><span>Total</span><b class="peso">₱496</b></div>
+    <div class="pay"><i>Cash</i><i class="a">GCash</i><i>Maya</i></div>
+    <div class="toast"><div class="ic">✓</div><div><b>Sale saved</b><small>GCash · ₱496 · stock updated</small></div></div>
+  </div></div>
+  <div class="cta">
+    <div class="url">₱99 one-time · no monthly fee<b>nexusmediaph.com/calculator</b></div>
+    <div class="btn">Try it free →</div>
+  </div>
+</section>
+
+<!-- AD 2 — receipt: no monthly fee -->
+<section class="ad" id="a2">
+  <div class="brand"><img src="../../public/logo.png" alt=""><div>POS System<small>by NEXUSMEDIA</small></div></div>
+  <h1><s>Monthly POS fees.</s><br><em>₱99 once. Yours.</em></h1>
+  <div class="receipt rc">
+    <div class="rh"><b>Receipt #0142</b><span>Counter · 2:41 PM</span></div>
+    <div class="ln"><span>2× Iced latte</span><span class="peso">₱190.00</span></div>
+    <div class="ln"><span>1× Chicken adobo</span><span class="peso">₱120.00</span></div>
+    <div class="ln"><span>3× Ube pandesal</span><span class="peso">₱90.00</span></div>
+    <div class="ln"><span>1× Pancit canton tray</span><span class="peso">₱650.00</span></div>
+    <div class="ln d"><span>PWD discount</span><span class="peso">−₱24.00</span></div>
+    <hr>
+    <div class="ln t"><span>Total · GCash</span><span class="peso">₱1,026</span></div>
+    <div class="tags"><i>✓ Stock deducted</i><i>✓ Profit recorded</i><i class="b">Refunds tracked</i></div>
+  </div>
+  <div class="cta">
+    <div class="url">Cafés, bakeries, carinderias, food stalls<b>nexusmediaph.com/calculator</b></div>
+    <div class="btn">Try the POS →</div>
+  </div>
+</section>
+
+<!-- AD 3 — price -->
+<section class="ad" id="a3">
+  <div class="glow" style="width:900px;height:600px;background:#0a84c6;left:90px;top:300px;opacity:.35"></div>
+  <div class="brand"><img src="../../public/logo.png" alt=""><div style="text-align:left">POS System<small>by NEXUSMEDIA</small></div></div>
+  <div class="big peso"><sup>₱</sup>99</div>
+  <div class="once">For a whole POS system. <span>Once.</span></div>
+  <div class="nos">
+    <i><b>✓</b>No monthly fee</i>
+    <i><b>✓</b>Works offline</i>
+    <i><b>✓</b>Phone, tablet or PC</i>
+    <i><b>✓</b>No hardware to buy</i>
+  </div>
+  <p class="free">Orders, receipts, shifts, staff and stock for your food business.<br><b>Try it free first. No sign-up needed.</b></p>
+  <div class="cta">
+    <div class="url" style="text-align:left">Beta price · pay via GCash or Maya<b>nexusmediaph.com/calculator</b></div>
+    <div class="btn">Try it free →</div>
+  </div>
+</section>
+
+<!-- AD 4 — features -->
+<section class="ad" id="a4">
+  <div class="glow" style="width:600px;height:600px;background:#0a84c6;left:-260px;top:-200px;opacity:.4"></div>
+  <div class="brand"><img src="../../public/logo.png" alt=""><div>POS System<small>by NEXUSMEDIA</small></div></div>
+  <h1>Your whole counter, <em>in one POS app</em>.</h1>
+  <div class="grid">
+    <div class="f"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#4fb8f0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12v20l-3-2-3 2-3-2-3 2z"/><path d="M9 7h6M9 11h6M9 15h3"/></svg>
+      <div class="n">01</div><h3>Sell fast</h3><p>Tap items, add a discount, take Cash, GCash or Maya. Receipt saved.</p></div>
+    <div class="f"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#4fb8f0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"/><rect x="15" y="9" width="7" height="6" rx="1.5"/><path d="M16.5 9V7.5a2 2 0 014 0V9"/></svg>
+      <div class="n">02</div><h3>Shifts &amp; staff</h3><p>Staff can sell. Your profits and settings stay locked.</p></div>
+    <div class="f"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#4fb8f0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4M3 17l9 4 9-4"/></svg>
+      <div class="n">03</div><h3>Auto stock</h3><p>Every sale deducts the ingredients. Refunds put them back.</p></div>
+    <div class="f"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#5fd08f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>
+      <div class="n">04</div><h3>Real profit</h3><p>Sales by hour, day and week, after the cost of every item.</p></div>
+  </div>
+  <div class="cta">
+    <div class="url">₱99 one-time · no monthly fee<b>nexusmediaph.com/calculator</b></div>
+    <div class="btn">Try it free →</div>
+  </div>
+</section>
+
+<!-- AD 5 — Taglish hook: shift report -->
+<section class="ad" id="a5">
+  <div class="glow" style="width:700px;height:700px;background:#4fb8f0;right:-300px;top:-250px;opacity:.45"></div>
+  <div class="brand"><img src="../../public/logo.png" alt=""><div>POS System<small>by NEXUSMEDIA</small></div></div>
+  <div class="q">Wala nang <em>bilangan</em> ng benta sa notebook tuwing closing.</div>
+  <div class="ans">
+    <div class="srh"><span>Shift report</span><span>8 AM – 6 PM</span></div>
+    <div class="sr">
+      <span>Cash</span><b class="peso">₱6,240</b>
+      <span>GCash</span><b class="peso">₱3,915</b>
+      <span>Maya</span><b class="peso">₱1,180</b>
+      <span>Refunds</span><b class="peso">−₱95</b>
+      <span class="tt">Kabuuang benta</span><b class="tt peso">₱11,240</b>
+    </div>
+  </div>
+  <p class="p">POS para sa kape, pastry, at ulam. ₱99 lang, isang beses. Walang buwanang bayad.</p>
+  <div class="cta">
+    <div class="url">Libreng subukan, walang sign-up<b>nexusmediaph.com/calculator</b></div>
+    <div class="btn">Subukan na →</div>
+  </div>
+</section>
+
+<script>
+  var n = (location.hash || '#1').slice(1);
+  var el = document.getElementById('a' + n);
+  if (el) el.classList.add('on');
+</script>
+</body>
+</html>

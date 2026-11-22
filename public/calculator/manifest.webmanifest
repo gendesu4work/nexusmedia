@@ -1,7 +1,7 @@
 {
-  "name": "Product Calculator",
-  "short_name": "Product Calculator",
-  "description": "Cost, stock and profit tracker for small food businesses",
+  "name": "POS System by NEXUSMEDIA",
+  "short_name": "POS System",
+  "description": "POS, stock and profit for small food businesses",
   "id": "./",
   "start_url": "./",
   "scope": "./",
