@@ -7,8 +7,9 @@
 <meta name="theme-color" content="#0a84c6">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Product Calculator">
-<title>Product Calculator – NEXUSMEDIA</title>
+<meta name="apple-mobile-web-app-title" content="POS System">
+<meta name="description" content="POS system for Filipino food businesses: take orders, accept Cash, GCash or Maya, keep receipts, run shifts and track stock and profit. ₱99 one-time, no monthly fee.">
+<title>POS System – NEXUSMEDIA</title>
 <!-- Meta Pixel: measures which Facebook/Instagram ads bring visitors, sign-ups and payments. autoConfig off so it never reads form fields. -->
 <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
 fbq('set','autoConfig',false,'1068020629590907');fbq('init','1068020629590907');fbq('track','PageView');</script>
@@ -296,8 +297,8 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 <header><div id="brand"></div><button id="th" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button></header>
 <div id="shell" style="display:none"><aside id="side"></aside><div class="sync" id="bar"></div><nav id="nav"></nav><div id="app"></div><div class="sync" id="undo"></div><div class="sync" id="sync"></div></div><div id="login" style="display:none"><div class="lg">
 <div class="lR">
-<div class="lb"><img id="fl2" alt="" width="40" height="40"><div><div class="ln1">Product Calculator</div><div class="ln2">Cost, stock &amp; profit tracker</div></div><button class="tg" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Light / dark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor"/></svg></button></div>
-<div class="lf"><h1>Welcome back</h1><p class="sub">Log in to see your costs, sales and profit.</p>
+<div class="lb"><img id="fl2" alt="" width="40" height="40"><div><div class="ln1">POS System</div><div class="ln2">POS, stock &amp; profit</div></div><button class="tg" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Light / dark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor"/></svg></button></div>
+<div class="lf"><h1>Welcome back</h1><p class="sub">Log in to your POS: sales, stock and profit.</p>
 <label for="le">Email</label><input id="le" type="email" placeholder="you@example.com" autocomplete="username">
 <div class="lrow2"><label for="lp">Password</label><a href="#" onclick="$('#fg').style.display=$('#fg').style.display?'':'none';return false">Forgot password?</a></div>
 <div class="pw"><input id="lp" type="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"><button type="button" class="eye" aria-label="Show password" onclick="const i=$('#lp');i.type=i.type==='password'?'text':'password'"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
@@ -308,7 +309,7 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 <button class="btn ghost lbtn" onclick="startGuest()">Continue as guest</button>
 <div class="note gn2">Guest mode saves nothing. Refreshing or closing the page erases your data.</div></div>
 <div class="lfoot">Access is provided by NEXUSMEDIA.</div></div>
-<div class="lL"><div class="hero"><h2>Know what every piece costs, and what it earns.</h2><p>Cost your recipes, track stock and sales, and see your profit per product. Made for Filipino food businesses.</p></div>
+<div class="lL"><div class="hero"><h2>A full POS for your food business. ₱99 once, no monthly fee.</h2><p>Take orders, accept Cash, GCash or Maya, run shifts and staff, and watch stock and profit update with every sale. Made for Filipino food businesses.</p></div>
 <div class="mk" aria-hidden="true"><div class="mw"><aside class="ms"><div class="msi on"><svg viewBox="0 0 24 24" class="i"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</div><div class="msi"><svg viewBox="0 0 24 24" class="i"><path d="M3 8l9-5 9 5-9 5z"/><path d="M3 8v8l9 5 9-5V8"/></svg>Products</div><div class="msi"><svg viewBox="0 0 24 24" class="i"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>Sales</div><div class="msi"><svg viewBox="0 0 24 24" class="i"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Stock</div></aside>
 <div class="mm"><div class="mt"><b>Today</b><span class="live"><i></i>Live</span></div>
 <div class="kp"><div class="tl"><small>Sales</small><strong id="ls1">₱0</strong></div><div class="tl"><small>Cost</small><strong id="ls2">₱0</strong></div><div class="tl pf"><small>Profit</small><strong id="ls3">₱0</strong></div></div>
@@ -437,7 +438,7 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 </div>
 <div class="polf"><button class="btn ghost" onclick="closePolicy()">Close</button><button class="btn" onclick="closePolicy(true)">I agree</button></div>
 </div></div>
-<footer><span class="fa"><img alt="" id="fl">Product Calculator<span class="fd">Cost, stock &amp; profit tracker</span></span><span class="fs"> · </span><span class="fb">© 2026 NEXUSMEDIA™</span><span class="fs"> · </span><span class="fc">All rights reserved</span></footer>
+<footer><span class="fa"><img alt="" id="fl">POS System<span class="fd">POS, stock &amp; profit</span></span><span class="fs"> · </span><span class="fb">© 2026 NEXUSMEDIA™</span><span class="fs"> · </span><span class="fc">All rights reserved</span></footer>
 </main>
 <div id="tip" role="tooltip"></div>
 <script>
@@ -705,10 +706,10 @@ function gtSaveProd(){const ing=gtP.ing.filter(r=>r.name.trim()&&+r.g>0&&+r.pack
  const p={id:uid(),name:gtP.name.trim(),price:+gtP.price,cost:0,cat:'',batch:Math.max(1,Math.round(+gtP.batch||1)),ing};sync(p);S.products.push(p);gtSaved=p;save();tab='prod';openP=p.id;render();gtI=4;gtShow()}
 function gtNew(){gtP=gtBlank();gtI=1;gtErr='';gtShow();$('#gt').scrollTop=0}
 function gtShow(){const c=$('#gtc'),x=`<button class="gtx" onclick="gtSkip()">${gtI===4?'Close':'Skip'}</button>`,er=`<div class="gte" role="alert">${gtErr}</div>`,P=gtP,u=r=>esc(r.u||'g');
- if(gtI===0){c.innerHTML=`${x}<p class="gtk">Welcome to Product Calculator</p><h3 id="gtt">Find out what each product really costs you, and how much you earn.</h3><p>Let's cost your first product together. It takes about 2 minutes, and we'll fill in an example so you can see how it works.</p>
+ if(gtI===0){c.innerHTML=`${x}<p class="gtk">Welcome to your POS</p><h3 id="gtt">Add your first product, then start selling.</h3><p>Let's set up one product together, with its cost, so every sale shows your real profit. It takes about 2 minutes, and we'll fill in an example so you can see how it works.</p>
   <label for="gtnm">Your business name <span class="gth">optional</span></label><input id="gtnm" maxlength="60" placeholder="e.g. Aling Nena's Bakery" value="${esc(gtName)}" autocomplete="organization" onkeydown="if(event.key==='Enter')gtGo(1)">
   <label id="gtbl">What do you sell?</label><div class="gtch" role="group" aria-labelledby="gtbl">${GT_BIZ.map(b=>`<button type="button" class="${gtBiz===b[0]?'on':''}" aria-pressed="${gtBiz===b[0]}" onclick="gtBiz='${b[0]}';this.parentNode.querySelectorAll('button').forEach(x=>{x.classList.toggle('on',x===this);x.setAttribute('aria-pressed',x===this)})">${b[1]}</button>`).join('')}</div>
-  <div class="gtcol"><button class="btn" onclick="gtGo(1)">Let's cost my first product</button><button class="btn ghost" onclick="gtSkip()">Skip, I'll explore on my own</button></div>`;
+  <div class="gtcol"><button class="btn" onclick="gtGo(1)">Add my first product</button><button class="btn ghost" onclick="gtSkip()">Skip, I'll explore on my own</button></div>`;
   setTimeout(()=>{const e=$('#gtnm');if(e&&!matchMedia('(pointer:coarse)').matches)e.focus()},50);return}
  if(gtI===1){c.innerHTML=`${x}<p class="gtk">Step 1 of 3 · Your product</p><h3 id="gtt">What do you sell?</h3>${P.ex?`<div class="gtex">We filled in an example: <b>${esc(P.name)}</b>. Keep it to see how it works, or change it to your own product.</div>`:'<p>Type one of your own products.</p>'}
   <label for="gtpn">Product name</label><input id="gtpn" value="${esc(P.name)}" placeholder="e.g. Ube pandesal" oninput="gtSet(-1,'name',this.value)">
@@ -742,7 +743,7 @@ function gtShow(){const c=$('#gtc'),x=`<button class="gtx" onclick="gtSkip()">${
   <div class="gtn"><a href="#" onclick="gtClose();openPackage();return false">Sign up to save my data</a></div>`;
  setTimeout(()=>{const b=c.querySelector('.gtcol .btn');if(b)b.focus({preventScroll:true})},50)}
 // Optional email at the end of the guide, so NEXUSMEDIA can follow up (supabase/leads-schema.sql).
-const LEAD_OK='By sending, you agree that NEXUSMEDIA can email you about Product Calculator, like tips and offers. Unsubscribe anytime.';
+const LEAD_OK='By sending, you agree that NEXUSMEDIA can email you about the POS System, like tips and offers. Unsubscribe anytime.';
 let gtLeadSent='';
 function gtLeadBox(){if(gtLeadSent)return `<div class="gtlead ok"><b>✓ Thanks! We’ll email you at ${esc(gtLeadSent)}</b><p style="margin:0">Check your inbox for tips on costing the rest of your menu.</p></div>`;
  return `<div class="gtlead" id="gtlead"><b>Want help costing the rest of your menu?</b><p>Leave your email and we’ll send you tips and check in on how it’s going. Optional.</p>
@@ -896,7 +897,7 @@ bars:'<path d="M4 20V11M10 20V5M16 20v-6M2 20h20"/>',
 pct:'<path d="M19 5L5 19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/>'};
 const svgI=k=>`<svg viewBox="0 0 24 24" class="i" aria-hidden="true">${ICO[k]}</svg>`;
 function thLabel(){const d=effTheme()==='dark';return `<span>🌙 Dark mode</span><i class="tgl${d?' on':''}"></i>`}
-function sideHTML(T){const b=S.brand||{};return `<div class="sbb"><img alt="" src="${b.logo||APPLOGO}"><div style="min-width:0"><div class="bn">${esc(b.name||'Product Calculator')}</div><div class="bs">${b.name?'Powered by NEXUSMEDIA':'Cost, stock & profit tracker'}</div></div></div>
+function sideHTML(T){const b=S.brand||{};return `<div class="sbb"><img alt="" src="${b.logo||APPLOGO}"><div style="min-width:0"><div class="bn">${esc(b.name||'POS System')}</div><div class="bs">${b.name?'Powered by NEXUSMEDIA':'POS, stock & profit'}</div></div></div>
  <div class="sbh">Menu</div><div class="sbn" role="navigation">${T.map(t=>`<button data-t="${t[0]}" class="${tab==t[0]?'on':''}" ${tab==t[0]?'aria-current="page"':''} onclick="tab='${t[0]}';render();scrollTo(0,0)">${svgI(t[0])}${t[1]}</button>`).join('')}</div>
  <div class="sbf"><button id="th2" class="sbt" role="switch" aria-checked="${effTheme()==='dark'}" onclick="toggleTheme()">${thLabel()}</button><div class="sbh">Account</div>${sideAcct()}</div>`}
 let uEmail='';
@@ -1135,7 +1136,7 @@ function buyList(h){const L=(S.buys||[]).filter(b=>inM(b.date)).sort((a,b)=>b.da
  return `<div class="card"><h2>${h}</h2>${rows?rows+`<div class="li"><b>Total</b><b>${m(L.reduce((a,b)=>a+b.amt,0))}</b></div><div class="note" style="margin-top:6px">Changing an amount or deleting a purchase also corrects your stock.</div>`:'<div class="note">No stock bought this month.</div>'}</div>`}
 function useOf(p,q){const n=p.batch||12,o={};if(p.items){p.items.forEach(i=>{const c=gp(i.pid);if(c&&!c.items){const u=useOf(c,q*i.q);Object.keys(u).forEach(k=>o[k]=(o[k]||0)+u[k])}});return o}(p.ing||[]).forEach(i=>{const v=lk(i);if(v)o[v.id]=(o[v.id]||0)+q*i.g/n});return o}
 function lowCard(){const L=S.inv.filter(v=>v.qty<=0||(v.low>0&&v.qty<=v.low));if(!L.length)return '';return `<div class="card" style="border-color:var(--bad)"><h2>⚠️ Low stock</h2>${L.map(v=>`<div class="li"><span>${esc(v.name)}</span><b class="neg">${+(+v.qty).toFixed(1)} ${v.u} left</b></div>`).join('')}</div>`}
-function renderBrand(){const b=S.brand||{};$('#brand').innerHTML=`<img class="bl" alt="" src="${b.logo||APPLOGO}"><div style="min-width:0"><div class="bn">${esc(b.name||'Product Calculator')}</div><div class="bs">${b.name?'Powered by NEXUSMEDIA':'Cost, stock & profit tracker'}</div></div>`}
+function renderBrand(){const b=S.brand||{};$('#brand').innerHTML=`<img class="bl" alt="" src="${b.logo||APPLOGO}"><div style="min-width:0"><div class="bn">${esc(b.name||'POS System')}</div><div class="bs">${b.name?'Powered by NEXUSMEDIA':'POS, stock & profit'}</div></div>`}
 function curCard(){const k=ccy();return `<div class="card"><h2>Currency</h2><div class="note" style="margin:-4px 0 10px">The money sign used across the app and on receipts. Changing it does not convert amounts you already entered.</div><select aria-label="Currency" onchange="S.set.ccy=this.value;save();render()">${Object.keys(CUR).map(c=>`<option value="${c}" ${k===c?'selected':''}>${CUR[c][0].trim()} · ${CUR[c][1]} (${c})</option>`).join('')}</select></div>`}
 function brandCard(){const b=S.brand||{};return `<div class="card"><h2>Business profile</h2><input value="${esc(b.name||'')}" placeholder="Your business name (optional)" onchange="bSet('name',this.value)"><div class="row" style="margin-top:8px;align-items:center"><label class="av" style="border-radius:12px;width:64px;height:64px;flex:0 0 64px">${b.logo?`<img src="${b.logo}" alt="">`:'Logo'}<input type="file" accept="image/*" hidden onchange="bLogo(this)"></label><div class="note">Tap the box to add your logo (optional). It shows at the top of the app.${b.logo?` <a href="#" onclick="bSet('logo','');return false" style="color:var(--ac)">Remove logo</a>`:''}</div></div></div>`}
 function bSet(k,v){S.brand=S.brand||{};S.brand[k]=v;save();render()}
@@ -1174,7 +1175,7 @@ requestAnimationFrame(tick)})();
 </style>
 <div id="ins" role="dialog" aria-labelledby="insT">
  <button class="ix" aria-label="Close" onclick="insClose()">×</button>
- <div class="ih"><img src="icon-192.png" alt=""><div><div class="it" id="insT">Add Product Calculator to your phone</div><div class="is">Opens like an app, right from your home screen.</div></div></div>
+ <div class="ih"><img src="icon-192.png" alt=""><div><div class="it" id="insT">Add the POS to your phone</div><div class="is">Opens like an app, right from your home screen.</div></div></div>
  <div id="insB"></div>
 </div>
 <script>
