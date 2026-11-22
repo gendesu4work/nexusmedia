@@ -4,7 +4,7 @@
 --
 -- public/track.js calls log_visit() on every page load of:
 --   home        nexusmediaph.com
---   calculator  nexusmediaph.com/calculator/
+--   calculator  nexusmediaph.com/pos/
 --   blueprints  nexusmediaph.com/blueprints/
 -- public/visits/ (the dashboard) calls visit_stats(), which only works for accounts in visit_admins.
 

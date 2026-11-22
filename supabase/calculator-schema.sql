@@ -1,8 +1,8 @@
--- Calculator (public/calculator) database setup.
+-- Calculator (public/pos) database setup.
 -- Project: oytgbzaukedyfifavvlq
 -- Run this once in Supabase > SQL Editor. It is safe to run again.
 --
--- Rebuilt from what public/calculator/index.html reads and writes:
+-- Rebuilt from what public/pos/index.html reads and writes:
 --   profiles : select paid where user_id = me            (login is refused unless paid = true)
 --   app_data : select data, updated_at where user_id = me
 --              upsert { user_id, data, updated_at }       (one row per user)

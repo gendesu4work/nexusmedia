@@ -8,7 +8,7 @@ All four are Nexus Media's own live projects (no client work, so nothing here ne
 - **Title:** Product Calculator: costing, inventory and sales app for food businesses
 - **Service:** Web Development (also Software Development)
 - **Industry:** Food & Beverage
-- **Link:** https://nexusmediaph.com/calculator/
+- **Link:** https://nexusmediaph.com/pos/
 - **Screenshot:** product-calculator.jpg
 - **Description:** A web app that helps Filipino food businesses cost every product, track ingredient stock and see daily sales and profit. Each sale deducts ingredients from stock automatically. It works offline on phone, tablet and computer, installs like an app, and has paid sign-up with online payment and automated follow-up emails to guest users.
 

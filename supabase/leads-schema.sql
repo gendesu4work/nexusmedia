@@ -2,7 +2,7 @@
 -- Project: oytgbzaukedyfifavvlq (the same project as the calculator)
 -- Run this in Supabase > SQL Editor after visits-schema.sql. It is safe to run again.
 --
--- public/calculator calls add_lead() when a guest sends their email (first name optional).
+-- public/pos calls add_lead() when a guest sends their email (first name optional).
 -- public/visits/ (Leads section) calls lead_list() and lead_update(); only accounts in
 -- visit_admins (see visits-schema.sql) can use them.
 -- Emails go out through the send-leads edge function (Resend); every email has an

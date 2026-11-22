@@ -4,7 +4,7 @@ The database setup for both apps lives here, so it can be rebuilt if a project i
 
 | File | App | Project |
 |---|---|---|
-| `calculator-schema.sql` | `public/calculator` | `oytgbzaukedyfifavvlq` |
+| `calculator-schema.sql` | `public/pos` | `oytgbzaukedyfifavvlq` |
 | `planner-schema.sql` | `public/planner` | set in `public/planner/config.js` |
 | `visits-schema.sql` | `public/track.js`, `public/visits` | `oytgbzaukedyfifavvlq` |
 | `leads-schema.sql` | calculator guide email box, Leads section of `public/visits`, `public/unsubscribe` | `oytgbzaukedyfifavvlq` (run after `visits-schema.sql`) |
@@ -22,7 +22,7 @@ Source is in `supabase/functions/`. Paste each into **Edge Functions** in the da
 
 | Function | Verify JWT | What it does |
 |---|---|---|
-| `signup` | on | Creates the account (`paid = false`), starts a ₱99 SikatPay payment with `order_id = calc-<user id>`, replies `{ "url": "<checkout page>" }` or `{ "error": "..." }`. After paying, SikatPay sends the user to `/calculator/?paid=1`. |
+| `signup` | on | Creates the account (`paid = false`), starts a ₱99 SikatPay payment with `order_id = calc-<user id>`, replies `{ "url": "<checkout page>" }` or `{ "error": "..." }`. After paying, SikatPay sends the user to `/pos/?paid=1`. |
 | `sikatpay-webhook` | **off** | SikatPay posts `payment.paid` here. It checks the `X-Signature`, checks the amount is exactly ₱99, then sets `profiles.paid = true`. Until then, login is refused. |
 
 Secrets (**Edge Functions → Secrets**): `SIKATPAY_API_KEY`, `SIKATPAY_WEBHOOK_SECRET`, `SITE_URL`, and `SIKATPAY_ALLOW_TEST=true` only while testing.

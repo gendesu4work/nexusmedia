@@ -9,7 +9,7 @@ import { createClient } from "npm:@supabase/supabase-js@2.117.2";
 // The price lives here on the server. The browser never sends it.
 const PRICE = 9900; // centavos = P99.00
 
-// Must match POLICY_VERSION in public/calculator/index.html. When the terms change,
+// Must match POLICY_VERSION in public/pos/index.html. When the terms change,
 // update both so new sign-ups are recorded against the new version.
 const TERMS_VERSION = "2026-11-19";
 
@@ -66,8 +66,8 @@ Deno.serve(async (req) => {
       amount: PRICE,
       order_id: orderId,
       description: "Product Calculator - online saving",
-      success_url: site + "/calculator/?paid=1",
-      cancel_url: site + "/calculator/",
+      success_url: site + "/pos/?paid=1",
+      cancel_url: site + "/pos/",
     }),
   });
   const j = await res.json().catch(() => ({}));
