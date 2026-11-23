@@ -7,7 +7,9 @@
 //   SIKATPAY_ALLOW_TEST      "true" only while testing with the mk_test_ key; delete it when live
 import { createClient } from "npm:@supabase/supabase-js@2.117.2";
 
-const PRICE = 9900; // must match the price in the signup function
+// Must match the price in the signup function. 9900 (the old P99) is still accepted
+// so checkouts started before the price change to P399 still unlock.
+const PRICES = [39900, 9900];
 
 const enc = new TextEncoder();
 async function hmac(secret: string, msg: string) {
@@ -51,7 +53,7 @@ Deno.serve(async (req) => {
   if (!orderId.startsWith("calc-")) return new Response("not ours", { status: 200 });
   const userId = orderId.slice(5);
 
-  if (pay.status !== "paid" || pay.amount !== PRICE || pay.currency !== "PHP") {
+  if (pay.status !== "paid" || !PRICES.includes(pay.amount) || pay.currency !== "PHP") {
     console.error("SikatPay payment does not match the price, not unlocking", orderId, pay.status, pay.amount);
     return new Response("amount mismatch", { status: 200 });
   }

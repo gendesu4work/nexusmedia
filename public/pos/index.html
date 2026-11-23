@@ -8,7 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="POS System">
-<meta name="description" content="POS system for Filipino food businesses: take orders, accept Cash, GCash or Maya, keep receipts, run shifts and track stock and profit. ₱99 one-time, no monthly fee.">
+<meta name="description" content="POS system for Filipino food businesses: take orders, accept Cash, GCash or Maya, keep receipts, run shifts and track stock and profit. ₱399 one-time, no monthly fee.">
 <title>POS System – NEXUSMEDIA</title>
 <!-- Meta Pixel: measures which Facebook/Instagram ads bring visitors, sign-ups and payments. autoConfig off so it never reads form fields. -->
 <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
@@ -309,7 +309,7 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 <button class="btn ghost lbtn" onclick="startGuest()">Continue as guest</button>
 <div class="note gn2">Guest mode saves nothing. Refreshing or closing the page erases your data.</div></div>
 <div class="lfoot">Access is provided by NEXUSMEDIA.</div></div>
-<div class="lL"><div class="hero"><h2>A full POS for your food business. ₱99 once, no monthly fee.</h2><p>Take orders, accept Cash, GCash or Maya, run shifts and staff, and watch stock and profit update with every sale. Made for Filipino food businesses.</p></div>
+<div class="lL"><div class="hero"><h2>A full POS for your food business. ₱399 once, no monthly fee.</h2><p>Take orders, accept Cash, GCash or Maya, run shifts and staff, and watch stock and profit update with every sale. Made for Filipino food businesses.</p></div>
 <div class="mk" aria-hidden="true"><div class="mw"><aside class="ms"><div class="msi on"><svg viewBox="0 0 24 24" class="i"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</div><div class="msi"><svg viewBox="0 0 24 24" class="i"><path d="M3 8l9-5 9 5-9 5z"/><path d="M3 8v8l9 5 9-5V8"/></svg>Products</div><div class="msi"><svg viewBox="0 0 24 24" class="i"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>Sales</div><div class="msi"><svg viewBox="0 0 24 24" class="i"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Stock</div></aside>
 <div class="mm"><div class="mt"><b>Today</b><span class="live"><i></i>Live</span></div>
 <div class="kp"><div class="tl"><small>Sales</small><strong id="ls1">₱0</strong></div><div class="tl"><small>Cost</small><strong id="ls2">₱0</strong></div><div class="tl pf"><small>Profit</small><strong id="ls3">₱0</strong></div></div>
@@ -318,14 +318,14 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 <div class="toast"><span class="ck"><svg viewBox="0 0 24 24" class="i"><path d="M5 12l5 5 9-10"/></svg></span><div><b>Sale added</b><small>Cinnamon roll · ₱45</small></div></div></div></div>
 </div></div></div>
 <div id="reset" style="display:none"><div class="card" style="max-width:380px;margin:30px auto"><h2>Set a new password</h2><input id="rp1" type="password" placeholder="New password (8+ characters)" autocomplete="new-password" style="margin-bottom:8px"><input id="rp2" type="password" placeholder="Repeat new password" autocomplete="new-password" style="margin-bottom:8px"><button class="btn" onclick="doReset()">Save new password</button><div class="note" id="rmsg" style="margin-top:8px"></div></div></div>
-<div id="promo" class="card" style="display:none;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:520px;margin:0 auto;z-index:20;box-shadow:0 8px 28px rgba(0,0,0,.28)"><div style="font-weight:700" id="prt">Don’t lose your data</div><div class="note" id="prn" style="margin:2px 0 8px">Sign up to save it online, use it offline and on any device. Just ₱99.</div><div class="row" style="margin:0;align-items:center"><button class="btn" onclick="openPackage()">See what you get</button><a href="#" onclick="hidePromo(true);return false" class="note" style="text-align:center;color:var(--ac)">Maybe later</a></div></div>
+<div id="promo" class="card" style="display:none;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:520px;margin:0 auto;z-index:20;box-shadow:0 8px 28px rgba(0,0,0,.28)"><div style="font-weight:700" id="prt">Don’t lose your data</div><div class="note" id="prn" style="margin:2px 0 8px">Sign up to save it online, use it offline and on any device. Just ₱399.</div><div class="row" style="margin:0;align-items:center"><button class="btn" onclick="openPackage()">See what you get</button><a href="#" onclick="hidePromo(true);return false" class="note" style="text-align:center;color:var(--ac)">Maybe later</a></div></div>
 <div id="gt" style="display:none" role="dialog" aria-modal="true" aria-labelledby="gtt"><div id="gtc"></div></div>
 <div id="pk" style="display:none"><div class="card su" role="dialog" aria-modal="true" aria-labelledby="sut">
 <button class="sux" onclick="closePackage()" aria-label="Close">&times;</button>
 <p class="sukick">Online saving</p>
 <h2 id="sut">Keep your records in your own account</h2>
 <p class="sulead">Your products, sales and stock stay saved online and open on any phone, tablet or computer you log in on. It still works without signal and syncs when you're back online.</p>
-<div class="suprice"><span class="suamt">₱99</span><span class="suamt">One-time Payment</span></div>
+<div class="suprice"><span class="suamt">₱399</span><span class="suamt">One-time Payment</span></div>
 <div class="suform">
 <label for="se">Email</label><input id="se" type="email" autocomplete="email">
 <label for="sp1">Password</label><input id="sp1" type="password" placeholder="At least 8 characters" autocomplete="new-password">
@@ -349,7 +349,7 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 <h3>2. Beta, the one-time payment, and future pricing</h3>
 <ul>
 <li>The app is in <b>beta</b>. That means it is still being improved, and features may be added, changed or removed.</li>
-<li>During the beta, online saving costs a <b>one-time payment of ₱99</b>. There is no automatic renewal and no hidden fee.</li>
+<li>During the beta, online saving costs a <b>one-time payment of ₱399</b>. There is no automatic renewal and no hidden fee.</li>
 <li>Running the app costs money (servers, payment fees, upkeep). If we need more funds to keep it running, we may change how we charge: for example to a <b>monthly subscription</b>, a different price, or paid extra features.</li>
 <li>If we do, we will announce it in the app or by email <b>at least 30 days before</b> it takes effect, and explain what it means for accounts that already paid.</li>
 <li>We will never charge you automatically. Any new payment will only happen if you choose to pay it. If you decide not to, you can still download your data before any change takes effect.</li>
@@ -361,7 +361,7 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 <li>We never see or store your GCash, Maya, bank or card details. SikatPay and its processor handle them under their own terms.</li>
 <li>Your account is unlocked once SikatPay confirms the payment, which usually takes about a minute.</li>
 <li>If you were charged twice, charged the wrong amount, or paid but your account was never unlocked, email us and we will fix it or refund you.</li>
-<li>Apart from that, because the ₱99 unlocks the service right away, it is <b>non-refundable</b> once your account is active, except where Philippine law says otherwise.</li>
+<li>Apart from that, because the ₱399 unlocks the service right away, it is <b>non-refundable</b> once your account is active, except where Philippine law says otherwise.</li>
 </ul>
 
 <h3>4. Your data is private and only you can access it</h3>
@@ -521,7 +521,7 @@ async function start(){regSW();try{localStorage.removeItem('ppt-guest')}catch(e)
  sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
  sb.auth.onAuthStateChange((ev)=>{if(ev==='PASSWORD_RECOVERY'){recovering=true;showReset()}});
  if(/error(_code)?=/.test(location.hash)){history.replaceState(null,'',location.pathname);showLogin('That link has expired or was already used. Please ask for a new one.');return}
- if(location.search.includes('paid=1')){history.replaceState(null,'',location.pathname);try{fbq('track','Purchase',{value:99,currency:'PHP'})}catch(x){}showLogin('Thank you! Your payment is being confirmed. Please wait a minute, then log in with your email and password.');return}
+ if(location.search.includes('paid=1')){history.replaceState(null,'',location.pathname);try{fbq('track','Purchase',{value:399,currency:'PHP'})}catch(x){}showLogin('Thank you! Your payment is being confirmed. Please wait a minute, then log in with your email and password.');return}
  let ss=null;try{const r=await sb.auth.getSession();ss=r.data&&r.data.session}catch(e){}
  if(recovering)return;if(ss)return enter(ss.user);
  const last=rj('ppt-last');if(last&&rj('ppt-'+last.id)&&!navigator.onLine)return enter(last);
@@ -548,7 +548,7 @@ let recovering=false;
 let promoT=null,promoH=null,promoN=0;
 function schedulePromo(){clearTimeout(promoT);if(guest)promoT=setTimeout(showPromo,(promoN>=2?15:promoN?10:5)*60000)}
 function showPromo(){if(!guest)return;const a=document.activeElement;if(gtI>=0||(a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName))||$('#pk').style.display!=='none'){clearTimeout(promoT);promoT=setTimeout(showPromo,30000);return}
- const P=S.products;$('#prt').textContent=P.length?'Your costing will be erased':'Don’t lose your data';$('#prn').textContent=(P.length?'You’ve costed '+(P.length===1?P[0].name:P.length+' products')+'. Guest mode saves nothing, so it’s gone when you close or refresh this page. ':'Guest mode saves nothing. ')+'Sign up to keep your data online and use it on any device. One-time ₱99.';
+ const P=S.products;$('#prt').textContent=P.length?'Your costing will be erased':'Don’t lose your data';$('#prn').textContent=(P.length?'You’ve costed '+(P.length===1?P[0].name:P.length+' products')+'. Guest mode saves nothing, so it’s gone when you close or refresh this page. ':'Guest mode saves nothing. ')+'Sign up to keep your data online and use it on any device. One-time ₱399.';
  $('#promo').style.display='';clearTimeout(promoH);promoH=setTimeout(()=>hidePromo(true),30000)}
 function hidePromo(ignored){clearTimeout(promoH);$('#promo').style.display='none';if(ignored)promoN++;schedulePromo()}
 const POLICY_VERSION='2026-11-19';
@@ -809,7 +809,7 @@ async function doSignup(){const e=$('#se').value.trim(),p=$('#sp1').value,q=$('#
  if(!$('#sagree').checked){sm.textContent='Please read the Terms of Use and Privacy Policy and tick the box to continue.';return}
  sm.textContent='Starting payment…';
  try{const r=await fetch(SUPABASE_URL+'/functions/v1/signup',{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY},body:JSON.stringify({email:e,password:p,agreed:POLICY_VERSION})});const j=await r.json();
-  if(j.url){try{fbq('track','InitiateCheckout',{value:99,currency:'PHP'})}catch(x){}setTimeout(()=>{location.href=j.url},300);return}sm.textContent=j.error||'Something went wrong. Please try again.'}catch(x){sm.textContent='Could not connect. Check your internet and try again.'}}
+  if(j.url){try{fbq('track','InitiateCheckout',{value:399,currency:'PHP'})}catch(x){}setTimeout(()=>{location.href=j.url},300);return}sm.textContent=j.error||'Something went wrong. Please try again.'}catch(x){sm.textContent='Could not connect. Check your internet and try again.'}}
 function showLogin(msg){applyPal();document.body.classList.remove('inapp');$('#shell').style.display='none';$('#login').style.display='';$('#lmsg').textContent=msg}
 // Only a 4xx answer means the email/password was checked. No answer or a 5xx means our server is down, so do not blame the password.
 const DOWN='Our server is not responding right now. Your account and data are safe. Please try again in a little while.';

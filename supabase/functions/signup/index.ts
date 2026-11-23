@@ -1,5 +1,5 @@
 // Supabase Edge Function named: signup
-// Creates the account (not usable until paid) and starts a SikatPay checkout for P99.
+// Creates the account (not usable until paid) and starts a SikatPay checkout for P399.
 //
 // Secrets (Supabase > Edge Functions > Secrets):
 //   SIKATPAY_API_KEY  mk_test_... while testing, mk_... (live) when going live
@@ -7,7 +7,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2.117.2";
 
 // The price lives here on the server. The browser never sends it.
-const PRICE = 9900; // centavos = P99.00
+const PRICE = 39900; // centavos = P399.00
 
 // Must match POLICY_VERSION in public/pos/index.html. When the terms change,
 // update both so new sign-ups are recorded against the new version.

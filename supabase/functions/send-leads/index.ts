@@ -41,7 +41,7 @@ const URL_RE = /https?:\/\/[^\s<]+[^\s<.,!?)]/g;
 const FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
 
 function buttonLabel(url: string) {
-  return /start=signup/.test(url) ? "Sign up for ₱99" : /\/(pos|calculator)\//.test(url) ? "Open POS System" : "Open link";
+  return /start=signup/.test(url) ? "Sign up for ₱399" : /\/(pos|calculator)\//.test(url) ? "Open POS System" : "Open link";
 }
 function button(url: string) {
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:6px auto 22px"><tr>
