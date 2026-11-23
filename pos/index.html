@@ -463,11 +463,56 @@ const EMPTY=()=>({shifts:[],buys:[],refunds:[],rcpt:[],rno:0,inv:[],brand:{},sta
 const rj=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}};
 const wj=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 const setD=v=>{dirty=v;try{v?localStorage.setItem('ppt-dirty-'+uidU,v):localStorage.removeItem('ppt-dirty-'+uidU)}catch(e){}};
-function status(msg){const s=$('#sync');if(!s)return;if(guest&&!msg){s.textContent='Guest mode: nothing is saved. If you refresh or close the page, your data is erased. Sign up to keep it.';return}const off=!navigator.onLine;s.textContent=msg||(dirty?(off?'📴 Offline: changes are saved on this phone and will sync when you are online.':'⏳ Waiting to sync…'):(off?'📴 Offline: you can keep working.':'☁️ Saved to your account'))}
+function status(msg){const s=$('#sync');if(!s)return;if(guest&&!msg){s.textContent='Guest mode: nothing is saved. If you refresh or close the page, your data is erased. Sign up to keep it.';return}const off=!navigator.onLine;s.textContent=(msg||(dirty?(off?'📴 Offline: changes are saved on this phone and will sync when you are online.':'⏳ Waiting to sync…'):(off?'📴 Offline: you can keep working.':'☁️ Saved to your account')))+(arMiss&&!msg?' Some older months could not load. Connect to the internet to see them.':'')}
 function save(){if(guest){status();return}if(!uidU)return;wj('ppt-'+uidU,S);setD(new Date().toISOString());status();clearTimeout(timer);timer=setTimeout(trySync,600)}
 async function trySync(){if(!uidU||!dirty||syncing||!navigator.onLine)return;syncing=true;const ts=dirty;
  try{const r=await sb.from('app_data').upsert({user_id:uidU,data:S,updated_at:ts});if(!r.error&&dirty===ts)setD(null)}catch(e){}
- syncing=false;status();if(dirty&&dirty!==ts){clearTimeout(timer);timer=setTimeout(trySync,600)}}
+ syncing=false;status();if(dirty&&dirty!==ts){clearTimeout(timer);timer=setTimeout(trySync,600)}else if(!dirty)archRun()}
+// ===== Archive: sales, refunds and receipts older than this month + the 3 before it move to app_archive (one row per month) =====
+// app_data stays small. Reports load archived months when needed (cached on this phone in IndexedDB).
+const ARK=['sales','refunds','rcpt'],KEEPM=3;
+let AC={},AM=null,AQ=new Set(),AF={},arRun=false,arDone=false,arMiss=false;
+const arCut=()=>ymAdd(lday().slice(0,7),-KEEPM),ymOf=x=>String(x&&x.date||'').slice(0,7);
+function H(k,M){const a=S[k]||[],hy=S.hy||[],ms=M?[M]:Object.keys(AC);let o=a,ids=null;
+ for(const m of ms){const c=AC[m];if(!c||!c[k]||!c[k].length||hy.includes(m))continue;if(!ids)ids=new Set(a.map(x=>x.id));o=o.concat(c[k].filter(x=>!ids.has(x.id)))}return o}
+let idbP=null;
+function idb(){if(!idbP)idbP=new Promise((ok,no)=>{try{const r=indexedDB.open('ppt-arch',1);r.onupgradeneeded=()=>r.result.createObjectStore('m');r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)}catch(e){no(e)}}).catch(()=>null);return idbP}
+async function idbDo(mode,fn){const d=await idb();if(!d)return null;return new Promise(ok=>{try{const t=d.transaction('m',mode),r=fn(t.objectStore('m'));t.oncomplete=()=>ok(r&&r.result);t.onerror=t.onabort=()=>ok(null)}catch(e){ok(null)}})}
+const idbGet=M=>idbDo('readonly',s=>s.get(uidU+'|'+M)),idbPut=(M,v)=>idbDo('readwrite',s=>s.put(v,uidU+'|'+M)),idbClear=()=>idbDo('readwrite',s=>s.clear());
+function arReset(){AC={};AM=null;AQ=new Set();AF={};arDone=false;arMiss=false}
+async function arIndex(){if(AM)return AM;if(!sb||!uidU||!navigator.onLine)return null;const u=uidU;
+ try{const r=await sb.from('app_archive').select('month,updated_at').eq('user_id',u);if(r.error||u!==uidU)return null;const o={};(r.data||[]).forEach(x=>o[x.month]=x.updated_at);AM=o;return AM}catch(e){return null}}
+function arNeedView(){if(guest||!uidU)return;const ms=[0,-1,-2,-3,-4,-5].map(k=>ymAdd(month,k));for(let i=1;i<=+month.slice(5,7);i++)ms.push(month.slice(0,4)+'-'+String(i).padStart(2,'0'));
+ if(rsOpen){const r=rsRange();ms.push(r.f.slice(0,7),r.t.slice(0,7))}arNeed(ms)}
+function arNeed(ms){const cut=arCut(),hy=S.hy||[],now=Date.now();ms=[...new Set(ms)].filter(M=>M&&M<cut&&!(M in AC)&&!AQ.has(M)&&!hy.includes(M)&&!(AF[M]>now));if(!ms.length)return;
+ const u=uidU;ms.forEach(M=>AQ.add(M));arLoad(ms).catch(()=>{}).finally(()=>{if(u!==uidU)return;ms.forEach(M=>{AQ.delete(M);if(!(M in AC))AF[M]=Date.now()+30000});arMiss=ms.some(M=>!(M in AC));render();status()})}
+async function arLoad(ms){const u=uidU,got={};for(const M of ms){const c=await idbGet(M);if(c&&c.data)got[M]=c}
+ const ix=await arIndex();if(u!==uidU)return;
+ if(!ix){ms.forEach(M=>{if(got[M])AC[M]=got[M].data});return}
+ const miss=ms.filter(M=>ix[M]&&(!got[M]||got[M].at!==ix[M]));
+ if(miss.length){const r=await sb.from('app_archive').select('month,data,updated_at').eq('user_id',u).in('month',miss);if(u!==uidU)return;
+  if(!r.error)(r.data||[]).forEach(x=>{got[x.month]={at:x.updated_at,data:x.data||{}};idbPut(x.month,got[x.month])})}
+ ms.forEach(M=>{if(M in AC)return;if(!ix[M])AC[M]={};else if(got[M]&&got[M].at===ix[M])AC[M]=got[M].data})}
+// Move old months out of S. The archive row is saved first; records leave S only after the server confirms.
+async function archRun(){if(arRun||arDone||guest||!uidU||!sb||dirty||!navigator.onLine)return;arRun=true;const u=uidU;
+ try{const cut=arCut(),ms=new Set((S.hy||[]).filter(M=>M<cut));ARK.forEach(k=>(S[k]||[]).forEach(x=>{const M=ymOf(x);if(/^\d{4}-\d{2}$/.test(M)&&M<cut)ms.add(M)}));
+  for(const M of [...ms].sort()){
+   const rep=(S.hy||[]).includes(M),mine={},data={};ARK.forEach(k=>{mine[k]=(S[k]||[]).filter(x=>ymOf(x)===M);data[k]=mine[k].slice()});
+   if(!rep){const r=await sb.from('app_archive').select('data').eq('user_id',u).eq('month',M).maybeSingle();if(r.error||u!==uidU)return;const old=(r.data&&r.data.data)||{};
+    ARK.forEach(k=>{const ids=new Set(mine[k].map(x=>x.id));data[k]=(old[k]||[]).filter(x=>!ids.has(x.id)).concat(mine[k])})}
+   const w=await sb.from('app_archive').upsert({user_id:u,month:M,data,updated_at:new Date().toISOString()}).select('updated_at').single();
+   if(w.error||!w.data||u!==uidU)return;
+   AC[M]=data;if(AM)AM[M]=w.data.updated_at;idbPut(M,{at:w.data.updated_at,data});
+   ARK.forEach(k=>{const ids=new Set(mine[k].map(x=>x.id));S[k]=(S[k]||[]).filter(x=>!ids.has(x.id))});
+   if(S.hy){S.hy=S.hy.filter(x=>x!==M);if(!S.hy.length)delete S.hy}
+   save()}
+  arDone=true}catch(e){}finally{arRun=false}}
+// Bring archived months back into S (to reset sales in them). They are archived again, replacing the old row, on the next sync.
+async function arPull(ms){const cut=arCut();ms=[...new Set(ms)].filter(M=>M<cut&&!(S.hy||[]).includes(M));if(!ms.length)return true;
+ if(guest||!uidU||!navigator.onLine)return false;const u=uidU;AM=null;const ix=await arIndex();if(!ix)return false;ms=ms.filter(M=>ix[M]);if(!ms.length)return true;
+ let r;try{r=await sb.from('app_archive').select('month,data').eq('user_id',u).in('month',ms)}catch(e){return false}if(r.error||u!==uidU||(r.data||[]).length!==ms.length)return false;
+ r.data.forEach(x=>{const d=x.data||{};ARK.forEach(k=>{const ids=new Set((S[k]||[]).map(y=>y.id));S[k]=(S[k]||[]).concat((d[k]||[]).filter(y=>!ids.has(y.id)))});delete AC[x.month]});
+ S.hy=(S.hy||[]).concat(ms);arDone=false;return true}
 function load(){}
 function regSW(){if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{})}
 async function start(){regSW();try{localStorage.removeItem('ppt-guest')}catch(e){}renderBrand();$('#fl').src=APPLOGO;$('#fl2').src=APPLOGO;
@@ -483,7 +528,7 @@ async function start(){regSW();try{localStorage.removeItem('ppt-guest')}catch(e)
  const go=new URLSearchParams(location.search).get('start');
  if(go==='guest'||go==='signup'){history.replaceState(null,'',location.pathname);startGuest();if(go==='signup'){gtClose();openPackage()}return}
  showLogin('')}
-async function enter(u){guest=false;clearTimeout(promoT);$('#promo').style.display='none';uidU=u.id;S=EMPTY();const lc=rj('ppt-'+uidU);let paid=null;
+async function enter(u){guest=false;arReset();clearTimeout(promoT);$('#promo').style.display='none';uidU=u.id;S=EMPTY();const lc=rj('ppt-'+uidU);let paid=null;
  try{const pr=await sb.from('profiles').select('paid').eq('user_id',uidU).maybeSingle();if(!pr.error)paid=!!(pr.data&&pr.data.paid)}catch(e){}
  if(paid===false){try{await sb.auth.signOut()}catch(e){}uidU=null;showLogin('Your payment is not confirmed yet. If you just paid, wait a minute and log in again. If you did not finish paying, tap Sign up again with the same email.');return}
  if(paid===null&&!lc){uidU=null;showLogin(navigator.onLine?DOWN:'Could not check your account. Connect to the internet and try again.');return}
@@ -498,7 +543,7 @@ async function enter(u){guest=false;clearTimeout(promoT);$('#promo').style.displ
  else{S=Object.assign(S,row?row.data:{});if(dirty)setD(null)}
  S.set=S.set||{};S.set.pal=curPal();
  wj('ppt-'+uidU,S);wj('ppt-last',{id:u.id,email:u.email});
- $('#login').style.display='none';$('#shell').style.display='';uEmail=u.email||'';$('#bar').innerHTML=esc(u.email)+' · <a href="#" onclick="doLogout();return false" style="color:var(--ac);font-weight:700">Log out</a>';render();status();trySync()}
+ $('#login').style.display='none';$('#shell').style.display='';uEmail=u.email||'';$('#bar').innerHTML=esc(u.email)+' · <a href="#" onclick="doLogout();return false" style="color:var(--ac);font-weight:700">Log out</a>';render();status();trySync();archRun()}
 let recovering=false;
 let promoT=null,promoH=null,promoN=0;
 function schedulePromo(){clearTimeout(promoT);if(guest)promoT=setTimeout(showPromo,(promoN>=2?15:promoN?10:5)*60000)}
@@ -535,7 +580,7 @@ const addDay=(d,k)=>{const t=new Date(d+'T00:00:00Z');t.setUTCDate(t.getUTCDate(
 const fmtD=d=>new Date(d+'T00:00:00').toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});
 const shDate=x=>{const p=phParts(new Date(x.openTs));return p.year+'-'+p.month+'-'+p.day};
 function rsRange(){const d=rsD||lday(),mo=rsM||lday().slice(0,7);if(rsP==='month')return{f:mo+'-01',t:mo+'-31',lab:mName(mo,1)};if(rsP==='week'){const f=addDay(d,-6);return{f,t:d,lab:fmtD(f)+' – '+fmtD(d)}}return{f:d,t:d,lab:fmtD(d)}}
-function rsPick(){const r=rsRange(),inR=d=>!!d&&d>=r.f&&d<=r.t;return{r,sales:S.sales.filter(s=>inR(s.date)),refunds:(S.refunds||[]).filter(x=>inR(x.date)),rcpt:(S.rcpt||[]).filter(x=>inR(x.date)),shifts:(S.shifts||[]).filter(x=>x.closeTs&&inR(shDate(x)))}}
+function rsPick(){const r=rsRange(),inR=d=>!!d&&d>=r.f&&d<=r.t;return{r,sales:H('sales').filter(s=>inR(s.date)),refunds:H('refunds').filter(x=>inR(x.date)),rcpt:H('rcpt').filter(x=>inR(x.date)),shifts:(S.shifts||[]).filter(x=>x.closeTs&&inR(shDate(x)))}}
 const pinIn=(id,ph,ac,ent)=>`<input id="${id}" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="${ac}" placeholder="${ph}" style="margin-bottom:8px"${ent?` onkeydown="if(event.key==='Enter')${ent}"`:''}>`;
 function resetCard(){const s=S.set,h='<h2>🔒 Reset sales</h2>',out='<div class="note" id="rsm" style="margin-top:8px"></div>',ghost='class="btn ghost"';
  if(!s.pinH)return `<div class="card">${h}<div class="note" style="margin:-4px 0 10px">Set a 6-digit owner passcode first. Only someone who knows it can reset sales.</div>${pinIn('rp_a','New 6-digit passcode','new-password')}${pinIn('rp_b','Repeat passcode','new-password',"pinSet()")}<button class="btn" onclick="pinSet()">Save passcode</button>${out}</div>`;
@@ -563,7 +608,7 @@ async function pinRecover(){const o=$('#rp_o').value,a=$('#rp_a').value,b=$('#rp
  let c={error:1};try{if(em)c=await sb.auth.signInWithPassword({email:em,password:o})}catch(e){}
  if(c.error){mm.textContent='Your account password is not correct.';return}
  await pinStore(a);rsForgot=false;rsOpen=true;rsTries=0;render();msg('New owner passcode saved.')}
-function rsDo(){const k=rsPick(),ids=a=>new Set(a.map(x=>x.id)),A=ids(k.sales),B=ids(k.refunds),C=ids(k.rcpt),E=ids(k.shifts);undoS=JSON.stringify(S);
+async function rsDo(){const rr=rsRange();if(!await arPull([rr.f.slice(0,7),rr.t.slice(0,7)])){msg('Connect to the internet to reset sales older than 3 months.');return}const k=rsPick(),ids=a=>new Set(a.map(x=>x.id)),A=ids(k.sales),B=ids(k.refunds),C=ids(k.rcpt),E=ids(k.shifts);undoS=JSON.stringify(S);
  S.sales=S.sales.filter(x=>!A.has(x.id));S.refunds=(S.refunds||[]).filter(x=>!B.has(x.id));S.rcpt=(S.rcpt||[]).filter(x=>!C.has(x.id));S.shifts=(S.shifts||[]).filter(x=>!E.has(x.id));
  rsConf=false;shRep=null;rShow=null;save();render();const u=$('#undo');u.innerHTML='Sales reset for '+esc(k.r.lab)+'. <a href="#" onclick="undo();return false" style="color:var(--ac);font-weight:700">Undo</a>';clearTimeout(undoT);undoT=setTimeout(()=>{u.textContent=''},15000)}
 function acctCard(){if(guest||!uidU)return '';return `<div class="card"><h2>Account</h2><div class="note" style="margin:-4px 0 8px">Change your password</div><input id="cp0" type="password" placeholder="Current password" autocomplete="current-password" style="margin-bottom:8px"><input id="cp1" type="password" placeholder="New password (8+ characters)" autocomplete="new-password" style="margin-bottom:8px"><input id="cp2" type="password" placeholder="Repeat new password" autocomplete="new-password" style="margin-bottom:8px"><button class="btn" onclick="doChange()">Change password</button><div class="note" id="cmsg" style="margin-top:8px"></div></div>`}
@@ -778,14 +823,14 @@ async function doLogin(){const e=$('#le').value.trim(),p=$('#lp').value;if(!e||!
 async function doLogout(){if(dirty){status('⚠️ You have changes waiting to sync. Connect to the internet and wait for "Saved" before logging out.');return}
  try{await sb.auth.signOut()}catch(e){}
  try{localStorage.removeItem('ppt-'+uidU);localStorage.removeItem('ppt-last')}catch(e){}
- uidU=null;S=EMPTY();showLogin('')}
+ idbClear();arReset();uidU=null;S=EMPTY();showLogin('')}
 const inM=d=>d.startsWith(month);
 function calc(){
- const pm=Object.fromEntries(S.products.map(p=>[p.id,p]));const sales=S.sales.filter(s=>inM(s.date)&&pm[s.pid]);
+ const pm=Object.fromEntries(S.products.map(p=>[p.id,p]));const sales=H('sales',month).filter(s=>inM(s.date)&&pm[s.pid]);
  let rev=0,cogs=0;const per={};S.products.forEach(p=>per[p.id]={u:0,r:0,c:0});
  sales.forEach(s=>{const p=pm[s.pid];per[p.id].u+=s.qty;per[p.id].r+=s.qty*p.price-(s.disc||0);per[p.id].c+=s.qty*p.cost});
  Object.values(per).forEach(x=>{rev+=x.r;cogs+=x.c});
- const soldTotal=rev,rfs=(S.refunds||[]).filter(r=>inM(r.date)),refunds=rfs.reduce((a,r)=>a+r.amt,0);rev-=refunds;rfs.forEach(r=>{if(per[r.pid]){const b=rfCost(r);per[r.pid].r-=r.amt;per[r.pid].u-=r.qty;per[r.pid].c-=b;cogs-=b}});
+ const soldTotal=rev,rfs=H('refunds',month).filter(r=>inM(r.date)),refunds=rfs.reduce((a,r)=>a+r.amt,0);rev-=refunds;rfs.forEach(r=>{if(per[r.pid]){const b=rfCost(r);per[r.pid].r-=r.amt;per[r.pid].u-=r.qty;per[r.pid].c-=b;cogs-=b}});
  const ops=S.expenses.filter(e=>inM(e.date)).reduce((a,e)=>a+e.amt,0);
  const rent=S.set.rentOn?+S.set.rent:0,staff=S.set.staffOn?S.staff.reduce((a,x)=>a+x.pay,0):0;
  const gross=rev-cogs,net=gross-ops-rent-staff,buys=(S.buys||[]).filter(b=>inM(b.date)).reduce((a,b)=>a+b.amt,0);return{buys,rev,cogs,gross,ops,rent,staff,net,per,refunds,soldTotal,disc:sales.reduce((a,s)=>a+(s.disc||0),0)}}
@@ -844,7 +889,7 @@ function salesForm(){
  ${sPay==='other'?`<input id="spt" maxlength="40" value="${esc(sPayNote)}" placeholder="Mode of payment (e.g. bank transfer)" oninput="sPayNote=this.value" style="margin-bottom:8px">`:''}
  <div id="spv"></div><button class="btn" style="margin-top:8px" onclick="addSale()">Add sale</button></div>`:''}</div>`}
 function salesList(h){const pm=Object.fromEntries(S.products.map(p=>[p.id,p]));
- const rows=S.sales.filter(s=>inM(s.date)).map(s=>{const p=pm[s.pid];return{date:s.date,ts:s.ts||'',h:`<div class="li"><span>${s.date} · ${p?esc(p.name):'(deleted)'} × ${s.qty}<br><span class="note">🕒 ${s.ts?'Entered '+fmtTs(s.ts):'Time not recorded'} · 💳 ${payLbl(s)}</span>${s.disc?`<br><span class="note">${s.dk==='pwd'?'PWD discount':'Discount'} −${m(s.disc)}${s.dno?' · ID '+esc(s.dno):''}</span>`:''}</span><span>${m(s.amt!=null?s.amt:(p?p.price*s.qty:0))}</span></div>`}}).concat((S.refunds||[]).filter(x=>inM(x.date)).map(x=>{const p=pm[x.pid];return{date:x.date,ts:x.ts||'',h:`<div class="li"><span>↩️ Refund · ${x.date} · ${p?esc(p.name):'(deleted)'} × ${x.qty}${x.reason?' – '+esc(x.reason):''}<br><span class="note">🕒 Entered ${fmtTs(x.ts)}</span></span><b class="neg">−${m(x.amt)}</b></div>`}})).sort((a,b)=>b.date.localeCompare(a.date)||b.ts.localeCompare(a.ts));
+ const rows=H('sales',month).filter(s=>inM(s.date)).map(s=>{const p=pm[s.pid];return{date:s.date,ts:s.ts||'',h:`<div class="li"><span>${s.date} · ${p?esc(p.name):'(deleted)'} × ${s.qty}<br><span class="note">🕒 ${s.ts?'Entered '+fmtTs(s.ts):'Time not recorded'} · 💳 ${payLbl(s)}</span>${s.disc?`<br><span class="note">${s.dk==='pwd'?'PWD discount':'Discount'} −${m(s.disc)}${s.dno?' · ID '+esc(s.dno):''}</span>`:''}</span><span>${m(s.amt!=null?s.amt:(p?p.price*s.qty:0))}</span></div>`}}).concat((S.refunds||[]).filter(x=>inM(x.date)).map(x=>{const p=pm[x.pid];return{date:x.date,ts:x.ts||'',h:`<div class="li"><span>↩️ Refund · ${x.date} · ${p?esc(p.name):'(deleted)'} × ${x.qty}${x.reason?' – '+esc(x.reason):''}<br><span class="note">🕒 Entered ${fmtTs(x.ts)}</span></span><b class="neg">−${m(x.amt)}</b></div>`}})).sort((a,b)=>b.date.localeCompare(a.date)||b.ts.localeCompare(a.ts));
  const list=rows.map(x=>x.h).join('');
  return `<div class="card">${h?'<h2>'+h+'</h2>':''}${list||'<div class="note">No sales this month.</div>'}</div>`}
 function expForm(){return `<div class="card"><h2>Add expense</h2><div class="row"><input type="date" id="ed" value="${lday()}"><input type="number" id="ea" placeholder="Amount" inputmode="decimal"></div>
@@ -925,8 +970,8 @@ function chart(o){const W=720,H=250,L=58,R=10,T=12,B=28,n=o.lab.length,bs=o.bars
  return `<div class="lg2">${lg}</div><div class="ch"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.aria||'')}">${g}${cols}${ln}${xl}</svg></div>`}
 function hbars(R){const mx=Math.max(...R.map(r=>Math.abs(r.v)),0)||1;return R.map(r=>`<div class="hb"><div class="hbl"><span>${esc(r.n)}</span><b class="${r.k||''}">${r.t}</b></div><div class="hbt"><i style="width:${(Math.abs(r.v)/mx*100).toFixed(1)}%;background:${r.c||'var(--c1)'}"></i></div>${r.s?`<div class="note">${r.s}</div>`:''}</div>`).join('')}
 function daily(){const y=+month.slice(0,4),mo=+month.slice(5,7),n=new Date(y,mo,0).getDate(),r=Array(n).fill(0),g=Array(n).fill(0),c=Array(n).fill(0),pm=Object.fromEntries(S.products.map(p=>[p.id,p]));
- S.sales.forEach(s=>{const p=pm[s.pid];if(!p||!inM(s.date))return;const d=+s.date.slice(8,10)-1;r[d]+=s.qty*p.price-(s.disc||0);g[d]+=s.qty*(p.price-p.cost)-(s.disc||0);c[d]++});
- (S.refunds||[]).forEach(x=>{if(!inM(x.date))return;const d=+x.date.slice(8,10)-1;r[d]-=x.amt;g[d]-=x.amt-rfCost(x)});
+ H('sales',month).forEach(s=>{const p=pm[s.pid];if(!p||!inM(s.date))return;const d=+s.date.slice(8,10)-1;r[d]+=s.qty*p.price-(s.disc||0);g[d]+=s.qty*(p.price-p.cost)-(s.disc||0);c[d]++});
+ H('refunds',month).forEach(x=>{if(!inM(x.date))return;const d=+x.date.slice(8,10)-1;r[d]-=x.amt;g[d]-=x.amt-rfCost(x)});
  const last=month===lday().slice(0,7)?+lday().slice(8,10)-1:n-1;
  return{n,r,g,c,last,has:c.some(Boolean)||r.some(Boolean)}}
 function dayChart(d,line){const mn=mName(month);return chart({lab:d.r.map((_,i)=>String(i+1)),show:i=>i===0||(i+1)%5===0,bars:[{n:'Sales',c:'var(--c1)',v:d.r}],line:line?{n:'Gross profit',c:'var(--c2)',v:d.g.map((v,i)=>i<=d.last?v:null)}:null,
@@ -938,8 +983,8 @@ function salesSeries(mode){const d=daily(),n=d.n,pm=Object.fromEntries(S.product
   for(let i=0;i<n;i++){const k=Math.floor(i/7);r[k]+=d.r[i];g[k]+=d.g[i];c[k]+=d.c[i]}
   return{lab:r.map((_,i)=>'Wk '+(i+1)),show:null,r,g,c,last:Math.floor((today-1)/7),tip:i=>mn+' '+(i*7+1)+'–'+Math.min(n,i*7+7),aria:'Weekly sales for '+mName(month,1),has:d.has,note:''}}
  const r=Array(24).fill(0),g=Array(24).fill(0),c=Array(24).fill(0);let miss=0;
- S.sales.forEach(s=>{const p=pm[s.pid];if(!p||!inM(s.date))return;if(!s.ts){miss++;return}const h=+phParts(new Date(s.ts)).hour;r[h]+=s.qty*p.price-(s.disc||0);g[h]+=s.qty*(p.price-p.cost)-(s.disc||0);c[h]++});
- (S.refunds||[]).forEach(x=>{if(!inM(x.date)||!x.ts)return;const h=+phParts(new Date(x.ts)).hour;r[h]-=x.amt;g[h]-=x.amt-rfCost(x)});
+ H('sales',month).forEach(s=>{const p=pm[s.pid];if(!p||!inM(s.date))return;if(!s.ts){miss++;return}const h=+phParts(new Date(s.ts)).hour;r[h]+=s.qty*p.price-(s.disc||0);g[h]+=s.qty*(p.price-p.cost)-(s.disc||0);c[h]++});
+ H('refunds',month).forEach(x=>{if(!inM(x.date)||!x.ts)return;const h=+phParts(new Date(x.ts)).hour;r[h]-=x.amt;g[h]-=x.amt-rfCost(x)});
  const hl=h=>(h%12||12)+(h<12?'am':'pm');
  return{lab:r.map((_,h)=>(h%12||12)+(h<12?'a':'p')),show:i=>i%3===0,r,g,c,last:23,tip:i=>hl(i)+' – '+hl((i+1)%24),aria:'Sales by hour of the day for '+mName(month,1),has:c.some(Boolean),note:miss?miss+' sale'+(miss===1?'':'s')+' without a recorded time not shown.':''}}
 function salesTimeCard(cl){const m0=dsv,S2=salesSeries(m0),ttl={hour:'Sales by hour',day:'Sales by day',week:'Sales by week'}[m0];
@@ -976,7 +1021,7 @@ dash(){const c=calc(),pym=ymAdd(month,-1),pc=calcFor(pym),pn=mName(pym),d=daily(
  <div class="card s4">${chd('Top products','By sales')}<div class="fill">${tp}</div></div></div>
  ${tax?`<div class="s12">${tax}</div>`:''}
  <div class="card s12"><h2>Per product</h2>${rows?`<div class="ov"><table><tr><th>Product</th><th>Sold</th><th>Sales</th><th>Cost</th><th>Profit</th><th>Margin</th></tr>${rows}</table></div>`:'<div class="note">Add products first.</div>'}</div></div>`},
-sales(){const c=calc(),n=S.sales.filter(s=>inM(s.date)).length,rc=receiptCard('only');
+sales(){const c=calc(),n=H('sales',month).filter(s=>inM(s.date)).length,rc=receiptCard('only');
  return pHead('Sales','Record sales, shifts, refunds and receipts',1)+tiles([['Sale entries',String(n)],['Refunds',m(c.refunds),c.refunds?'neg':''],['Discounts given',m(c.disc)]])+`<div class="dg">`
  +col(8,salesForm())+col(4,shiftCard(),'act')
  +col(6,refundCard(),'act')+col(6,receiptCard(1),'act')
@@ -1029,7 +1074,7 @@ function dlDemo(){const d=EMPTY(),ym=month,last=Math.min(28,Math.max(5,+lday().s
 function dlWrap(orig,what){return function(){if(!dlOn())return orig();let h='';const real=S;try{S=dlDemo();h=orig()}catch(e){h='<div style="height:420px"></div>'}finally{S=real}
  return `<div class="lkw"><div class="lkb" inert aria-hidden="true">${h}</div><div class="lko"><div class="lkc" role="status"><div class="lki">${DLI}</div><b>Staff mode</b><p>Staff mode is enabled. Please disable it to see the ${what}.</p><button class="btn" onclick="tab='set';render();setTimeout(()=>{const e=$('#dl_u');if(e){e.scrollIntoView({block:'center'});e.focus()}},60)">Disable in Settings</button></div></div></div>`}}
 [['dash','dashboard'],['inv','inventory'],['prod','products']].forEach(a=>{V[a[0]]=dlWrap(V[a[0]],a[1]);D[a[0]]=dlWrap(D[a[0]],a[1])});
-function render(){if(tab!=='set'){rsOpen=false;rsConf=false;rsForgot=false;rsChg=false}applyPal();S.products.forEach(sync);renderBrand();$('#fl').src=APPLOGO;const T=[['dash','Dashboard'],['sales','Sales'],['inv','Inventory'],['prod','Products'],['exp','Expenses'],['set','Settings']].map(t=>dlOn()&&['dash','inv','prod'].includes(t[0])?[t[0],t[1]+' 🔒']:t);
+function render(){if(tab!=='set'){rsOpen=false;rsConf=false;rsForgot=false;rsChg=false}applyPal();arNeedView();S.products.forEach(sync);renderBrand();$('#fl').src=APPLOGO;const T=[['dash','Dashboard'],['sales','Sales'],['inv','Inventory'],['prod','Products'],['exp','Expenses'],['set','Settings']].map(t=>dlOn()&&['dash','inv','prod'].includes(t[0])?[t[0],t[1]+' 🔒']:t);
  $('#nav').innerHTML=T.map(t=>`<button data-t="${t[0]}" class="${tab==t[0]?'on':''}" onclick="tab='${t[0]}';render()">${t[1]}</button>`).join('');document.body.classList.add('inapp');$('#tip').style.display='none';$('#side').innerHTML=sideHTML(T);$('#app').innerHTML=(isPC()?D:V)[tab]()}
 let undoS=null,undoT=null;
 function del(k,id){if(k==='sales'||k==='rcpt')return;if(k==='products'){const b=S.products.find(x=>x.items&&x.items.some(i=>i.pid===id));if(b){msg('This product is in the bundle “'+b.name+'”. Remove it from the bundle first.');return}}undoS=JSON.stringify(S);if(k==='buys'){const b=S.buys.find(x=>x.id===id),v=b&&S.inv.find(x=>x.id===b.iid);if(v)v.qty=+(v.qty-b.qty).toFixed(3)}S[k]=S[k].filter(x=>x.id!==id);save();render();const u=$('#undo');u.innerHTML='Deleted. <a href="#" onclick="undo();return false" style="color:var(--ac);font-weight:700">Undo</a>';clearTimeout(undoT);undoT=setTimeout(()=>{u.textContent=''},10000)}
