@@ -75,3 +75,33 @@ create policy "app_data: update own" on public.app_data
 --   insert into public.profiles (user_id, paid)
 --   select id, true from auth.users where email = 'someone@example.com'
 --   on conflict (user_id) do update set paid = true;
+
+-- ---------- app_archive: sales history older than 3 months ----------
+-- The app keeps the current month and the 3 before it in app_data. Older months of
+-- sales, refunds and receipts move here, one row per user per month, so app_data
+-- (and the copy on the phone) stays small. Reports load these rows when needed.
+create table if not exists public.app_archive (
+  user_id    uuid not null references auth.users (id) on delete cascade,
+  month      text not null check (month ~ '^[0-9]{4}-[0-9]{2}$'),   -- e.g. '2026-07'
+  data       jsonb not null default '{}'::jsonb,              -- { sales:[], refunds:[], rcpt:[] }
+  updated_at timestamptz not null default now(),
+  primary key (user_id, month)
+);
+
+alter table public.app_archive enable row level security;
+
+drop policy if exists "app_archive: read own" on public.app_archive;
+create policy "app_archive: read own" on public.app_archive
+  for select to authenticated
+  using (auth.uid() = user_id);
+
+drop policy if exists "app_archive: insert own" on public.app_archive;
+create policy "app_archive: insert own" on public.app_archive
+  for insert to authenticated
+  with check (auth.uid() = user_id);
+
+drop policy if exists "app_archive: update own" on public.app_archive;
+create policy "app_archive: update own" on public.app_archive
+  for update to authenticated
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
