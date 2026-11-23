@@ -780,6 +780,7 @@ const gtTot=()=>gtP.ing.reduce((a,r)=>a+gtLine(r),0);
 const gtPer=()=>gtTot()/Math.max(1,+gtP.batch||1);
 function gtOpen(){if(!guest)return;gtI=0;gtErr='';$('#gt').style.display='';document.body.style.overflow='hidden';gtShow()}
 function gtClose(){if(gtI<0)return;gtI=-1;$('#gt').style.display='none';document.body.style.overflow=''}
+function gtTut(){gtKeep();gtClose();tab='tut';scrollTo(0,0);tutPlay(0,false)}
 function gtSkip(){gtKeep();gtClose();if(gtSaved){tab='prod';openP=gtSaved.id}else tab='dash';render();scrollTo(0,0)}
 function gtKeep(){const n=$('#gtnm');if(n){gtName=n.value.trim().slice(0,60);if(gtName&&(S.brand||{}).name!==gtName)bSet('name',gtName)}}
 function gtGo(i){gtErr='';if(gtI===0){gtKeep();if(!gtP||(gtP.ex&&gtP.biz!==(gtBiz||'other')))gtP=gtEx(gtBiz||'other')}
@@ -797,7 +798,7 @@ function gtShow(){const c=$('#gtc'),x=`<button class="gtx" onclick="gtSkip()">${
  if(gtI===0){c.innerHTML=`${x}<p class="gtk">Welcome to your POS</p><h3 id="gtt">Add your first product, then start selling.</h3><p>Let's set up one product together, with its cost, so every sale shows your real profit. It takes about 2 minutes, and we'll fill in an example so you can see how it works.</p>
   <label for="gtnm">Your business name <span class="gth">optional</span></label><input id="gtnm" maxlength="60" placeholder="e.g. Aling Nena's Bakery" value="${esc(gtName)}" autocomplete="organization" onkeydown="if(event.key==='Enter')gtGo(1)">
   <label id="gtbl">What do you sell?</label><div class="gtch" role="group" aria-labelledby="gtbl">${GT_BIZ.map(b=>`<button type="button" class="${gtBiz===b[0]?'on':''}" aria-pressed="${gtBiz===b[0]}" onclick="gtBiz='${b[0]}';this.parentNode.querySelectorAll('button').forEach(x=>{x.classList.toggle('on',x===this);x.setAttribute('aria-pressed',x===this)})">${b[1]}</button>`).join('')}</div>
-  <div class="gtcol"><button class="btn" onclick="gtGo(1)">Add my first product</button><button class="btn ghost" onclick="gtSkip()">Skip, I'll explore on my own</button></div>`;
+  <div class="gtcol"><button class="btn" onclick="gtGo(1)">Add my first product</button><button class="btn ghost" onclick="gtSkip()">Skip, I'll explore on my own</button><button class="btn ghost" onclick="gtTut()">▶ Watch tutorial</button></div>`;
   setTimeout(()=>{const e=$('#gtnm');if(e&&!matchMedia('(pointer:coarse)').matches)e.focus()},50);return}
  if(gtI===1){c.innerHTML=`${x}<p class="gtk">Step 1 of 3 · Your product</p><h3 id="gtt">What do you sell?</h3>${P.ex?`<div class="gtex">We filled in an example: <b>${esc(P.name)}</b>. Keep it to see how it works, or change it to your own product.</div>`:'<p>Type one of your own products.</p>'}
   <label for="gtpn">Product name</label><input id="gtpn" value="${esc(P.name)}" placeholder="e.g. Ube pandesal" oninput="gtSet(-1,'name',this.value)">
