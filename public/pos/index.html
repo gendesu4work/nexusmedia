@@ -291,6 +291,37 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 .gtwarn{font-size:13.5px;background:var(--bg);border-radius:10px;padding:10px 12px;margin:0 0 14px;line-height:1.5;color:var(--mut)}.gtwarn b{color:var(--tx)}
 #gtc button:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 35%,transparent)}
 @media(max-width:420px){#gtc{padding:22px 16px 16px}.gtr2{grid-template-columns:1fr 1fr}.gtr2 label:first-child{grid-column:1/-1}.gtres strong{font-size:19px}}
+
+.tuth{display:flex;align-items:center;gap:14px}
+.tuth .tthi{flex:0 0 48px;height:48px;border-radius:12px;background:color-mix(in srgb,var(--ac) 14%,var(--card));color:var(--ac);display:grid;place-items:center}
+.tuth .tthi svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tutt{font-size:20px;font-weight:800;color:var(--tx);letter-spacing:-.2px;margin:0}
+.tutsub{font-size:13.5px;color:var(--mut);margin-top:2px;line-height:1.45}
+.tutbar{height:6px;border-radius:3px;background:var(--ln);margin-top:10px;overflow:hidden}.tutbar i{display:block;height:100%;background:var(--ac);border-radius:3px}
+.tutp{display:flex;gap:18px;align-items:flex-start}
+.tutvw{flex:0 0 auto;width:300px;aspect-ratio:9/16;background:#0b1220;border-radius:14px;overflow:hidden}
+.tutvw video{width:100%;height:100%;display:block;object-fit:contain;background:#0b1220}
+.tutinfo{flex:1;min-width:0;padding-top:4px}
+.tutk{font-size:11.5px;font-weight:800;letter-spacing:.07em;color:var(--ac);text-transform:uppercase}
+.tutn{font-size:22px;font-weight:800;color:var(--tx);margin:6px 0 2px;line-height:1.2}
+.tuttl{font-size:14px;color:var(--mut);font-style:italic}
+.tutd{font-size:14.5px;color:var(--tx);line-height:1.55;margin:12px 0 16px}
+.tutnav{display:flex;gap:8px}.tutnav .btn{width:auto;flex:1}
+.tutl{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-bottom:12px}
+.tuti{display:flex;gap:12px;text-align:left;background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:10px;cursor:pointer;font:inherit;color:var(--tx);width:100%;align-items:flex-start;transition:border-color .15s,box-shadow .15s}
+.tuti:hover{border-color:color-mix(in srgb,var(--ac) 50%,var(--ln))}
+.tuti.on{border-color:var(--ac);box-shadow:0 0 0 2px color-mix(in srgb,var(--ac) 22%,transparent)}
+.tuti:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 35%,transparent)}
+.tutth{position:relative;flex:0 0 68px;height:121px;border-radius:8px;overflow:hidden;background:#0b1220}
+.tutth img{width:100%;height:100%;object-fit:cover;display:block}
+.tutth b{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center;font-size:12px;padding-left:2px;box-sizing:border-box}
+.tutth em{position:absolute;right:4px;bottom:4px;font-style:normal;font-size:10.5px;font-weight:700;background:rgba(0,0,0,.7);color:#fff;border-radius:4px;padding:1px 4px}
+.tutx{display:flex;flex-direction:column;gap:3px;min-width:0}
+.tutx b{font-size:15px;line-height:1.3}
+.tutx .tuttl{font-size:12.5px}
+.tutx .tutdd{font-size:12.5px;color:var(--mut);line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tutok{color:var(--ok);font-weight:800}
+@media(max-width:700px){.tutp{flex-direction:column;align-items:stretch}.tutvw{width:min(100%,calc(72vh*9/16));margin:0 auto}.tutinfo{padding-top:0}.tutn{font-size:19px}.tutl{grid-template-columns:1fr}}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script src="/track.js" data-site="calculator" defer></script>
 </head><body><main>
@@ -951,7 +982,8 @@ exp:'<path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M9 8h6M9 12h6"/>',
 set:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1L7 17M17 7l2.1-2.1"/>',
 peso:'<path d="M8 4v16"/><path d="M8 4h5a4 4 0 0 1 0 8H8"/><path d="M5 7.5h14M5 10.5h14"/>',
 bars:'<path d="M4 20V11M10 20V5M16 20v-6M2 20h20"/>',
-pct:'<path d="M19 5L5 19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/>'};
+pct:'<path d="M19 5L5 19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/>',
+tut:'<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M10 9.2l5 2.8-5 2.8z"/>'};
 const svgI=k=>`<svg viewBox="0 0 24 24" class="i" aria-hidden="true">${ICO[k]}</svg>`;
 function thLabel(){const d=effTheme()==='dark';return `<span>🌙 Dark mode</span><i class="tgl${d?' on':''}"></i>`}
 function sideHTML(T){const b=S.brand||{};return `<div class="sbb"><img alt="" src="${b.logo||APPLOGO}"><div style="min-width:0"><div class="bn">${esc(b.name||'POS System')}</div><div class="bs">${b.name?'Powered by NEXUSMEDIA':'POS, stock & profit'}</div></div></div>
@@ -1086,7 +1118,24 @@ function dlDemo(){const d=EMPTY(),ym=month,last=Math.min(28,Math.max(5,+lday().s
 function dlWrap(orig,what){return function(){if(!dlOn())return orig();let h='';const real=S;try{S=dlDemo();h=orig()}catch(e){h='<div style="height:420px"></div>'}finally{S=real}
  return `<div class="lkw"><div class="lkb" inert aria-hidden="true">${h}</div><div class="lko"><div class="lkc" role="status"><div class="lki">${DLI}</div><b>Staff mode</b><p>Staff mode is enabled. Please disable it to see the ${what}.</p><button class="btn" onclick="tab='set';render();setTimeout(()=>{const e=$('#dl_u');if(e){e.scrollIntoView({block:'center'});e.focus()}},60)">Disable in Settings</button></div></div></div>`}}
 [['dash','dashboard'],['inv','inventory'],['prod','products']].forEach(a=>{V[a[0]]=dlWrap(V[a[0]],a[1]);D[a[0]]=dlWrap(D[a[0]],a[1])});
-function render(){if(tab!=='set'){rsOpen=false;rsConf=false;rsForgot=false;rsChg=false}applyPal();arNeedView();S.products.forEach(sync);renderBrand();$('#fl').src=APPLOGO;const T=[['dash','Dashboard'],['sales','Sales'],['inv','Inventory'],['prod','Products'],['exp','Expenses'],['set','Settings']].map(t=>dlOn()&&['dash','inv','prod'].includes(t[0])?[t[0],t[1]+' 🔒']:t);
+const TUT=[{"id": "01-start", "tl": "Paano magsimula", "en": "Getting started", "d": "Open the POS, try it free in guest mode, or sign up to save online. A quick tour of the 6 tabs, and how to put the POS on your phone's home screen with Make this an app.", "s": 54}, {"id": "02-profile", "tl": "I-setup ang store profile", "en": "Set up your store profile", "d": "Add your business name and logo, pick a tax estimate, and choose a color theme or dark mode in Settings.", "s": 30}, {"id": "03-inventory", "tl": "I-add ang stocks mo", "en": "Add your stocks", "d": "Add your ingredients with their unit, stock on hand, low-stock alert, pack size and pack price. Record restocks with Bought stock.", "s": 39}, {"id": "04-products", "tl": "I-add ang products mo", "en": "Add your products", "d": "Add products with a category and selling price, make your own categories, and group items into bundles.", "s": 35}, {"id": "05-recipe", "tl": "Alamin ang totoong cost", "en": "Find your real cost with Recipe", "d": "Enter each product's ingredients and servings per batch to get the real cost per piece, your profit, and a suggested price for your target margin.", "s": 32}, {"id": "06-selling", "tl": "Paano magbenta", "en": "How to sell", "d": "Open a shift with your starting cash, tap a product, set the quantity, add a PWD or senior discount, and record Cash, GCash or PayMaya payments.", "s": 36}, {"id": "07-closing", "tl": "I-void, resibo at close shift", "en": "Void a sale, receipts and closing", "d": "Void a wrong or changed order with Add a refund: the sale is taken off, the stock goes back, and the reason is saved. Make a receipt when a customer asks, then close your shift and check that your cash matches.", "s": 49}, {"id": "08-expenses", "tl": "I-lista ang mga gastos", "en": "Track your expenses", "d": "Record expenses like packaging and gas, and set monthly rent and staff salaries so your profit is accurate.", "s": 37}, {"id": "09-dashboard", "tl": "Basahin ang Dashboard", "en": "Read your Dashboard", "d": "Read your sales, net profit and margins, see your best days and hours, where the money goes, and which product earns the most.", "s": 29}, {"id": "10-staff", "tl": "Itago ang profit sa staff", "en": "Hide profit from staff", "d": "Set a 6-digit owner passcode to hide profit, inventory and products from staff, and turn Staff mode off when you need them.", "s": 33}];
+let tutCur=0,tutAuto=false;
+function tutSeen(){try{return JSON.parse(localStorage.getItem('pc-tut-seen')||'[]')}catch(e){return[]}}
+function tutMark(i){try{const s=tutSeen();if(!s.includes(i)){s.push(i);localStorage.setItem('pc-tut-seen',JSON.stringify(s))}}catch(e){}}
+const tutTime=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+function tutPlay(i,scroll){tutCur=i;tutAuto=true;render();setTimeout(()=>{const v=$('#tutv');if(scroll){const p=$('#tutp');if(p)p.scrollIntoView({behavior:'smooth',block:'start'})}if(v)v.play().catch(()=>{})},60)}
+function tutDone(){tutMark(tutCur);if(tutCur<TUT.length-1)tutPlay(tutCur+1,false);else render()}
+function tutView(){const t=TUT[tutCur],seen=tutSeen(),n=TUT.length,w=seen.length;
+ const items=TUT.map((x,i)=>`<button class="tuti${i===tutCur?' on':''}" onclick="tutPlay(${i},true)" aria-label="Play part ${i+1}: ${esc(x.en)}"><span class="tutth"><img src="tutorials/${x.id}.jpg" alt="" loading="lazy"><b>▶</b><em>${tutTime(x.s)}</em></span><span class="tutx"><span class="tutk">Part ${i+1}${seen.includes(i)?' · <span class="tutok">✓ Watched</span>':''}</span><b>${esc(x.en)}</b><span class="tuttl">${esc(x.tl)}</span><span class="tutdd">${esc(x.d)}</span></span></button>`).join('');
+ return `<div class="card"><div class="tuth"><span class="tthi">${svgI('tut')}</span><div style="min-width:0;flex:1"><div class="tutt">Tutorials</div><div class="tutsub">${n} short videos (Taglish) that show you how to use the whole POS, step by step. New here? Start with Part 1.</div></div></div><div class="tutbar"><i style="width:${Math.round(w/n*100)}%"></i></div><div class="note" style="margin-top:6px">${w} of ${n} watched</div></div>
+ <div class="card" id="tutp"><div class="tutp"><div class="tutvw"><video id="tutv" src="tutorials/${t.id}.mp4" poster="tutorials/${t.id}.jpg" controls playsinline preload="metadata" onplay="tutMark(${tutCur})" onended="tutDone()"></video></div>
+ <div class="tutinfo"><div class="tutk">Part ${tutCur+1} of ${n} · ${tutTime(t.s)}</div><div class="tutn">${esc(t.en)}</div><div class="tuttl">${esc(t.tl)}</div><div class="tutd">${esc(t.d)}</div>
+ <div class="tutnav">${tutCur>0?`<button class="btn ghost" onclick="tutPlay(${tutCur-1},false)">← Part ${tutCur}</button>`:''}${tutCur<n-1?`<button class="btn" onclick="tutPlay(${tutCur+1},false)">Next: Part ${tutCur+2} →</button>`:''}</div>
+ <div class="note" style="margin-top:10px">When a video ends, the next part plays on its own.</div></div></div></div>
+ <div class="tutl">${items}</div>`}
+V.tut=tutView;D.tut=tutView;
+
+function render(){if(tab!=='set'){rsOpen=false;rsConf=false;rsForgot=false;rsChg=false}applyPal();arNeedView();S.products.forEach(sync);renderBrand();$('#fl').src=APPLOGO;const T=[['dash','Dashboard'],['sales','Sales'],['inv','Inventory'],['prod','Products'],['exp','Expenses'],['set','Settings'],['tut','Tutorials']].map(t=>dlOn()&&['dash','inv','prod'].includes(t[0])?[t[0],t[1]+' 🔒']:t);
  $('#nav').innerHTML=T.map(t=>`<button data-t="${t[0]}" class="${tab==t[0]?'on':''}" onclick="tab='${t[0]}';render()">${t[1]}</button>`).join('');document.body.classList.add('inapp');$('#tip').style.display='none';$('#side').innerHTML=sideHTML(T);$('#app').innerHTML=insBar()+(isPC()?D:V)[tab]()}
 let undoS=null,undoT=null;
 function del(k,id){if(k==='sales'||k==='rcpt')return;if(k==='products'){const b=S.products.find(x=>x.items&&x.items.some(i=>i.pid===id));if(b){msg('This product is in the bundle “'+b.name+'”. Remove it from the bundle first.');return}}undoS=JSON.stringify(S);if(k==='buys'){const b=S.buys.find(x=>x.id===id),v=b&&S.inv.find(x=>x.id===b.iid);if(v)v.qty=+(v.qty-b.qty).toFixed(3)}S[k]=S[k].filter(x=>x.id!==id);save();render();const u=$('#undo');u.innerHTML='Deleted. <a href="#" onclick="undo();return false" style="color:var(--ac);font-weight:700">Undo</a>';clearTimeout(undoT);undoT=setTimeout(()=>{u.textContent=''},10000)}
