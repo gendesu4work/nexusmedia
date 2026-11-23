@@ -1087,7 +1087,7 @@ function dlWrap(orig,what){return function(){if(!dlOn())return orig();let h='';c
  return `<div class="lkw"><div class="lkb" inert aria-hidden="true">${h}</div><div class="lko"><div class="lkc" role="status"><div class="lki">${DLI}</div><b>Staff mode</b><p>Staff mode is enabled. Please disable it to see the ${what}.</p><button class="btn" onclick="tab='set';render();setTimeout(()=>{const e=$('#dl_u');if(e){e.scrollIntoView({block:'center'});e.focus()}},60)">Disable in Settings</button></div></div></div>`}}
 [['dash','dashboard'],['inv','inventory'],['prod','products']].forEach(a=>{V[a[0]]=dlWrap(V[a[0]],a[1]);D[a[0]]=dlWrap(D[a[0]],a[1])});
 function render(){if(tab!=='set'){rsOpen=false;rsConf=false;rsForgot=false;rsChg=false}applyPal();arNeedView();S.products.forEach(sync);renderBrand();$('#fl').src=APPLOGO;const T=[['dash','Dashboard'],['sales','Sales'],['inv','Inventory'],['prod','Products'],['exp','Expenses'],['set','Settings']].map(t=>dlOn()&&['dash','inv','prod'].includes(t[0])?[t[0],t[1]+' 🔒']:t);
- $('#nav').innerHTML=T.map(t=>`<button data-t="${t[0]}" class="${tab==t[0]?'on':''}" onclick="tab='${t[0]}';render()">${t[1]}</button>`).join('');document.body.classList.add('inapp');$('#tip').style.display='none';$('#side').innerHTML=sideHTML(T);$('#app').innerHTML=(isPC()?D:V)[tab]()}
+ $('#nav').innerHTML=T.map(t=>`<button data-t="${t[0]}" class="${tab==t[0]?'on':''}" onclick="tab='${t[0]}';render()">${t[1]}</button>`).join('');document.body.classList.add('inapp');$('#tip').style.display='none';$('#side').innerHTML=sideHTML(T);$('#app').innerHTML=insBar()+(isPC()?D:V)[tab]()}
 let undoS=null,undoT=null;
 function del(k,id){if(k==='sales'||k==='rcpt')return;if(k==='products'){const b=S.products.find(x=>x.items&&x.items.some(i=>i.pid===id));if(b){msg('This product is in the bundle “'+b.name+'”. Remove it from the bundle first.');return}}undoS=JSON.stringify(S);if(k==='buys'){const b=S.buys.find(x=>x.id===id),v=b&&S.inv.find(x=>x.id===b.iid);if(v)v.qty=+(v.qty-b.qty).toFixed(3)}S[k]=S[k].filter(x=>x.id!==id);save();render();const u=$('#undo');u.innerHTML='Deleted. <a href="#" onclick="undo();return false" style="color:var(--ac);font-weight:700">Undo</a>';clearTimeout(undoT);undoT=setTimeout(()=>{u.textContent=''},10000)}
 function undo(){if(!undoS)return;S=JSON.parse(undoS);undoS=null;save();render();$('#undo').textContent=''}
@@ -1194,6 +1194,10 @@ function buyList(h){const L=(S.buys||[]).filter(b=>inM(b.date)).sort((a,b)=>b.da
 function useOf(p,q){const n=p.batch||12,o={};if(p.items){p.items.forEach(i=>{const c=gp(i.pid);if(c&&!c.items){const u=useOf(c,q*i.q);Object.keys(u).forEach(k=>o[k]=(o[k]||0)+u[k])}});return o}(p.ing||[]).forEach(i=>{const v=lk(i);if(v)o[v.id]=(o[v.id]||0)+q*i.g/n});return o}
 function lowCard(){const L=S.inv.filter(v=>v.qty<=0||(v.low>0&&v.qty<=v.low));if(!L.length)return '';return `<div class="card" style="border-color:var(--bad)"><h2>⚠️ Low stock</h2>${L.map(v=>`<div class="li"><span>${esc(v.name)}</span><b class="neg">${+(+v.qty).toFixed(1)} ${v.u} left</b></div>`).join('')}</div>`}
 function renderBrand(){const b=S.brand||{};$('#brand').innerHTML=`<img class="bl" alt="" src="${b.logo||APPLOGO}"><div style="min-width:0"><div class="bn">${esc(b.name||'POS System')}</div><div class="bs">${b.name?'Powered by NEXUSMEDIA':'POS, stock & profit'}</div></div>`}
+// Guests: install banner at the top of the dashboard, so the POS lands on their home screen early.
+function insBar(){if(!guest||tab!=='dash')return '';const I=window.insInfo&&window.insInfo();if(!I||I.standalone)return '';
+ try{if(Date.now()-(+localStorage.getItem('pc-insbar-hide')||0)<3*864e5)return ''}catch(e){}
+ return `<div class="card insbar"><img src="icon-192.png" alt=""><div class="ibt"><b>Put the POS on your phone</b><span>Add it to your home screen. It opens like a normal app, no app store needed.</span></div><button class="btn" onclick="insOpen()">Make this an app</button><button class="ibx" aria-label="Hide" onclick="try{localStorage.setItem('pc-insbar-hide',String(Date.now()))}catch(e){};render()">×</button></div>`}
 function appCard(){const I=window.insInfo&&window.insInfo();if(I&&I.standalone)return `<div class="card"><h2>📱 Make this an app</h2><div class="note" style="font-size:14px">✓ You are already using the POS as an app.</div></div>`;
  return `<div class="card"><h2>📱 Make this an app</h2><div class="note" style="margin:-4px 0 12px;font-size:14px">Add the POS to your phone's home screen. It opens full screen like a normal app, no app store needed.</div><div class="row" style="margin:0"><button class="btn" onclick="insOpen()">Make this an app</button></div></div>`}
 function curCard(){const k=ccy();return `<div class="card"><h2>Currency</h2><div class="note" style="margin:-4px 0 10px">The money sign used across the app and on receipts. Changing it does not convert amounts you already entered.</div><select aria-label="Currency" onchange="S.set.ccy=this.value;save();render()">${Object.keys(CUR).map(c=>`<option value="${c}" ${k===c?'selected':''}>${CUR[c][0].trim()} · ${CUR[c][1]} (${c})</option>`).join('')}</select></div>`}
@@ -1218,6 +1222,13 @@ requestAnimationFrame(tick)})();
 <style>
 #ins{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:440px;margin:0 auto;z-index:250;background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:16px;padding:14px;box-shadow:0 12px 36px rgba(0,0,0,.3);display:none;animation:insUp .35s ease-out}
 #ins.on{display:block}
+.insbar{position:relative;display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-right:40px;border-color:var(--ac)}
+.insbar img{width:44px;height:44px;border-radius:11px;flex:0 0 auto}
+.insbar .ibt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;font-size:14px}
+.insbar .ibt span{color:var(--mut);font-size:13px}
+.insbar .btn{flex:0 0 auto;width:auto;margin:0;white-space:nowrap}
+.insbar .ibx{position:absolute;top:6px;right:8px;background:none;border:0;color:var(--mut);font-size:20px;cursor:pointer;padding:4px 6px;line-height:1}
+@media(max-width:600px){.insbar{flex-wrap:wrap}.insbar .ibt{flex:1 1 calc(100% - 60px)}.insbar .btn{flex:1 1 100%;width:100%}}
 @keyframes insUp{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
 @media(prefers-reduced-motion:reduce){#ins{animation:none}}
 #ins .ih{display:flex;gap:12px;align-items:center;margin-bottom:10px}
