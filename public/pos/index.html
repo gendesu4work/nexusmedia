@@ -322,6 +322,53 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 .tutx .tutdd{font-size:12.5px;color:var(--mut);line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .tutok{color:var(--ok);font-weight:800}
 @media(max-width:700px){.tutp{flex-direction:column;align-items:stretch}.tutvw{width:min(100%,calc(72vh*9/16));margin:0 auto}.tutinfo{padding-top:0}.tutn{font-size:19px}.tutl{grid-template-columns:1fr}}
+
+.tdw{--tvh:clamp(440px,calc(100vh - 250px),700px)}
+.tdh{display:flex;align-items:center;gap:14px;margin:0 0 18px}
+.tdh .tthi{flex:0 0 46px;height:46px;border-radius:12px;background:color-mix(in srgb,var(--ac) 14%,var(--card));color:var(--ac);display:grid;place-items:center}
+.tdh .tthi svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tdh .tdt{font-size:24px;font-weight:800;letter-spacing:-.3px;color:var(--tx);line-height:1.15}
+.tdh .tds{font-size:14px;color:var(--mut);margin-top:3px}
+.tdg{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:18px;align-items:start}
+.tdp{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:20px;display:flex;gap:28px;box-shadow:0 1px 3px rgba(15,42,61,.07);min-height:calc(var(--tvh) + 40px);box-sizing:border-box}
+.tdv{flex:0 0 auto;height:var(--tvh);aspect-ratio:9/16;border-radius:14px;overflow:hidden;background:#0b1220}
+.tdv video{width:100%;height:100%;display:block;object-fit:contain;background:#0b1220}
+.tdi{flex:1;min-width:0;max-width:680px;display:flex;flex-direction:column;padding-top:6px}
+.tdi .tutk{font-size:12px}
+.tdi .tdn{font-size:30px;font-weight:800;letter-spacing:-.5px;line-height:1.15;color:var(--tx);margin:8px 0 4px}
+.tdi .tuttl{font-size:15px}
+.tdi .tdd{font-size:15px;line-height:1.6;color:var(--tx);margin:16px 0 0}
+.tdl{margin:22px 0 0;padding:16px 18px;border-radius:12px;background:var(--bg);border:1px solid var(--ln)}
+.tdl h4{margin:0 0 10px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);font-weight:800}
+.tdl ol{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:9px 18px}
+.tdl li{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--tx);min-width:0}
+.tdl li i{flex:0 0 22px;height:22px;border-radius:50%;background:color-mix(in srgb,var(--ac) 14%,var(--card));color:var(--ac);font-style:normal;font-size:11.5px;font-weight:800;display:grid;place-items:center}
+.tdb{display:flex;gap:10px;margin-top:26px;align-items:center}
+.tdb .btn{width:auto;flex:0 0 auto;min-width:170px;padding:11px 18px;font-weight:700}
+.tdb .note{align-self:center;margin-left:6px}
+.tpl{background:var(--card);border:1px solid var(--ln);border-radius:16px;box-shadow:0 1px 3px rgba(15,42,61,.07);height:calc(var(--tvh) + 40px);display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box}
+.tplh{padding:16px 18px 14px;border-bottom:1px solid var(--ln)}.tplt{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.tplh b{font-size:15px;color:var(--tx)}
+.tplh .tplc{font-size:12.5px;color:var(--mut);font-weight:700}
+.tplh .tutbar{margin-top:10px}
+.tplb{flex:1;overflow-y:auto;padding:6px}
+.tpr{display:grid;grid-template-columns:22px 46px minmax(0,1fr) 22px;align-items:center;gap:11px;width:100%;padding:8px 10px;border:0;border-radius:10px;background:transparent;font:inherit;color:var(--tx);text-align:left;cursor:pointer;position:relative}
+.tpr:hover{background:color-mix(in srgb,var(--ac) 7%,transparent)}
+.tpr.on{background:color-mix(in srgb,var(--ac) 13%,transparent)}
+.tpr.on::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:2px;background:var(--ac)}
+.tpr:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 35%,transparent)}
+.tpr .tpn{font-size:12.5px;font-weight:800;color:var(--mut);text-align:center}
+.tpr.on .tpn{color:var(--ac)}
+.tpr .tpt{width:46px;height:82px;border-radius:7px;overflow:hidden;background:#0b1220}
+.tpr .tpt img{width:100%;height:100%;object-fit:cover;display:block}
+.tpr .tpx{display:flex;flex-direction:column;gap:2px;min-width:0}
+.tpr .tpx b{font-size:14px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tpr .tpx span{font-size:12px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tpr .tps{font-size:13px;color:var(--mut);text-align:center}
+.tpr .tps.ok{color:var(--ok);font-weight:800}
+.tpr.on .tps{color:var(--ac)}
+@media(max-width:1380px){.tdg{grid-template-columns:1fr}.tpl{height:auto}.tplb{overflow:visible;display:grid;grid-template-columns:1fr 1fr;gap:2px 8px}.tdl ol{grid-template-columns:1fr}}
+@media(max-width:1100px){.tdp{gap:20px}.tdi .tdn{font-size:24px}}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script src="/track.js" data-site="calculator" defer></script>
 </head><body><main>
@@ -1124,7 +1171,7 @@ let tutCur=0,tutAuto=false;
 function tutSeen(){try{return JSON.parse(localStorage.getItem('pc-tut-seen')||'[]')}catch(e){return[]}}
 function tutMark(i){try{const s=tutSeen();if(!s.includes(i)){s.push(i);localStorage.setItem('pc-tut-seen',JSON.stringify(s))}}catch(e){}}
 const tutTime=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
-function tutPlay(i,scroll){tutCur=i;tutAuto=true;render();setTimeout(()=>{const v=$('#tutv');if(scroll){const p=$('#tutp');if(p)p.scrollIntoView({behavior:'smooth',block:'start'})}if(v)v.play().catch(()=>{})},60)}
+function tutPlay(i,scroll){tutCur=i;tutAuto=true;render();setTimeout(()=>{const v=$('#tutv'),r=$('.tplb .tpr.on'),b=$('.tplb');if(r&&b&&b.scrollHeight>b.clientHeight)b.scrollTo({top:r.offsetTop-b.clientHeight/2+r.offsetHeight/2,behavior:'smooth'});if(scroll){const p=$('#tutp');if(p)p.scrollIntoView({behavior:'smooth',block:'start'})}if(v)v.play().catch(()=>{})},60)}
 function tutDone(){tutMark(tutCur);if(tutCur<TUT.length-1)tutPlay(tutCur+1,false);else render()}
 function tutView(){const t=TUT[tutCur],seen=tutSeen(),n=TUT.length,w=seen.length;
  const items=TUT.map((x,i)=>`<button class="tuti${i===tutCur?' on':''}" onclick="tutPlay(${i},true)" aria-label="Play part ${i+1}: ${esc(x.en)}"><span class="tutth"><img src="tutorials/${x.id}.jpg" alt="" loading="lazy"><b>▶</b><em>${tutTime(x.s)}</em></span><span class="tutx"><span class="tutk">Part ${i+1}${seen.includes(i)?' · <span class="tutok">✓ Watched</span>':''}</span><b>${esc(x.en)}</b><span class="tuttl">${esc(x.tl)}</span><span class="tutdd">${esc(x.d)}</span></span></button>`).join('');
@@ -1134,7 +1181,17 @@ function tutView(){const t=TUT[tutCur],seen=tutSeen(),n=TUT.length,w=seen.length
  <div class="tutnav">${tutCur>0?`<button class="btn ghost" onclick="tutPlay(${tutCur-1},false)">← Part ${tutCur}</button>`:''}${tutCur<n-1?`<button class="btn" onclick="tutPlay(${tutCur+1},false)">Next: Part ${tutCur+2} →</button>`:''}</div>
  <div class="note" style="margin-top:10px">When a video ends, the next part plays on its own.</div></div></div></div>
  <div class="tutl">${items}</div>`}
-V.tut=tutView;D.tut=tutView;
+
+const TUTS={"01-start": ["Buksan ang site", "Guest mode", "Sign up", "Guide", "Ang 6 na tabs", "Gawing app"], "02-profile": ["Settings", "Business name", "Logo", "Tax estimate", "Theme + dark mode"], "03-inventory": ["Inventory", "Pangalan + unit", "On hand + alert", "Pack + presyo", "Stock on hand", "Bought stock"], "04-products": ["Products", "Pangalan + presyo", "Cost o Recipe", "Add", "Categories", "Bundles"], "05-recipe": ["Buksan ang Recipe", "Ingredients", "Servings", "Cost per piece", "Target margin"], "06-selling": ["Open shift", "Pumili ng produkto", "Qty + discount", "Bayad", "Stock bumawas"], "07-closing": ["I-void ang benta", "Produkto + dahilan", "Tugma pa rin", "Resibo", "Close shift", "Tugma ba?"], "08-expenses": ["Add expense", "Walang ingredients", "Upa", "Sahod ng staff"], "09-dashboard": ["Sales + profit", "Sales by day", "Saan napupunta", "Per product"], "10-staff": ["Settings", "Passcode", "Naka-lock", "I-off"]};
+function tutViewPC(){const t=TUT[tutCur],seen=tutSeen(),n=TUT.length,w=seen.length,st=TUTS[t.id]||[];
+ const rows=TUT.map((x,i)=>`<button class="tpr${i===tutCur?' on':''}" onclick="tutPlay(${i},false)" aria-label="Play part ${i+1}: ${esc(x.en)}"${i===tutCur?' aria-current="true"':''}><span class="tpn">${i===tutCur?'▶':i+1}</span><span class="tpt"><img src="tutorials/${x.id}.jpg" alt="" loading="lazy"></span><span class="tpx"><b>${esc(x.en)}</b><span>${esc(x.tl)}</span><span>Part ${i+1} · ${tutTime(x.s)}</span></span><span class="tps${seen.includes(i)?' ok':''}">${seen.includes(i)?'✓':''}</span></button>`).join('');
+ return `<div class="tdw"><div class="tdh"><span class="tthi">${svgI('tut')}</span><div><div class="tdt">Tutorials</div><div class="tds">${n} short videos (Taglish) that show you how to use the whole POS, step by step. New here? Start with Part 1.</div></div></div>
+ <div class="tdg"><div class="tdp" id="tutp"><div class="tdv"><video id="tutv" src="tutorials/${t.id}.mp4" poster="tutorials/${t.id}.jpg" controls playsinline preload="metadata" onplay="tutMark(${tutCur})" onended="tutDone()"></video></div>
+ <div class="tdi"><div class="tutk">Part ${tutCur+1} of ${n} · ${tutTime(t.s)}</div><div class="tdn">${esc(t.en)}</div><div class="tuttl">${esc(t.tl)}</div><div class="tdd">${esc(t.d)}</div>
+ ${st.length?`<div class="tdl"><h4>In this part</h4><ol>${st.map((x,k)=>`<li><i>${k+1}</i><span>${esc(x)}</span></li>`).join('')}</ol></div>`:''}
+ <div class="tdb">${tutCur>0?`<button class="btn ghost" onclick="tutPlay(${tutCur-1},false)">← Part ${tutCur}</button>`:''}${tutCur<n-1?`<button class="btn" onclick="tutPlay(${tutCur+1},false)">Next: Part ${tutCur+2} →</button><span class="note">Plays next on its own</span>`:`<span class="note">That's the whole series. 🎉</span>`}</div></div></div>
+ <aside class="tpl" aria-label="All tutorial parts"><div class="tplh"><div class="tplt"><b>All parts</b><span class="tplc">${w} of ${n} watched</span></div><div class="tutbar"><i style="width:${Math.round(w/n*100)}%"></i></div></div><div class="tplb">${rows}</div></aside></div></div>`}
+V.tut=tutView;D.tut=tutViewPC;
 
 function render(){if(tab!=='set'){rsOpen=false;rsConf=false;rsForgot=false;rsChg=false}applyPal();arNeedView();S.products.forEach(sync);renderBrand();$('#fl').src=APPLOGO;const T=[['dash','Dashboard'],['sales','Sales'],['inv','Inventory'],['prod','Products'],['exp','Expenses'],['set','Settings'],['tut','Tutorials']].map(t=>dlOn()&&['dash','inv','prod'].includes(t[0])?[t[0],t[1]+' 🔒']:t);
  $('#nav').innerHTML=T.map(t=>`<button data-t="${t[0]}" class="${tab==t[0]?'on':''}" onclick="tab='${t[0]}';render()">${t[1]}</button>`).join('');document.body.classList.add('inapp');$('#tip').style.display='none';$('#side').innerHTML=sideHTML(T);$('#app').innerHTML=insBar()+(isPC()?D:V)[tab]()}
