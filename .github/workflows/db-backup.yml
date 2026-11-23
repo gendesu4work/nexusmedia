@@ -55,7 +55,7 @@ jobs:
           set -euo pipefail
           umask 077
           f="calculator-$(date -u +%F).dump"
-          # public = profiles, app_data; auth = your clients' login accounts.
+          # public = profiles, app_data, app_archive (sales older than 3 months); auth = your clients' login accounts.
           /usr/lib/postgresql/17/bin/pg_dump "$DB" -Fc --no-owner --no-privileges \
             --schema=public --schema=auth -f "$f"
           gpg --batch --yes --pinentry-mode loopback --passphrase "$PW" \
