@@ -462,11 +462,17 @@ let sb=null,uidU=null,dirty=null,syncing=false,guest=false,paidMsg='';
 const EMPTY=()=>({shifts:[],buys:[],refunds:[],rcpt:[],rno:0,inv:[],brand:{},staff:[],products:[],sales:[],expenses:[],set:{cur:'₱',rentOn:false,rent:0,staffOn:false,staff:0}});
 const rj=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}};
 const wj=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+// ppt-srv-<id>: the server's updated_at that this browser's saved copy matches. On page load, if it still
+// matches the server, the full download is skipped. Cleared whenever the local copy changes or fails to save.
+const wjOk=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}};
+const sameT=(a,b)=>!!a&&!!b&&new Date(a).getTime()===new Date(b).getTime();
+const setM=v=>{try{v?localStorage.setItem('ppt-srv-'+uidU,v):localStorage.removeItem('ppt-srv-'+uidU)}catch(e){}};
+let lok=false;
 const setD=v=>{dirty=v;try{v?localStorage.setItem('ppt-dirty-'+uidU,v):localStorage.removeItem('ppt-dirty-'+uidU)}catch(e){}};
 function status(msg){const s=$('#sync');if(!s)return;if(guest&&!msg){s.textContent='Guest mode: nothing is saved. If you refresh or close the page, your data is erased. Sign up to keep it.';return}const off=!navigator.onLine;s.textContent=(msg||(dirty?(off?'📴 Offline: changes are saved on this phone and will sync when you are online.':'⏳ Waiting to sync…'):(off?'📴 Offline: you can keep working.':'☁️ Saved to your account')))+(arMiss&&!msg?' Some older months could not load. Connect to the internet to see them.':'')}
-function save(){if(guest){status();return}if(!uidU)return;wj('ppt-'+uidU,S);setD(new Date().toISOString());status();clearTimeout(timer);timer=setTimeout(trySync,600)}
+function save(){if(guest){status();return}if(!uidU)return;setM(null);lok=wjOk('ppt-'+uidU,S);setD(new Date().toISOString());status();clearTimeout(timer);timer=setTimeout(trySync,600)}
 async function trySync(){if(!uidU||!dirty||syncing||!navigator.onLine)return;syncing=true;const ts=dirty;
- try{const r=await sb.from('app_data').upsert({user_id:uidU,data:S,updated_at:ts});if(!r.error&&dirty===ts)setD(null)}catch(e){}
+ try{const r=await sb.from('app_data').upsert({user_id:uidU,data:S,updated_at:ts});if(!r.error&&dirty===ts){setD(null);if(lok)setM(ts)}}catch(e){}
  syncing=false;status();if(dirty&&dirty!==ts){clearTimeout(timer);timer=setTimeout(trySync,600)}else if(!dirty)archRun()}
 // ===== Archive: sales, refunds and receipts older than this month + the 3 before it move to app_archive (one row per month) =====
 // app_data stays small. Reports load archived months when needed (cached on this phone in IndexedDB).
@@ -534,7 +540,12 @@ async function enter(u){guest=false;arReset();clearTimeout(promoT);$('#promo').s
  if(paid===null&&!lc){uidU=null;showLogin(navigator.onLine?DOWN:'Could not check your account. Connect to the internet and try again.');return}
  try{dirty=localStorage.getItem('ppt-dirty-'+uidU)}catch(e){dirty=null}
  let row=null,err=false;
- try{const r=await sb.from('app_data').select('data,updated_at').eq('user_id',uidU).maybeSingle();err=!!r.error;row=r.data}catch(e){err=true}
+ let mk=null;try{mk=localStorage.getItem('ppt-srv-'+uidU)}catch(e){}
+ try{
+  // Saved copy already matches the server? Ask only for the date, not the whole data.
+  if(lc&&!dirty&&mk){const h=await sb.from('app_data').select('updated_at').eq('user_id',uidU).maybeSingle();err=!!h.error;if(!err&&h.data&&sameT(h.data.updated_at,mk))row={data:lc,updated_at:h.data.updated_at}}
+  if(!err&&!row){const r=await sb.from('app_data').select('data,updated_at').eq('user_id',uidU).maybeSingle();err=!!r.error;row=r.data}
+ }catch(e){err=true}
  let useLocal=false,src=lc;
  if(err){if(!lc){uidU=null;showLogin('Could not reach the server. Connect to the internet once to load your data.');return}useLocal=true}
  else if(row&&row.data)useLocal=!!(dirty&&lc&&new Date(dirty)>new Date(row.updated_at));
@@ -542,7 +553,8 @@ async function enter(u){guest=false;arReset();clearTimeout(promoT);$('#promo').s
  if(useLocal){S=Object.assign(S,src);if(!err&&!dirty)setD(new Date().toISOString())}
  else{S=Object.assign(S,row?row.data:{});if(dirty)setD(null)}
  S.set=S.set||{};S.set.pal=curPal();
- wj('ppt-'+uidU,S);wj('ppt-last',{id:u.id,email:u.email});
+ const wok=wjOk('ppt-'+uidU,S);wj('ppt-last',{id:u.id,email:u.email});
+ if(!err){if(!useLocal&&row&&row.updated_at&&wok)setM(row.updated_at);else setM(null)}
  $('#login').style.display='none';$('#shell').style.display='';uEmail=u.email||'';$('#bar').innerHTML=esc(u.email)+' · <a href="#" onclick="doLogout();return false" style="color:var(--ac);font-weight:700">Log out</a>';render();status();trySync();archRun()}
 let recovering=false;
 let promoT=null,promoH=null,promoN=0;
@@ -822,7 +834,7 @@ async function doLogin(){const e=$('#le').value.trim(),p=$('#lp').value;if(!e||!
  $('#lp').value='';await enter(r.data.user)}
 async function doLogout(){if(dirty){status('⚠️ You have changes waiting to sync. Connect to the internet and wait for "Saved" before logging out.');return}
  try{await sb.auth.signOut()}catch(e){}
- try{localStorage.removeItem('ppt-'+uidU);localStorage.removeItem('ppt-last')}catch(e){}
+ try{localStorage.removeItem('ppt-'+uidU);localStorage.removeItem('ppt-srv-'+uidU);localStorage.removeItem('ppt-last')}catch(e){}
  idbClear();arReset();uidU=null;S=EMPTY();showLogin('')}
 const inM=d=>d.startsWith(month);
 function calc(){
