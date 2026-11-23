@@ -869,7 +869,7 @@ dash(){const c=calc();const rows=S.products.map(p=>{const x=c.per[p.id],g=x.r-x.
 sales(){return shiftCard()+salesForm()+refundCard()+receiptCard()+monthSel()+salesList()},
 exp(){return expForm()+fixedCard()+monthSel()+expList()},
 prod(){return prodForm()+bundleCard()+catCard()+prodList()},
-set(){return brandCard()+`${taxSet()}${palCard()}${dlCard()}${resetCard()}${acctCard()}`}};
+set(){return brandCard()+`${appCard()}${taxSet()}${palCard()}${dlCard()}${resetCard()}${acctCard()}`}};
 function invAddCard(){return `<div class="card"><h2>Add ingredient</h2><div class="row"><input id="vn" placeholder="Ingredient name"><select id="vu" style="flex:0 0 76px"><option>g</option><option>ml</option><option>pcs</option></select></div><div class="row"><input id="vq" type="number" placeholder="On hand now" inputmode="decimal"><input id="vl" type="number" placeholder="Low-stock alert at" inputmode="decimal"></div><div class="row"><input id="vk" type="number" placeholder="Pack size (same unit)" inputmode="decimal"><input id="vc" type="number" placeholder="Price of that pack" inputmode="decimal"></div><button class="btn" onclick="addInv()">Add to inventory</button></div>`}
 function invListCard(){const L=S.inv.map(v=>{const st=v.qty<=0?['Out','neg']:(v.low>0&&v.qty<=v.low?['Low','neg']:['OK','pos']);
  const num=(l,k,val)=>`<div><div class="note">${l}</div><input type="number" value="${val}" inputmode="decimal" onchange="invEdit('${v.id}','${k}',this.value)"></div>`;
