@@ -52,6 +52,7 @@ nav button{border-radius:999px}
 .av{width:44px;height:44px;border-radius:50%;background:var(--ln);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--ac);overflow:hidden;cursor:pointer;flex:0 0 auto;font-size:13px}.av img{width:100%;height:100%;object-fit:cover}
 footer img{width:18px;height:18px;vertical-align:-4px;margin-right:4px}.fd{display:none}
 .fh{display:block;width:max-content;max-width:100%;margin:10px auto 0;padding:6px 12px;border:1px solid var(--ac);border-radius:999px;color:var(--ac);font-weight:600;text-decoration:none}.fh:hover{background:var(--ac);color:var(--on)}
+@media not all and (min-width:1024px) and (hover:hover) and (pointer:fine){.fh{width:100%;max-width:360px;margin:14px auto 0;padding:12px 14px;font-size:12.5px;line-height:1.4;border-radius:12px;background:color-mix(in srgb,var(--ac) 8%,transparent)}.fh b{display:block;font-size:14px;color:var(--tx)}.fh span{font-weight:500}.fh:hover b{color:inherit}}
 #pk{position:fixed;inset:0;background:rgba(8,20,30,.62);z-index:30;overflow:auto;padding:calc(16px + env(safe-area-inset-top,0px)) 14px 16px}
 .sw{display:flex;flex-direction:column;align-items:stretch;text-align:center;gap:6px;padding:8px;border:2px solid var(--ln);border-radius:12px;background:var(--card);cursor:pointer;color:var(--tx);font:inherit;font-size:13px}.sw.on{border-color:var(--ac);box-shadow:0 0 0 2px var(--ac) inset}.sw .note{font-size:11px;min-height:14px}.pv{display:block;height:48px;border-radius:8px;border:1px solid var(--ln);overflow:hidden;position:relative}.pv span{display:block;height:22px}.pv i{position:absolute;right:6px;bottom:7px;width:18px;height:8px;border-radius:4px}
 #rcp{background:#fff;color:#111;max-width:340px;margin:0 auto 12px;padding:18px 16px;border-radius:10px;font:14px/1.45 ui-monospace,Menlo,Consolas,monospace;box-shadow:0 2px 10px rgba(0,0,0,.18)}
@@ -517,7 +518,7 @@ body.inapp .kpi .v{font-size:30px;margin:10px 0 4px;font-variant-numeric:tabular
 </div>
 <div class="polf"><button class="btn ghost" onclick="closePolicy()">Close</button><button class="btn" onclick="closePolicy(true)">I agree</button></div>
 </div></div>
-<footer><span class="fa"><img alt="" id="fl">POS System<span class="fd">POS, stock &amp; profit</span></span><span class="fs"> · </span><span class="fb">© 2026 NEXUSMEDIA™</span><span class="fs"> · </span><span class="fc">All rights reserved</span><a class="fh" href="/" target="_blank" rel="noopener">Growing your business? We do social media, video &amp; websites &rarr;</a></footer>
+<footer><span class="fa"><img alt="" id="fl">POS System<span class="fd">POS, stock &amp; profit</span></span><span class="fs"> · </span><span class="fb">© 2026 NEXUSMEDIA™</span><span class="fs"> · </span><span class="fc">All rights reserved</span><a class="fh" href="/" target="_blank" rel="noopener"><b>Growing your business?</b> <span>We do social media, video &amp; websites &rarr;</span></a></footer>
 </main>
 <div id="tip" role="tooltip"></div>
 <script>
