@@ -31,7 +31,48 @@ Comment PAANO o i-try nang LIBRE 👉 nexusmediaph.com/pos
 | Budget | ₱192/day, ends 26 Nov (~₱48 spent before the change) | ₱192/day × 2 days = ₱384, ends 26 Nov 17:09 |
 | Goal | Get website purchases (pixel NEXUS MEDIA - Calculator) | same |
 | Link | https://nexusmediaph.com/pos/?start=guest | same |
-| Audience | Advantage+ (PH, 18+) with suggestions below | same |
+| Audience | Saved audience "POS owners PH 24-40" | same |
+
+Meta's minimum for a new purchase boost is ₱192/day, so the planned ₱250 + ₱250 split
+was not possible; both run at ₱192/day for a fair test (~₱768 total).
+
+Audience on both (saved audience "POS owners PH 24-40", reusable for future boosts):
+Philippines (whole country), age 24–40 (24 is a hard minimum; Advantage+ on, so 40 and
+interests guide delivery). Interests: Bakery, Coffeehouses, Coffee, Pastry, Casual dining
+restaurants, Point of sale, Microsoft Excel, Entrepreneurship, Home business. Behaviours:
+Small business owners, Food and restaurant / Retail / Business Page admins.
+Industry: Food and restaurants.
+
+"Comment PAANO", which the live Comment to message automation (how / paano / pano) answers.
+
+## Caption
+
+```
+Kumikita ka ba talaga sa benta mo... o nanghuhula ka lang? 🦉
+
+Gabi-gabi, pagsara ng tindahan, Excel agad. Isang gabing "bukas na lang," dalawang araw na ang ita-type, at kulang pa ang cash.
+
+Sa NEXUSMEDIA POS:
+✅ I-tap lang habang nagbebenta, naka-record na lahat
+✅ Sa close shift, kita agad kung tugma ang cash
+✅ Kusang bumabawas ang stock, alam mo agad ang paubos
+✅ Kita ang benta, gastos at totoong tubo
+
+Para sa kape, pastry, ulam at iba pang food business.
+
+₱399 lang. Isang bayad, walang monthly.
+Comment PAANO o i-try nang LIBRE 👉 nexusmediaph.com/pos
+```
+
+## A/B test setup (live 24 Nov 2026)
+
+| | A: savings reel | B: Gabi reel |
+|---|---|---|
+| Hook | ₱1,000 kada buwan vs ₱399 one-time | "Kumikita ka ba talaga… o nanghuhula?" story |
+| Budget | ₱192/day, ends 26 Nov (~₱48 spent before the change) | ₱192/day × 2 days = ₱384, ends 26 Nov 17:09 |
+| Goal | Get website purchases (pixel NEXUS MEDIA - Calculator) | same |
+| Link | https://nexusmediaph.com/pos/?start=guest | same |
+| Audience | Saved audience "POS owners PH 24-40" | same |
 
 Meta's minimum for a new purchase boost is ₱192/day, so the planned ₱250 + ₱250 split
 was not possible; both run at ₱192/day for a fair test (~₱768 total).
