@@ -93,7 +93,8 @@ Descriptions for these are in [../goodfirms/portfolio.md](../goodfirms/portfolio
 | YouTube channel growth | social-youtube.jpg | 578K subscribers, 980K views and 75.8K watch hours in 28 days |
 | Facebook Page reach | social-facebook.jpg | 10.9M views in 7 days, up 3,069% |
 | Second YouTube channel | social-youtube-2.jpg | 110K subscribers, 23K views on one episode, 8.1% click-through rate |
-| Facebook Pages | social-facebook-pages.jpg | Two creator pages with 457K and 204K followers |
+| Facebook page | social-facebook-457k.jpg | 457K followers |
+| Facebook page | social-facebook-204k.jpg | 204K followers |
 
 Description: *"Accounts our team runs day to day: content planning, editing, posting and community management. Names,
 content and earnings are blurred to keep the accounts private."* Link: https://nexusmediaph.com/our-work/#social
