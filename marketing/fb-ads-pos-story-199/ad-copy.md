@@ -26,3 +26,10 @@ Hanggang December 31 lang ang ₱199. Subukan muna nang libre, walang sign-up �
 - Post it on the Page as a Reel, then boost it.
 - Goal: Get website purchases. URL: https://nexusmediaph.com/pos/?start=guest
 - What sold before: this reel at ₱99 on a broad Advantage+ audience (PH), ₱222/day.
+
+## Live boost (25 Nov 2026)
+
+Posted as a Reel on the NEXUS MEDIA Page 25 Nov 14:21, boosted from Business Suite (published by the user, in review at first):
+goal Get website purchases (pixel NEXUS MEDIA - Calculator), button Learn more → https://nexusmediaph.com/pos/?start=guest,
+Advantage+ audience (Philippines, 18+, no interests), Advantage+ placements, ₱285/day × 7 days = ₱1,995, 25 Nov – 2 Dec.
+Benchmark to beat: ~₱88 per purchase from the ₱99 boosts. The Gabi and savings reels were paused by then.
