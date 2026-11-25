@@ -1,5 +1,7 @@
 # Nexus Media FB Page: Messenger auto-replies
 
+**Year-end sale (2026-11-25):** FAQ replies A, B, C and comment Reply F now say ₱199 until Dec 31. In January, change them back to ₱399 by hand (the website and checkout switch on their own).
+
 **Live as of 2026-11-23:** FAQ automation on Messenger, ON, with Replies A, B and C and "Send responses to similar questions" turned on (A uses the ?start=guest link, C uses ?start=signup). Comment to message (Messenger, ON) with keywords how, paano and pano, sending Reply F. Instant reply, away message, keyword replies and saved replies are not set up.
 
 Set these up in **Meta Business Suite → Inbox → Automations**. Each reply is ready to copy and paste, and each fits Meta's 500-character limit for automated responses.
@@ -16,7 +18,7 @@ Magandang araw po! Salamat po sa interes sa aming POS system.
 Para ma-try po ito, i-click lang ang link na ito at diretso na kayo sa guest mode:
 https://nexusmediaph.com/pos/?start=guest
 
-Libre po itong gamitin at i-test. Kapag handa na po kayong i-save ang inyong data sa sariling account, ₱199 lang po ito ngayong year-end sale (hanggang Dec 31, regular ₱399), one-time payment at walang monthly fee.
+Libre po itong gamitin at i-test. Kapag handa na po kayong i-save ang inyong data sa sariling account, YEAR-END SALE: ₱199 na lang po hanggang Dec 31! One-time payment at walang monthly fee.
 
 Kung may iba pa po kayong katanungan, nandito lang po kami.
 ```
@@ -24,7 +26,7 @@ Kung may iba pa po kayong katanungan, nandito lang po kami.
 ### B. What payments are available? (Anong payment ang pwede?)
 
 ```
-Magandang araw po! Ang one-time payment (₱199 ngayong year-end sale hanggang Dec 31, regular ₱399) ay maaaring bayaran gamit ang:
+Magandang araw po! YEAR-END SALE: ₱199 na lang po ang one-time payment hanggang Dec 31. Maaari po itong bayaran gamit ang:
 
 - GCash
 - Maya
@@ -42,7 +44,7 @@ Magandang araw po! Narito po ang steps sa paggawa ng account:
 
 1. I-click ang link na ito para diretso sa sign-up: https://nexusmediaph.com/pos/?start=signup
 2. Ilagay ang email at password, i-check ang agreement, at i-click ang "Continue to payment."
-3. Magbayad ng ₱199 (year-end sale hanggang Dec 31) via GCash, Maya o QR Ph.
+3. Magbayad ng ₱199 (YEAR-END SALE hanggang Dec 31) via GCash, Maya o QR Ph.
 4. Pagkalipas ng mga isang minuto, mag-log in na po.
 
 Paalala po: hindi naililipat sa account ang data mula sa guest mode, kaya mag-sign up po muna bago ilagay ang inyong products.
@@ -84,7 +86,7 @@ Magandang araw po! Salamat po sa pag-comment.
 Pwede nyo pong i-try nang libre ang aming POS system. I-click lang po ang link na ito at diretso na kayo sa guest mode:
 https://nexusmediaph.com/pos/?start=guest
 
-Kapag handa na po kayong i-save ang inyong data sa sariling account, ₱199 lang po ito ngayong year-end sale (hanggang Dec 31, regular ₱399), one-time payment at walang monthly fee.
+Kapag handa na po kayong i-save ang inyong data sa sariling account, YEAR-END SALE: ₱199 na lang po hanggang Dec 31! One-time payment at walang monthly fee.
 
 Mag-reply lang po kayo rito kung may tanong pa kayo.
 ```
