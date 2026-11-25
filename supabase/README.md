@@ -22,8 +22,8 @@ Source is in `supabase/functions/`. Paste each into **Edge Functions** in the da
 
 | Function | Verify JWT | What it does |
 |---|---|---|
-| `signup` | on | Creates the account (`paid = false`), starts a ₱399 SikatPay payment with `order_id = calc-<user id>`, replies `{ "url": "<checkout page>" }` or `{ "error": "..." }`. After paying, SikatPay sends the user to `/pos/?paid=1`. |
-| `sikatpay-webhook` | **off** | SikatPay posts `payment.paid` here. It checks the `X-Signature`, checks the amount is ₱399 (or ₱99 for checkouts started before the price change), then sets `profiles.paid = true`. Until then, login is refused. |
+| `signup` | on | Creates the account (`paid = false`), starts a SikatPay payment (₱199 year-end sale until 31 Dec 2026 PH time, ₱399 after; switches by date) with `order_id = calc-<user id>`, replies `{ "url": "<checkout page>" }` or `{ "error": "..." }`. After paying, SikatPay sends the user to `/pos/?paid=1`. |
+| `sikatpay-webhook` | **off** | SikatPay posts `payment.paid` here. It checks the `X-Signature`, checks the amount is ₱399, ₱199 (year-end sale) or ₱99 (checkouts started before earlier price changes), then sets `profiles.paid = true`. Until then, login is refused. |
 
 Secrets (**Edge Functions → Secrets**): `SIKATPAY_API_KEY`, `SIKATPAY_WEBHOOK_SECRET`, `SITE_URL`, and `SIKATPAY_ALLOW_TEST=true` only while testing.
 

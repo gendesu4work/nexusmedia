@@ -1,5 +1,6 @@
 // Supabase Edge Function named: signup
-// Creates the account (not usable until paid) and starts a SikatPay checkout for P399.
+// Creates the account (not usable until paid) and starts a SikatPay checkout
+// (P199 year-end sale until 31 Dec 2026, Philippine time; P399 after).
 //
 // Secrets (Supabase > Edge Functions > Secrets):
 //   SIKATPAY_API_KEY  mk_test_... while testing, mk_... (live) when going live
@@ -7,7 +8,10 @@
 import { createClient } from "npm:@supabase/supabase-js@2.117.2";
 
 // The price lives here on the server. The browser never sends it.
-const PRICE = 39900; // centavos = P399.00
+// Year-end sale: P199 until 31 Dec 2026 23:59 Philippine time, then back to P399
+// automatically. Keep SALE_ENDS in sync with public/pos/index.html and send-leads.
+const SALE_ENDS = Date.parse("2027-01-01T00:00:00+08:00");
+const price = () => (Date.now() < SALE_ENDS ? 19900 : 39900); // centavos
 
 // Must match POLICY_VERSION in public/pos/index.html. When the terms change,
 // update both so new sign-ups are recorded against the new version.
@@ -63,7 +67,7 @@ Deno.serve(async (req) => {
       Authorization: "Bearer " + Deno.env.get("SIKATPAY_API_KEY")!,
     },
     body: JSON.stringify({
-      amount: PRICE,
+      amount: price(),
       order_id: orderId,
       description: "Product Calculator - online saving",
       success_url: site + "/pos/?paid=1",

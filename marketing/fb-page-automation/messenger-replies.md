@@ -16,7 +16,7 @@ Magandang araw po! Salamat po sa interes sa aming POS system.
 Para ma-try po ito, i-click lang ang link na ito at diretso na kayo sa guest mode:
 https://nexusmediaph.com/pos/?start=guest
 
-Libre po itong gamitin at i-test. Kapag handa na po kayong i-save ang inyong data sa sariling account, ₱399 lang po ito, one-time payment at walang monthly fee.
+Libre po itong gamitin at i-test. Kapag handa na po kayong i-save ang inyong data sa sariling account, ₱199 lang po ito ngayong year-end sale (hanggang Dec 31, regular ₱399), one-time payment at walang monthly fee.
 
 Kung may iba pa po kayong katanungan, nandito lang po kami.
 ```
@@ -24,7 +24,7 @@ Kung may iba pa po kayong katanungan, nandito lang po kami.
 ### B. What payments are available? (Anong payment ang pwede?)
 
 ```
-Magandang araw po! Ang ₱399 one-time payment ay maaaring bayaran gamit ang:
+Magandang araw po! Ang one-time payment (₱199 ngayong year-end sale hanggang Dec 31, regular ₱399) ay maaaring bayaran gamit ang:
 
 - GCash
 - Maya
@@ -42,7 +42,7 @@ Magandang araw po! Narito po ang steps sa paggawa ng account:
 
 1. I-click ang link na ito para diretso sa sign-up: https://nexusmediaph.com/pos/?start=signup
 2. Ilagay ang email at password, i-check ang agreement, at i-click ang "Continue to payment."
-3. Magbayad ng ₱399 via GCash, Maya o QR Ph.
+3. Magbayad ng ₱199 (year-end sale hanggang Dec 31) via GCash, Maya o QR Ph.
 4. Pagkalipas ng mga isang minuto, mag-log in na po.
 
 Paalala po: hindi naililipat sa account ang data mula sa guest mode, kaya mag-sign up po muna bago ilagay ang inyong products.
@@ -84,14 +84,14 @@ Magandang araw po! Salamat po sa pag-comment.
 Pwede nyo pong i-try nang libre ang aming POS system. I-click lang po ang link na ito at diretso na kayo sa guest mode:
 https://nexusmediaph.com/pos/?start=guest
 
-Kapag handa na po kayong i-save ang inyong data sa sariling account, ₱399 lang po ito, one-time payment at walang monthly fee.
+Kapag handa na po kayong i-save ang inyong data sa sariling account, ₱199 lang po ito ngayong year-end sale (hanggang Dec 31, regular ₱399), one-time payment at walang monthly fee.
 
 Mag-reply lang po kayo rito kung may tanong pa kayo.
 ```
 
 **Direct links that skip the login screen:**
 - `https://nexusmediaph.com/pos/?start=guest` opens guest mode right away.
-- `https://nexusmediaph.com/pos/?start=signup` opens guest mode with the ₱399 sign-up screen already open.
+- `https://nexusmediaph.com/pos/?start=signup` opens guest mode with the sign-up screen (₱199 sale price until Dec 31, then ₱399) already open.
 
 ---
 

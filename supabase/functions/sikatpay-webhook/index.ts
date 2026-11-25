@@ -7,9 +7,9 @@
 //   SIKATPAY_ALLOW_TEST      "true" only while testing with the mk_test_ key; delete it when live
 import { createClient } from "npm:@supabase/supabase-js@2.117.2";
 
-// Must match the price in the signup function. 9900 (the old P99) is still accepted
-// so checkouts started before the price change to P399 still unlock.
-const PRICES = [39900, 9900];
+// Every price the signup function has charged: P399 (regular), P199 (year-end sale
+// until 31 Dec 2026) and P99 (the old price), so any checkout already started still unlocks.
+const PRICES = [39900, 19900, 9900];
 
 const enc = new TextEncoder();
 async function hmac(secret: string, msg: string) {

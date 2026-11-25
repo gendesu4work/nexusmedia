@@ -40,8 +40,10 @@ function fill(t: string, l: Lead) {
 const URL_RE = /https?:\/\/[^\s<]+[^\s<.,!?)]/g;
 const FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
 
+// Year-end sale: keep in sync with SALE_ENDS in the signup function.
+const SALE_ENDS = Date.parse("2027-01-01T00:00:00+08:00");
 function buttonLabel(url: string) {
-  return /start=signup/.test(url) ? "Sign up for ₱399" : /\/(pos|calculator)\//.test(url) ? "Open POS System" : "Open link";
+  return /start=signup/.test(url) ? (Date.now() < SALE_ENDS ? "Sign up for ₱199" : "Sign up for ₱399") : /\/(pos|calculator)\//.test(url) ? "Open POS System" : "Open link";
 }
 function button(url: string) {
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:6px auto 22px"><tr>

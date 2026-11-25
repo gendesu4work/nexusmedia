@@ -58,7 +58,7 @@
 
 ## Digital products
 - Blueprints (https://nexusmediaph.com/blueprints/): Windows apps for creators. YTA & FBA Studio makes 2D and 3D animated shorts and posts them to YouTube, Facebook, Instagram and TikTok in one click. Auto Clipping Tool turns podcasts and streams into short captioned clips.
-- POS System (https://nexusmediaph.com/pos/): ₱399 one-time POS web app for food businesses covering orders, Cash/GCash/Maya payments, receipts, shifts, staff mode, inventory, product costing, and daily sales and profit.
+- POS System (https://nexusmediaph.com/pos/): ₱399 one-time POS web app (year-end sale: ₱199 until 31 Dec 2026, Philippine time; ₱399 again from 1 Jan) for food businesses covering orders, Cash/GCash/Maya payments, receipts, shifts, staff mode, inventory, product costing, and daily sales and profit.
 
 ## Why outsource to the Philippines
 - Lower rates: a fraction of what agencies in the US, UK, Canada and Australia charge.
